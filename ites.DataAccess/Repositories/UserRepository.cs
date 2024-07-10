@@ -1,0 +1,83 @@
+﻿using AutoMapper;
+using ites.Application.Interfaces.Repositories;
+using ites.Core.Models;
+using ites.DataAccess.Entites;
+using Microsoft.EntityFrameworkCore;
+
+namespace ites.DataAccess.Repositories
+{
+    public class UserRepository(ItesDbContext context, IMapper mapper) 
+        : IUserRepository
+    {
+        private readonly ItesDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
+
+        public async Task<bool> CreateAsync(User user)
+        {
+            var userRequest = await GetUserEntityByEmailAsync(user.Email);
+
+            if(userRequest is not null) return false;
+
+            var userEntity = new UserEntity()
+            {
+                Id = Guid.NewGuid(),
+                FirstName = user.FirstName,
+                PasswordHash = user.PasswordHash,
+                Email = user.Email,
+                Role = user.Role
+            };
+
+            await _context.Users.AddAsync(userEntity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            var userEntity = await GetUserEntityByEmailAsync(email);
+
+            return userEntity is null 
+                ? null : _mapper.Map<User>(userEntity);
+        }
+
+        public async Task<User> GetByIdAsync(Guid id)
+        {
+            var userEntity = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            return _mapper.Map<User>(userEntity);
+        }
+        public async Task<HashSet<string>> GetPermissionsAsync(string roleName)
+        {
+            var permissions = await _context.Roles
+                .Include(r => r.Permissions)
+                .Where(r => r.Name == roleName)
+                .Select(r => r.Permissions)
+                .ToArrayAsync();
+
+            return permissions
+                .SelectMany(p => p)
+                .Select(p => p.Name)
+                .ToHashSet();
+        }
+
+        public async Task UpdateAsync(Guid id, string lastName, string firstName, string middleName, string description)
+        {
+            await _context.Users
+                .Where(u => u.Id == id)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(u => u.LastName, u => lastName)
+                    .SetProperty(u => u.FirstName, u => firstName)
+                    .SetProperty(u => u.MiddleName, u => middleName)
+                    .SetProperty(u => u.Description, u => description));
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task<UserEntity?> GetUserEntityByEmailAsync(string email) =>
+            await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == email);
+    }
+}

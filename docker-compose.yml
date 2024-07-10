@@ -1,0 +1,48 @@
+version: '3.4'
+
+services:
+  ites.server:
+    image: ${DOCKER_REGISTRY-}itesserver
+    build:
+      context: .
+      dockerfile: ites.Server/Dockerfile
+    volumes:
+      - ./:/app
+    networks:
+      - ites
+    depends_on:
+      - db
+  
+#  ites.client:
+#    container_name: ites.client
+#    build:
+#      context: ../frontend
+#      dockerfile: Dockerfile
+#    ports:
+#      - '3000:3000'
+#    volumes:
+#      - ../frontend:/app
+#    networks:
+#      - ites
+
+  db:
+    container_name: ites.db
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: itesdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - ites
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+networks:
+  ites:
+    driver: bridge
+
+volumes:
+  postgres-data:
