@@ -52,10 +52,8 @@ namespace ites.Server.Controllers
         {
             try
             {
-                string token = Request.Headers.Authorization
-                    .FirstOrDefault()!.Split(" ").Last();
-
-                var user = await _userService
+                string token = GetTokenFromHeaders();
+                UserProfileResponse user = await _userService
                     .GetFromTokenAsync(token);
                 return Ok(user);
             }
@@ -65,7 +63,6 @@ namespace ites.Server.Controllers
             }
         }
 
-        [HasPermission(Permission.ReadProfiles)]
         [HttpGet("profile/{id:guid}")]
         public async Task<ActionResult<UserProfileResponse>> Get(Guid id)
         {
@@ -74,13 +71,27 @@ namespace ites.Server.Controllers
         }
 
         [Authorize]
-        [HttpPut("update/{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserRequest request)
+        [HttpPut("update")]
+        public async Task<IActionResult> Update(UpdateUserRequest request)
         {
-            await _userService.UpdateAsync(
-                id, request.LastName, request.FirstName, request.MiddleName, request.Description);
+            try
+            {
+                string token = GetTokenFromHeaders();
+                Guid id = await _userService.GetIdFromTokenAsync(token);
 
-            return Ok();
+                await _userService.UpdateAsync(
+                    id, request.LastName, request.FirstName, request.MiddleName, request.Description);
+
+                return Ok();
+            }
+            catch (UserException)
+            {
+                return Unauthorized();
+            }
         }
+
+        private string GetTokenFromHeaders() =>
+            Request.Headers.Authorization
+                    .FirstOrDefault()!.Split(" ").Last();
     }
 }

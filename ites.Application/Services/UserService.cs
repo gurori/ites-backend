@@ -5,6 +5,7 @@ using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Core.Models;
+using Microsoft.IdentityModel.Tokens;
 using static ites.Core.Exeptions.UserException;
 
 namespace ites.Application.Services
@@ -44,25 +45,38 @@ namespace ites.Application.Services
 
         public async Task<UserProfileResponse> GetFromTokenAsync(string token)
         {
-            var tokenValidationResult = await _jwtProvider.ValidateTokenAsync(token);
-
-            var userId = tokenValidationResult.Claims[CustomClaims.UserId].ToString()
-                ?? throw UserProblem.TokenProblem;
-
-            var user = await _userRepository.GetByIdAsync(Guid.Parse(userId));
+            Guid id = await GetIdFromTokenAsync(token);
+            User user = await _userRepository
+                .GetByIdAsync(id);
 
             return _mapper.Map<UserProfileResponse>(user);
         }
 
         public async Task<UserProfileResponse> GetAsync(Guid id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            User user = await _userRepository.GetByIdAsync(id);
             return _mapper.Map<UserProfileResponse>(user);
         }
 
-        public async Task UpdateAsync(Guid id, string lastName, string firstName, string middleName, string description)
+        public async Task UpdateAsync(
+            Guid id, string lastName, string firstName, string middleName, string description)
         {
-            await _userRepository.UpdateAsync(id, lastName, firstName, middleName, description);
+            await _userRepository
+                .UpdateAsync(id, lastName, firstName, middleName, description);
+        }
+
+        public async Task<Guid> GetIdFromTokenAsync(string token)
+        {
+            TokenValidationResult validationResult = await _jwtProvider
+                .ValidateTokenAsync(token);
+
+            if (!validationResult.IsValid)
+                throw UserProblem.TokenProblem;
+
+            string id = validationResult.Claims[CustomClaims.UserId].ToString()
+                ?? throw UserProblem.TokenProblem;
+
+            return Guid.Parse(id);
         }
     }
 }
