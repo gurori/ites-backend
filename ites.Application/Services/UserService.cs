@@ -5,12 +5,15 @@ using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Core.Models;
+using ites.Core.Problems;
 using Microsoft.IdentityModel.Tokens;
-using static ites.Core.Exeptions.UserException;
 
 namespace ites.Application.Services
 {
-    public class UserService(IPasswordHasher passwordHasher, IUserRepository userRepository, IJwtProvider jwtProvider, IMapper mapper) 
+    public class UserService(IPasswordHasher passwordHasher,
+                             IUserRepository userRepository,
+                             IJwtProvider jwtProvider,
+                             IMapper mapper) 
         : IUserService
     {
         private readonly IPasswordHasher _passwordHasher = passwordHasher;
@@ -77,6 +80,20 @@ namespace ites.Application.Services
                 ?? throw UserProblem.TokenProblem;
 
             return Guid.Parse(id);
+        }
+
+        public async Task<byte[]> GetFileAsync(string webRootPath, Guid id, string fileName)
+        {
+            _ = await GetAsync(id) ?? throw UserProblem.NotFound;
+
+            string uploadFolder = Path
+                .Combine(webRootPath, "uploads/users", id.ToString());
+            string filePath = Path.Combine(uploadFolder, fileName);
+
+            if (!File.Exists(filePath))
+                throw UserProblem.NotExistImage;
+
+            return await File.ReadAllBytesAsync(filePath);
         }
     }
 }

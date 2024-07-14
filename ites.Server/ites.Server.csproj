@@ -33,4 +33,8 @@
     <ProjectReference Include="..\ites.Infastructure\ites.Infastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\users\" />
+  </ItemGroup>
+
 </Project>

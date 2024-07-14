@@ -26,7 +26,8 @@ namespace ites.Server.Extensions
                     options.RequireHttpsMetadata = true;
                     options.SaveToken = true;
 
-                    options.TokenValidationParameters = JwtParameters.GetTokenValidationParameters(jwtOptions!);
+                    options.TokenValidationParameters = JwtParameters
+                        .GetTokenValidationParameters(jwtOptions!);
 
                     options.Events = new JwtBearerEvents
                     {

@@ -1,8 +1,6 @@
 ﻿using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Services;
-using ites.Core.Enums;
 using ites.Core.Exeptions;
-using ites.Infastructure.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +8,11 @@ namespace ites.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public sealed class UserController(IUserService userService) : ControllerBase
+    public sealed class UserController(IUserService userService, IWebHostEnvironment webHostEnvironment)
+        : ControllerBase
     {
         private readonly IUserService _userService = userService;
+        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
@@ -23,9 +23,9 @@ namespace ites.Server.Controllers
                     .RegisterAsync(request.FirstName, request.Email, request.Password, request.Role);
                 return Ok();
             }
-            catch (UserException ex)
+            catch (ApiException ex)
             {
-                return Problem(detail: ex.Message, statusCode: 409);
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
             }
         }
 
@@ -40,9 +40,9 @@ namespace ites.Server.Controllers
                     .Append("auth", token);
                 return Ok();
             }
-            catch(UserException ex)
+            catch (ApiException ex)
             {
-                return Problem(detail: ex.Message, statusCode: 404);
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
             }
         }
 
@@ -57,9 +57,9 @@ namespace ites.Server.Controllers
                     .GetFromTokenAsync(token);
                 return Ok(user);
             }
-            catch (UserException)
+            catch (ApiException ex)
             {
-                return Unauthorized();
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
             }
         }
 
@@ -68,6 +68,23 @@ namespace ites.Server.Controllers
         {
             var user = await _userService.GetAsync(id);
             return Ok(user);
+        }
+
+        [HttpGet("file/{userId:guid}/{fileName}")]
+        public async Task<IActionResult> GetFile(Guid userId, string fileName)
+        {
+            try
+            {
+                byte[] fileBytes = await _userService
+                    .GetFileAsync(_webHostEnvironment.WebRootPath, userId, fileName);
+                string fileExtension = Path
+                    .GetExtension(fileName).TrimStart('.');
+                return File(fileBytes, GetMimeType(fileExtension));
+            }
+            catch (ApiException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
+            }
         }
 
         [Authorize]
@@ -84,14 +101,29 @@ namespace ites.Server.Controllers
 
                 return Ok();
             }
-            catch (UserException)
+            catch (ApiException ex)
             {
-                return Unauthorized();
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
             }
         }
 
         private string GetTokenFromHeaders() =>
             Request.Headers.Authorization
                     .FirstOrDefault()!.Split(" ").Last();
+
+        private static string GetMimeType(string fileExtension)
+        {
+            var mimeTypes = new Dictionary<string, string>
+            {
+                { "png", "image/png" },
+                { "jpg", "image/jpeg" },
+                { "jpeg", "image/jpeg" },
+            };
+
+            if (mimeTypes.TryGetValue(fileExtension.ToLower(), out var mimeType))
+                return mimeType;
+
+            return "application/octet-stream";
+        }
     }
 }

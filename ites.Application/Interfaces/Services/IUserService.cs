@@ -1,4 +1,5 @@
 ﻿using ites.Application.Contracts.Users;
+using ites.Core.Models;
 
 namespace ites.Application.Interfaces.Services
 {
@@ -10,5 +11,6 @@ namespace ites.Application.Interfaces.Services
         Task<Guid> GetIdFromTokenAsync(string token);
         Task<UserProfileResponse> GetAsync(Guid id);
         Task UpdateAsync(Guid id, string lastName, string firstName, string middleName, string description);
+        Task<byte[]> GetFileAsync(string webRootPath, Guid id, string name);
     }
 }

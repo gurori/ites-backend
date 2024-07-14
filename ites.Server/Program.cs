@@ -19,7 +19,7 @@ services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
 
 // Add services to the container.
-services.AddEndpointsApiExplorer();//REMOVE IT, DUDE
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddSwaggerGen();
 
@@ -81,9 +81,6 @@ app.UseCookiePolicy(new CookiePolicyOptions
 app.MapControllers();
 
 app.UseCors();
-
-app.MapGet("get", () => Results.Ok("ok, Karl :)"))
-    .RequireAuthorization();//REMOVE IT, DUDE
 
 app.UseAuthentication();
 app.UseAuthorization();
