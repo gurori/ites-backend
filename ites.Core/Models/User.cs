@@ -17,5 +17,6 @@
         public string PasswordHash { get; private set; } = passwordHash;
         public string Role { get; private set; } = role;
         public string Description { get; private set; }// = description;
+        public string JobTitle { get; private set; }
     }
 }

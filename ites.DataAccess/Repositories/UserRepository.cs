@@ -62,7 +62,8 @@ namespace ites.DataAccess.Repositories
                 .ToHashSet();
         }
 
-        public async Task UpdateAsync(Guid id, string lastName, string firstName, string middleName, string description)
+        public async Task UpdateAsync(
+            Guid id, string lastName, string firstName, string middleName, string description, string jobTitle)
         {
             await _context.Users
                 .Where(u => u.Id == id)
@@ -70,7 +71,8 @@ namespace ites.DataAccess.Repositories
                     .SetProperty(u => u.LastName, u => lastName)
                     .SetProperty(u => u.FirstName, u => firstName)
                     .SetProperty(u => u.MiddleName, u => middleName)
-                    .SetProperty(u => u.Description, u => description));
+                    .SetProperty(u => u.Description, u => description)
+                    .SetProperty(u => u.JobTitle, u => jobTitle));
 
             await _context.SaveChangesAsync();
         }

@@ -10,7 +10,6 @@ namespace ites.Application.Interfaces.Services
         Task<UserProfileResponse> GetFromTokenAsync(string token);
         Task<Guid> GetIdFromTokenAsync(string token);
         Task<UserProfileResponse> GetAsync(Guid id);
-        Task UpdateAsync(Guid id, string lastName, string firstName, string middleName, string description);
-        Task<byte[]> GetFileAsync(string webRootPath, Guid id, string name);
+        Task UpdateAsync(Guid id, string lastName, string firstName, string middleName, string description, string jobTitle);
     }
 }

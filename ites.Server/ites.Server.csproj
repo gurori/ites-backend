@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\uploads\users\" />
+    <Folder Include="wwwroot\uploads\users\defualt\" />
   </ItemGroup>
 
 </Project>

@@ -62,10 +62,10 @@ namespace ites.Application.Services
         }
 
         public async Task UpdateAsync(
-            Guid id, string lastName, string firstName, string middleName, string description)
+            Guid id, string lastName, string firstName, string middleName, string description, string jobTitle)
         {
             await _userRepository
-                .UpdateAsync(id, lastName, firstName, middleName, description);
+                .UpdateAsync(id, lastName, firstName, middleName, description, jobTitle);
         }
 
         public async Task<Guid> GetIdFromTokenAsync(string token)
@@ -80,20 +80,6 @@ namespace ites.Application.Services
                 ?? throw UserProblem.TokenProblem;
 
             return Guid.Parse(id);
-        }
-
-        public async Task<byte[]> GetFileAsync(string webRootPath, Guid id, string fileName)
-        {
-            _ = await GetAsync(id) ?? throw UserProblem.NotFound;
-
-            string uploadFolder = Path
-                .Combine(webRootPath, "uploads/users", id.ToString());
-            string filePath = Path.Combine(uploadFolder, fileName);
-
-            if (!File.Exists(filePath))
-                throw UserProblem.NotExistImage;
-
-            return await File.ReadAllBytesAsync(filePath);
         }
     }
 }

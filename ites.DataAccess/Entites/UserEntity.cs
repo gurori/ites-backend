@@ -10,5 +10,6 @@
         public string PasswordHash { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string JobTitle { get; set; } = string.Empty;
     }
 }

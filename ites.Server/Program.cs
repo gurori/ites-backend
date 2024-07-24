@@ -28,8 +28,8 @@ services.AddCors(option =>
     option.AddDefaultPolicy(policy =>
     {
         //you should change origins after developming :3
-        policy.WithOrigins("http://localhost:3000");
-        //(environment.IsDevelopment() ? "http://localhost:3000" : "client.com");
+        policy.WithOrigins("https://localhost:3000");
+        //(environment.IsDevelopment() ? "https://localhost:3000" : "client.com");
         policy.AllowCredentials();
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();

@@ -8,11 +8,10 @@ namespace ites.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public sealed class UserController(IUserService userService, IWebHostEnvironment webHostEnvironment)
+    public sealed class UserController(IUserService userService)
         : ControllerBase
     {
         private readonly IUserService _userService = userService;
-        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
@@ -70,23 +69,6 @@ namespace ites.Server.Controllers
             return Ok(user);
         }
 
-        [HttpGet("file/{userId:guid}/{fileName}")]
-        public async Task<IActionResult> GetFile(Guid userId, string fileName)
-        {
-            try
-            {
-                byte[] fileBytes = await _userService
-                    .GetFileAsync(_webHostEnvironment.WebRootPath, userId, fileName);
-                string fileExtension = Path
-                    .GetExtension(fileName).TrimStart('.');
-                return File(fileBytes, GetMimeType(fileExtension));
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
-
         [Authorize]
         [HttpPut("update")]
         public async Task<IActionResult> Update(UpdateUserRequest request)
@@ -97,7 +79,7 @@ namespace ites.Server.Controllers
                 Guid id = await _userService.GetIdFromTokenAsync(token);
 
                 await _userService.UpdateAsync(
-                    id, request.LastName, request.FirstName, request.MiddleName, request.Description);
+                    id, request.LastName, request.FirstName, request.MiddleName, request.Description, request.JobTitle);
 
                 return Ok();
             }
@@ -109,21 +91,8 @@ namespace ites.Server.Controllers
 
         private string GetTokenFromHeaders() =>
             Request.Headers.Authorization
-                    .FirstOrDefault()!.Split(" ").Last();
-
-        private static string GetMimeType(string fileExtension)
-        {
-            var mimeTypes = new Dictionary<string, string>
-            {
-                { "png", "image/png" },
-                { "jpg", "image/jpeg" },
-                { "jpeg", "image/jpeg" },
-            };
-
-            if (mimeTypes.TryGetValue(fileExtension.ToLower(), out var mimeType))
-                return mimeType;
-
-            return "application/octet-stream";
-        }
+                    .FirstOrDefault()!
+                    .Split(" ")
+                    .Last();
     }
 }

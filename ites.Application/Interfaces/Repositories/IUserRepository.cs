@@ -11,6 +11,6 @@ namespace ites.Application.Interfaces.Repositories
 
         public Task<User> GetByIdAsync(Guid id);
         public Task<HashSet<string>> GetPermissionsAsync(string roleName);
-        public Task UpdateAsync(Guid id, string lastName, string firstName, string middleName, string description);
+        public Task UpdateAsync(Guid id, string lastName, string firstName, string middleName, string description, string jobTitle);
     }
 }

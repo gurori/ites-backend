@@ -6,6 +6,7 @@
         string Email,
         string LastName,
         string MiddleName,
-        string Description
+        string Description,
+        string JobTitle
         );
 }
