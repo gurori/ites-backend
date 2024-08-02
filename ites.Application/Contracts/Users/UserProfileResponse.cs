@@ -7,6 +7,7 @@
         string LastName,
         string MiddleName,
         string Description,
-        string JobTitle
+        string JobTitle,
+        string Role
         );
 }

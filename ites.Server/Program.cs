@@ -39,6 +39,7 @@ services.AddCors(option =>
 services.AddMvc();
 
 services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<IRoleRepository, RoleRepository>();
 
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IPermissionService, PermissionService>();

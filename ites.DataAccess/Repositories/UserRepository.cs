@@ -42,24 +42,16 @@ namespace ites.DataAccess.Repositories
 
         public async Task<User> GetByIdAsync(Guid id)
         {
-            var userEntity = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var userEntity = await GetUserEntityByIdAsync(id);
 
             return _mapper.Map<User>(userEntity);
         }
-        public async Task<HashSet<string>> GetPermissionsAsync(string roleName)
-        {
-            var permissions = await _context.Roles
-                .Include(r => r.Permissions)
-                .Where(r => r.Name == roleName)
-                .Select(r => r.Permissions)
-                .ToArrayAsync();
 
-            return permissions
-                .SelectMany(p => p)
-                .Select(p => p.Name)
-                .ToHashSet();
+        public async Task<string?> GetRoleByIdAsync(Guid id)
+        {
+            var userEntity = await GetUserEntityByIdAsync(id);
+
+            return userEntity?.Role;
         }
 
         public async Task UpdateAsync(
@@ -81,5 +73,10 @@ namespace ites.DataAccess.Repositories
             await _context.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == email);
+
+        private async Task<UserEntity?> GetUserEntityByIdAsync(Guid id) =>
+            await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
     }
 }

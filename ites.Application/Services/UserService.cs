@@ -23,7 +23,7 @@ namespace ites.Application.Services
 
         public async Task RegisterAsync(string name, string email, string password, string role)
         {
-            var hashedPassword = _passwordHasher.Generate(password);
+            string hashedPassword = _passwordHasher.Generate(password);
 
             User user = new(Guid.NewGuid(), name, email, hashedPassword, role);
             bool isUserExist = !await _userRepository.CreateAsync(user);
@@ -62,10 +62,16 @@ namespace ites.Application.Services
         }
 
         public async Task UpdateAsync(
-            Guid id, string lastName, string firstName, string middleName, string description, string jobTitle)
+            Guid id, string lastName, string firstName, string middleName, string description, string? jobTitle)
         {
             await _userRepository
-                .UpdateAsync(id, lastName, firstName, middleName, description, jobTitle);
+                .UpdateAsync(
+                id,
+                lastName,
+                firstName,
+                middleName,
+                description,
+                jobTitle ?? string.Empty);
         }
 
         public async Task<Guid> GetIdFromTokenAsync(string token)
@@ -80,6 +86,15 @@ namespace ites.Application.Services
                 ?? throw UserProblem.TokenProblem;
 
             return Guid.Parse(id);
+        }
+
+        public async Task<string> GetRoleAsync(string token)
+        {
+            Guid id = await GetIdFromTokenAsync(token);
+            string role = await _userRepository.GetRoleByIdAsync(id)
+                ?? throw UserProblem.NotFound;
+
+            return role;
         }
     }
 }

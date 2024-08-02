@@ -46,6 +46,22 @@ namespace ites.Server.Controllers
         }
 
         [Authorize]
+        [HttpGet("role")]
+        public async Task<IActionResult> GetRole()
+        {
+            try
+            {
+                string token = GetTokenFromHeaders();
+                string role = await _userService.GetRoleAsync(token);
+                return Ok(role);
+            }
+            catch(ApiException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
+            }
+        }
+
+        [Authorize]
         [HttpGet("profile")]
         public async Task<ActionResult<UserProfileResponse>> Get()
         {
@@ -78,8 +94,12 @@ namespace ites.Server.Controllers
                 string token = GetTokenFromHeaders();
                 Guid id = await _userService.GetIdFromTokenAsync(token);
 
-                await _userService.UpdateAsync(
-                    id, request.LastName, request.FirstName, request.MiddleName, request.Description, request.JobTitle);
+                await _userService.UpdateAsync(id,
+                                               request.LastName,
+                                               request.FirstName,
+                                               request.MiddleName,
+                                               request.Description,
+                                               request.JobTitle);
 
                 return Ok();
             }

@@ -19,13 +19,13 @@ namespace ites.Server.Controllers
         {
             try
             {
-                Console.WriteLine($"Incoming request: directory={directory}, id={id}, image={image.FormFile.FileName}");
+                Console.WriteLine($"Incoming request: directory={directory}, id={id}, image={image.FormFile?.FileName}");
                 if (!ModelState.IsValid)
                 {
                     Console.WriteLine(ModelState);
                     return BadRequest(ModelState);
                 }
-                IFormFile file = image.FormFile;
+                IFormFile? file = image.FormFile;
                 if (file is null || file.Length == 0)
                     return BadRequest("file is null");
 
@@ -108,6 +108,6 @@ namespace ites.Server.Controllers
     public class Image
     {
         [FromForm(Name = "file")]
-        public IFormFile FormFile { get; set; }
+        public IFormFile? FormFile { get; set; }
     }
 }

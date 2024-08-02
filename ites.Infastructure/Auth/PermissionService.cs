@@ -3,13 +3,14 @@ using ites.Application.Interfaces.Repositories;
 
 namespace ites.Infastructure.Auth
 {
-    public class PermissionService(IUserRepository userRepository) : IPermissionService
+    public sealed class PermissionService(IRoleRepository roleRepository) 
+        : IPermissionService
     {
-        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IRoleRepository _roleRepository = roleRepository;
 
         public async Task<HashSet<string>> GetPermissionsAsync(string roleName)
         {
-            return await _userRepository.GetPermissionsAsync(roleName);
+            return await _roleRepository.GetPermissionsAsync(roleName);
         }
     }
 }

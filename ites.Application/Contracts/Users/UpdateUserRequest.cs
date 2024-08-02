@@ -5,6 +5,6 @@
         string FirstName,
         string MiddleName,
         string Description,
-        string JobTitle
+        string? JobTitle
         );
 }

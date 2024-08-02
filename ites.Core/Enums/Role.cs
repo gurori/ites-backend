@@ -5,6 +5,5 @@
         Member = 1,
         Client,
         Organizer,
-        User
     }
 }

@@ -11,9 +11,9 @@ namespace ites.Infastructure.Auth
     public class JwtProvider(IOptions<JwtOptions> options, IPermissionService permissionService) 
         : IJwtProvider
     {
-        private readonly JwtOptions _options = options.Value;
         private readonly IPermissionService _permissionService = permissionService;
         private readonly JwtSecurityTokenHandler _tokenHandler = new();
+        private readonly JwtOptions _options = options.Value;
 
         public async Task<string> GenerateTokenAsync(User user)
         {

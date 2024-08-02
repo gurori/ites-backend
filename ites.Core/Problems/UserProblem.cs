@@ -5,7 +5,7 @@ namespace ites.Core.Problems
     public static class UserProblem
     {
         public static readonly ApiException NotExistEmail = 
-            new("Пользователя с данной почтой не существует", 404);
+            new("Пользователь с данной почтой не зарегистрирован", 404);
 
         public static readonly ApiException NotExistFile =
             new("Файла не существует", 404);
