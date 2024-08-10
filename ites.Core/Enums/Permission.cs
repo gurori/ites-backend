@@ -2,9 +2,12 @@
 {
     public enum Permission
     {
-        ReadProfiles = 1,
-        UpdateProfile,
-        CreateOrder,
+        CreateOrder = 1,
         CreateCompetition,
+        AddApplicationsToCompetitions,
+        HandleCompetitionsApplications,
+        BeMember,
+        BeOrganizer,
+        BeClient,
     }
 }

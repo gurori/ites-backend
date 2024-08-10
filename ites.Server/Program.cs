@@ -40,14 +40,22 @@ services.AddMvc();
 
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IRoleRepository, RoleRepository>();
+services.AddScoped<IApplicationsRepository, ApplicationsRepository>();
+services.AddScoped<ICompetitionsRepository, CompetitionsRepository>();
 
+services.AddScoped<IApplicationsService, ApplicationsService>();
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IPermissionService, PermissionService>();
+services.AddScoped<ICompetitionsService, CompetitionsService>();
+services.AddScoped<IUserProfileService, UserProfileService>();
 
 services.AddScoped<IJwtProvider, JwtProvider>();
 services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-services.AddAutoMapper(typeof(UserAutoMapperProfile));
+services.AddAutoMapper(
+    typeof(UserAutoMapperProfile),
+    typeof(CompetitionAutoMapperProfile),
+    typeof(ApplicationAutoMapperProfile));
 
 services.AddAuthentication(configuration);
 

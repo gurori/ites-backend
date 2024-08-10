@@ -47,6 +47,16 @@ namespace ites.DataAccess.Repositories
             return _mapper.Map<User>(userEntity);
         }
 
+        public async Task<IList<User>> GetManyByIdAsync(IList<Guid> ids)
+        {
+            var userEntities = await _context.Users
+                .AsNoTracking()
+                .Where(u => ids.Contains(u.Id))
+                .ToListAsync();
+
+            return _mapper.Map<User[]>(userEntities);
+        }
+
         public async Task<string?> GetRoleByIdAsync(Guid id)
         {
             var userEntity = await GetUserEntityByIdAsync(id);

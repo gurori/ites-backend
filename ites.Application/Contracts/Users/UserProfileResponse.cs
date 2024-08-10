@@ -2,8 +2,8 @@
 {
     public record UserProfileResponse(
         Guid Id,
-        string FirstName,
         string Email,
+        string FirstName,
         string LastName,
         string MiddleName,
         string Description,

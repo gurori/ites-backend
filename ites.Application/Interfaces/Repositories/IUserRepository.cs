@@ -12,5 +12,6 @@ namespace ites.Application.Interfaces.Repositories
         public Task UpdateAsync(
             Guid id, string lastName, string firstName, string middleName, string description, string jobTitle);
         public Task<string?> GetRoleByIdAsync(Guid id);
+        public Task<IList<User>> GetManyByIdAsync(IList<Guid> ids);
     }
 }

@@ -11,7 +11,6 @@ namespace ites.Infastructure.Mapping
         public UserAutoMapperProfile()
         {
             CreateMap<UserEntity, User>();
-                //.ConstructUsing(ue => new User(ue.Id, ue.Name, ue.Email, ue.PasswordHash, ue.Roles.FirstOrDefault(r => r.Name != Role.User.ToString())!.Name));
 
             CreateMap<User, UserProfileResponse>();
         }
