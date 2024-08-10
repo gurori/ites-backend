@@ -135,18 +135,13 @@ namespace ites.Server.Controllers
         {
             try
             {
-                Console.WriteLine("STAR");
                 string token = GetTokenFromHeaders();
-                await Console.Out.WriteLineAsync("TOKEN C - " + token);
                 MemberResponse member = await _profileService
                     .GetMemberAsync(token);
-                await Console.Out.WriteLineAsync("MEM - " + member.FirstName);
                 return Ok(member);
             }
             catch (ApiException ex)
             {
-                Console.WriteLine("STAR");
-                await Console.Out.WriteLineAsync("EX - " + ex.Message);
                 return Problem(detail: ex.Message, statusCode: ex.StatusCode);
             }
         }
