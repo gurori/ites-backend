@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories
 {
-    public class UserRepository(ItesDbContext context, IMapper mapper) 
+    public class UserRepository(ItesDbContext context, IMapper mapper)
         : IUserRepository
     {
         private readonly ItesDbContext _context = context;
@@ -14,9 +14,11 @@ namespace ites.DataAccess.Repositories
 
         public async Task<bool> CreateAsync(User user)
         {
-            var userRequest = await GetUserEntityByEmailAsync(user.Email);
+            bool isUserExist = await _context.Users
+                .AsNoTracking()
+                .AnyAsync(u => u.Email == user.Email);
 
-            if(userRequest is not null) return false;
+            if (isUserExist) return false;
 
             var userEntity = new UserEntity()
             {
@@ -36,7 +38,7 @@ namespace ites.DataAccess.Repositories
         {
             var userEntity = await GetUserEntityByEmailAsync(email);
 
-            return userEntity is null 
+            return userEntity is null
                 ? null : _mapper.Map<User>(userEntity);
         }
 
@@ -59,9 +61,11 @@ namespace ites.DataAccess.Repositories
 
         public async Task<string?> GetRoleByIdAsync(Guid id)
         {
-            var userEntity = await GetUserEntityByIdAsync(id);
-
-            return userEntity?.Role;
+            return await _context.Users
+                .AsNoTracking()
+                .Where(u => u.Id == id)
+                .Select(u => u.Role)
+                .FirstOrDefaultAsync();
         }
 
         public async Task UpdateAsync(

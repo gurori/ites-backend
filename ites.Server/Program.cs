@@ -42,11 +42,13 @@ services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IRoleRepository, RoleRepository>();
 services.AddScoped<IApplicationsRepository, ApplicationsRepository>();
 services.AddScoped<ICompetitionsRepository, CompetitionsRepository>();
+services.AddScoped<IOrdersRepository, OrdersRepository>();
 
 services.AddScoped<IApplicationsService, ApplicationsService>();
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IPermissionService, PermissionService>();
 services.AddScoped<ICompetitionsService, CompetitionsService>();
+services.AddScoped<IOrdersService, OrdersService>();
 services.AddScoped<IUserProfileService, UserProfileService>();
 
 services.AddScoped<IJwtProvider, JwtProvider>();
@@ -55,7 +57,8 @@ services.AddScoped<IPasswordHasher, PasswordHasher>();
 services.AddAutoMapper(
     typeof(UserAutoMapperProfile),
     typeof(CompetitionAutoMapperProfile),
-    typeof(ApplicationAutoMapperProfile));
+    typeof(ApplicationAutoMapperProfile),
+    typeof(OrderAutoMapperProfile));
 
 services.AddAuthentication(configuration);
 

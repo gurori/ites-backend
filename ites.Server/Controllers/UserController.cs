@@ -2,7 +2,6 @@
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Core.Exeptions;
-using ites.Core.Models;
 using ites.Infastructure.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -171,6 +170,53 @@ namespace ites.Server.Controllers
                 OrganizerResponse organizer = await _profileService
                     .GetOrganizerAsync(token);
                 return Ok(organizer);
+            }
+            catch (ApiException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
+            }
+        }
+
+        [HttpGet("organizer/{id:guid}")]
+        public async Task<ActionResult<OrganizerResponse>> GetOrganizer(Guid id)
+        {
+            try
+            {
+                OrganizerResponse organizer = await _profileService
+                    .GetOrganizerAsync(id);
+                return Ok(organizer);
+            }
+            catch (ApiException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
+            }
+        }
+
+        [HttpGet("client")]
+        [HasPermission(Permission.BeClient)]
+        public async Task<ActionResult<ClientResponse>> GetClient()
+        {
+            try
+            {
+                string token = GetTokenFromHeaders();
+                ClientResponse client = await _profileService
+                    .GetClientAsync(token);
+                return Ok(client);
+            }
+            catch (ApiException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
+            }
+        }
+
+        [HttpGet("client/{id:guid}")]
+        public async Task<ActionResult<ClientResponse>> GetClient(Guid id)
+        {
+            try
+            {
+                ClientResponse client = await _profileService
+                    .GetClientAsync(id);
+                return Ok(client);
             }
             catch (ApiException ex)
             {

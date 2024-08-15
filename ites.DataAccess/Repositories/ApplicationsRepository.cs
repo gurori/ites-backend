@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ites.Application.Interfaces.Repositories;
+using ites.Core.Models;
 using ites.DataAccess.Entites;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,53 +15,76 @@ namespace ites.DataAccess.Repositories
         private readonly IMapper _mapper = mapper;
         public async Task CreateForCompetitionAsync(Core.Models.Application application)
         {
-            ApplicationEntity? applRequest1 = await _context.Applications
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.From == application.From);
-            ApplicationEntity? applRequest2 = await _context.Applications
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.For == application.For);
-
-            if (applRequest1 is not null && applRequest2 is not null)
-                if (applRequest1.Id == applRequest2.Id) return;
-
-            ApplicationEntity applicationEntity = new()
+            try
             {
-                Id = Guid.NewGuid(),
-                For = application.For,
-                From = application.From,
-            };
+                var result = await CreateApplicationAsync(application);
+                ApplicationEntity applicationEntity = result.Item1;
+                UserEntity fromMemeber = result.Item2;
 
-            UserEntity? fromMemeber = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == application.From);
-            if (fromMemeber is null) return;
+                CompetitionEntity? forCompetition = await _context.Competitions
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id == application.For);
+                if (forCompetition is null) return;
 
-            CompetitionEntity? forCompetition = await _context.Competitions
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == application.For);
-            if (forCompetition is null) return;
+                fromMemeber.ApplicationsForCompetitions
+                    .Add(applicationEntity.For);
 
-            fromMemeber.ApplicationsForCompetitions
-                .Add(applicationEntity.For);
+                IList<UserEntity> organizers = await _context.Users
+                    .AsNoTracking()
+                    .Where(u => forCompetition.OrganizersIds
+                        .Contains(u.Id))
+                    .ToListAsync();
 
-            IList<UserEntity> organizers = await _context.Users
-                .AsNoTracking()
-                .Where(u => forCompetition.OrganizersIds
-                    .Contains(u.Id))
-                .ToListAsync();
+                foreach (UserEntity organizer in organizers)
+                    organizer.ApplicationsIds
+                        .Add(applicationEntity.Id);
 
-            foreach (UserEntity organizer in organizers) 
-                organizer.ApplicationsIds
-                    .Add(applicationEntity.Id);
-
-            organizers.Add(fromMemeber);
-            await _context.Applications.AddAsync(applicationEntity);
-            _context.Users.UpdateRange(organizers);
-            await _context.SaveChangesAsync();
+                organizers.Add(fromMemeber);
+                await _context.Applications.AddAsync(applicationEntity);
+                _context.Users.UpdateRange(organizers);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return;
+            }
         }
 
-        public async Task<IList<Core.Models.Application>> GetManyByIdsAsync(IList<Guid> ids)
+        public async Task CreateForOrderAsync(Core.Models.Application application)
+        {
+            try
+            {
+                var result = await CreateApplicationAsync(application);
+                ApplicationEntity applicationEntity = result.Item1;
+                UserEntity fromMemeber = result.Item2;
+
+                OrderEntity? forOrder = await _context.Orders
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(o => o.Id == application.For);
+                if (forOrder is null) return;
+
+                fromMemeber.ApplicationsForOrders
+                    .Add(applicationEntity.For);
+
+                UserEntity? client = await _context.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Id == forOrder.ClientId);
+                if (client is null) return;
+
+                client.ApplicationsIds
+                    .Add(applicationEntity.Id);
+
+                await _context.Applications.AddAsync(applicationEntity);
+                _context.Users.UpdateRange([client, fromMemeber]);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        public async Task<IList<Core.Models.Application>> GetAsync(IList<Guid> ids)
         {
             IList<ApplicationEntity> applicationEntities = await _context.Applications
                 .AsNoTracking()
@@ -108,6 +132,74 @@ namespace ites.DataAccess.Repositories
             _context.Competitions.Update(competition);
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task HandleOrderAsync(Guid id, bool isAccept)
+        {
+            ApplicationEntity? application = await _context.Applications
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+            if (application is null) return;
+
+            OrderEntity? order = await _context.Orders
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Id == application.For);
+            if (order is null) return;
+
+            UserEntity? member = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == application.From);
+            if (member is null) return;
+
+            UserEntity? client = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == order.ClientId);
+            if (client is null) return;
+
+            member.ApplicationsForOrders
+                .Remove(application.For);
+            client.ApplicationsIds
+                .Remove(application.Id);
+
+            if (isAccept)
+            {
+                member.OrdersIds.Add(application.For);
+                order.MemberId = application.From;
+            }
+
+            _context.Users.UpdateRange([member, client]);
+            _context.Orders.Update(order);
+            _context.Applications.Remove(application);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task<(ApplicationEntity, UserEntity)> CreateApplicationAsync(
+            Core.Models.Application application)
+        {
+            ApplicationEntity? applRequest1 = await _context.Applications
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.From == application.From);
+            ApplicationEntity? applRequest2 = await _context.Applications
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.For == application.For);
+
+            if (applRequest1 is not null && applRequest2 is not null)
+                if (applRequest1.Id == applRequest2.Id)
+                    throw new Exception();
+
+            ApplicationEntity applicationEntity = new()
+            {
+                Id = Guid.NewGuid(),
+                For = application.For,
+                From = application.From,
+            };
+
+            UserEntity? fromMemeber = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == application.From)
+                    ?? throw new Exception();
+
+            return (applicationEntity, fromMemeber);
         }
     }
 }

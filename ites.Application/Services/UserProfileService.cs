@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using ites.Application.Contracts;
+using ites.Application.Contracts.Applications;
 using ites.Application.Contracts.Competitions;
+using ites.Application.Contracts.Orders;
 using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
@@ -13,20 +15,31 @@ namespace ites.Application.Services
         IApplicationsService applicationsService,
         IUserService userService,
         IUserRepository userRepository,
+        IOrdersService ordersService,
         IMapper mapper)
                 : IUserProfileService
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IUserService _userService = userService;
         private readonly ICompetitionsService _competitionsService = competitionsService;
+        private readonly IOrdersService _ordersService = ordersService;
         private readonly IApplicationsService _applicationsService = applicationsService;
         private readonly IMapper _mapper = mapper;
 
+        public async Task<ClientResponse> GetClientAsync(string token)
+        {
+            Guid id = await _userService.GetIdFromTokenAsync(token);
+            return await GetClientByIdAsync(id);
+        }
+
+        public async Task<ClientResponse> GetClientAsync(Guid id)
+        {
+            return await GetClientByIdAsync(id);
+        }
+
         public async Task<MemberResponse> GetMemberAsync(string token)
         {
-            await Console.Out.WriteLineAsync("TOKEN - " + token);
             Guid id = await _userService.GetIdFromTokenAsync(token);
-            await Console.Out.WriteLineAsync("ID - " + id.ToString());
             return await GetMemberByIdAsync(id);
         }
 
@@ -38,6 +51,46 @@ namespace ites.Application.Services
         public async Task<OrganizerResponse> GetOrganizerAsync(string token)
         {
             Guid id = await _userService.GetIdFromTokenAsync(token);
+            return await GetOrganizerByIdAsync(id);
+        }
+
+        public async Task<OrganizerResponse> GetOrganizerAsync(Guid id)
+        {
+            return await GetOrganizerByIdAsync(id);
+        }
+
+        private async Task<MemberResponse> GetMemberByIdAsync(Guid id)
+        {
+            User user = await _userRepository.GetByIdAsync(id);
+
+            IList<Competition> competitions = await _competitionsService
+                .GetAsync(user.CompetitionsIds);
+            IList<Competition> competitionsApplications = await _competitionsService
+                .GetAsync(user.ApplicationsForCompetitions);
+
+            IList<Order> orders = await _ordersService
+                .GetAsync(user.OrdersIds);
+            IList<Order> ordersApplications = await _ordersService
+                .GetAsync(user.ApplicationsForOrders);
+
+            MemberResponse member = new(
+                user.Id,
+                user.LastName,
+                user.FirstName,
+                user.MiddleName,
+                user.Email,
+                user.Role,
+                user.Description,
+                user.JobTitle,
+                competitions,
+                competitionsApplications,
+                orders,
+                ordersApplications
+                );
+            return member;
+        }
+        private async Task<OrganizerResponse> GetOrganizerByIdAsync(Guid id)
+        {
             User user = await _userRepository.GetByIdAsync(id);
 
             IList<Competition> competitions = await _competitionsService
@@ -77,19 +130,33 @@ namespace ites.Application.Services
             return organizer;
         }
 
-        private async Task<MemberResponse> GetMemberByIdAsync(Guid id)
+        private async Task<ClientResponse> GetClientByIdAsync(Guid id)
         {
             User user = await _userRepository.GetByIdAsync(id);
-            await Console.Out.WriteLineAsync("USER - " + user.FirstName);
 
-            IList<Competition> competitions = await _competitionsService
-                .GetAsync(user.CompetitionsIds);
-            Console.WriteLine("comp = " + competitions.Count);
-            IList<Competition> competitionsApplications = await _competitionsService
-                .GetAsync(user.ApplicationsForCompetitions);
-            Console.WriteLine("comp apple = " + competitionsApplications.Count);
+            IList<Order> orders = await _ordersService
+                .GetAsync(user.OrdersIds);
+            IList<Core.Models.Application> applicationsIds = await _applicationsService
+                .GetAsync(user.ApplicationsIds);
+            IList<OrderApplicationResponse> applications = [];
 
-            MemberResponse member = new(
+            foreach (Core.Models.Application a in applicationsIds)
+            {
+                UserProfileResponse fromMember = await _userService
+                    .GetAsync(a.From);
+                Order order = await _ordersService
+                    .GetAsync(a.For);
+                OrderResponse forOrder = _mapper
+                    .Map<OrderResponse>(order);
+
+                applications.Add(new(
+                    a.Id,
+                    fromMember,
+                    forOrder
+                    ));
+            };
+
+            ClientResponse client = new(
                 user.Id,
                 user.LastName,
                 user.FirstName,
@@ -98,10 +165,10 @@ namespace ites.Application.Services
                 user.Role,
                 user.Description,
                 user.JobTitle,
-                competitions,
-                competitionsApplications
+                orders,
+                applications
                 );
-            return member;
+            return client;
         }
     }
 }

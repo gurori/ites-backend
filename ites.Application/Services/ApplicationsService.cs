@@ -28,7 +28,7 @@ namespace ites.Application.Services
         public async Task<IList<Core.Models.Application>> GetAsync(IList<Guid> ids)
         {
             return await _applicationsRepository
-                .GetManyByIdsAsync(ids);
+                .GetAsync(ids);
         }
     }
 }

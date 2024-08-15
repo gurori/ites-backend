@@ -4,8 +4,10 @@
     {
         CreateOrder = 1,
         CreateCompetition,
-        AddApplicationsToCompetitions,
-        HandleCompetitionsApplications,
+        AddCompetitionApplication,
+        AddOrderApplication,
+        HandleCompetitionApplication,
+        HandleOrderApplication,
         BeMember,
         BeOrganizer,
         BeClient,

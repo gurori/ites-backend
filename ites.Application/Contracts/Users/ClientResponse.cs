@@ -1,8 +1,9 @@
-﻿using ites.Core.Models;
+﻿using ites.Application.Contracts.Applications;
+using ites.Core.Models;
 
 namespace ites.Application.Contracts.Users
 {
-    public class OrganizerResponse(
+    public class ClientResponse(
         Guid id,
         string lastName,
         string firstName,
@@ -11,8 +12,8 @@ namespace ites.Application.Contracts.Users
         string role,
         string description,
         string jobTitle,
-        IList<Competition> competitions,
-        IList<CompetitionApplicationResponse> applications)
+        IList<Order> orders,
+        IList<OrderApplicationResponse> applications)
     {
         public Guid Id { get; private set; } = id;
         public string LastName { get; private set; } = lastName;
@@ -22,7 +23,7 @@ namespace ites.Application.Contracts.Users
         public string Role { get; private set; } = role;
         public string Description { get; private set; } = description;
         public string JobTitle { get; private set; } = jobTitle;
-        public IList<Competition> Competitions { get; private set; } = competitions;
-        public IList<CompetitionApplicationResponse> Applications { get; private set; } = applications;
+        public IList<Order> Orders { get; private set; } = orders;
+        public IList<OrderApplicationResponse> Applications { get; private set; } = applications;
     }
 }
