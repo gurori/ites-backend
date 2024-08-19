@@ -12,18 +12,6 @@ services:
       - ites
     depends_on:
       - db
-  
-#  ites.client:
-#    container_name: ites.client
-#    build:
-#      context: ../frontend
-#      dockerfile: Dockerfile
-#    ports:
-#      - '3000:3000'
-#    volumes:
-#      - ../frontend:/app
-#    networks:
-#      - ites
 
   db:
     container_name: ites.db
