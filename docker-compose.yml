@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  ites.server:
+  api:
     container_name: ites.server
     image: itesserver
     ports:
@@ -12,9 +12,7 @@ services:
       - ASPNETCORE_URLS=http://+:80;https://+:443
     build:
       context: .
-      dockerfile: ites.Server/Dockerfile
-    volumes:
-      - ./:/app
+      dockerfile: ./ites.Server/Dockerfile
     networks:
       - ites
     depends_on:
