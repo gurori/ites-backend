@@ -1,29 +1,23 @@
 version: '3.4'
 
 services:
-  ites.server:
-    image: ${DOCKER_REGISTRY-}itesserver
+  api:
+    container_name: ites.server
+    image: itesserver
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_URLS=http://+:80;https://+:443
     build:
       context: .
-      dockerfile: ites.Server/Dockerfile
+      dockerfile: ./ites.Server/Dockerfile
     volumes:
-      - ./:/app
+      - lettuceencrypt:/etc/lettuceencrypt
     networks:
       - ites
     depends_on:
       - db
-  
-#  ites.client:
-#    container_name: ites.client
-#    build:
-#      context: ../frontend
-#      dockerfile: Dockerfile
-#    ports:
-#      - '3000:3000'
-#    volumes:
-#      - ../frontend:/app
-#    networks:
-#      - ites
 
   db:
     container_name: ites.db
@@ -46,3 +40,4 @@ networks:
 
 volumes:
   postgres-data:
+  lettuceencrypt:

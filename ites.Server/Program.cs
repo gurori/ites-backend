@@ -7,6 +7,7 @@ using ites.DataAccess.Repositories;
 using ites.Infastructure.Auth;
 using ites.Infastructure.Mapping;
 using ites.Server.Extensions;
+using LettuceEncrypt;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,6 +67,10 @@ services.AddControllers();
 
 services.AddDbContext<ItesDbContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString(nameof(ItesDbContext))));
+
+if (environment.IsProduction())
+    services.AddLettuceEncrypt()
+        .PersistDataToDirectory(new DirectoryInfo("/etc/lettuceencrypt/"), null);
 
 var app = builder.Build();
 
