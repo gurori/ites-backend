@@ -28,9 +28,9 @@ services.AddCors(option =>
 {
     option.AddDefaultPolicy(policy =>
     {
-        //you should change origins after developming :3
-        policy.WithOrigins("https://localhost:3000");
-        //(environment.IsDevelopment() ? "https://localhost:3000" : "client.com");
+        policy.WithOrigins(environment.IsDevelopment() 
+            ? "https://localhost:3000" 
+            : "https://ites.vercel.app");
         policy.AllowCredentials();
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
