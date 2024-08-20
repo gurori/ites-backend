@@ -8,11 +8,19 @@ services:
       - "5000:80"
       - "5001:443"
     environment:
+<<<<<<< HEAD
       - ASPNETCORE_ENVIRONMENT=Production
+=======
+>>>>>>> develop
       - ASPNETCORE_URLS=http://+:80;https://+:443
     build:
       context: .
       dockerfile: ./ites.Server/Dockerfile
+<<<<<<< HEAD
+=======
+    volumes:
+      - lettuceencrypt:/etc/lettuceencrypt
+>>>>>>> develop
     networks:
       - ites
     depends_on:
@@ -39,3 +47,7 @@ networks:
 
 volumes:
   postgres-data:
+<<<<<<< HEAD
+=======
+  lettuceencrypt:
+>>>>>>> develop
