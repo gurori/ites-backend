@@ -7,8 +7,8 @@ using ites.DataAccess.Repositories;
 using ites.Infastructure.Auth;
 using ites.Infastructure.Mapping;
 using ites.Server.Extensions;
-using LettuceEncrypt;
 using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +18,14 @@ var environment = builder.Environment;
 
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
+services.Configure<KestrelServerOptions>(o =>
+{
+    o.ListenAnyIP(80);
+    o.ListenAnyIP(443, lo =>
+    {
+        lo.UseHttps("/app/ssl/certificate.crt");
+    }); 
+});
 
 // Add services to the container.
 
@@ -68,10 +76,6 @@ services.AddControllers();
 services.AddDbContext<ItesDbContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString(nameof(ItesDbContext))));
 
-if (environment.IsProduction())
-    services.AddLettuceEncrypt()
-        .PersistDataToDirectory(new DirectoryInfo("/etc/lettuceencrypt/"), null);
-
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
@@ -86,7 +90,9 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseStaticFiles();
 app.UseHttpsRedirection();
+app.UseRouting();
 
 app.UseCookiePolicy(new CookiePolicyOptions
 {
