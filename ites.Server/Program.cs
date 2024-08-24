@@ -18,14 +18,14 @@ var environment = builder.Environment;
 
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
-services.Configure<KestrelServerOptions>(o =>
-{
-    o.ListenAnyIP(80);
-    o.ListenAnyIP(443, lo =>
-    {
-        lo.UseHttps("/app/ssl/certificate.crt");
-    }); 
-});
+//services.Configure<KestrelServerOptions>(o =>
+//{
+//	o.ListenAnyIP(80);
+//    o.ListenAnyIP(443, lo =>
+//    {
+//        lo.UseHttps("/app/ssl/certificate.pfx", "Egorzak_21_plus_hopes_and_dreams");
+//    }); 
+//});
 
 // Add services to the container.
 

@@ -40,9 +40,7 @@ namespace ites.Server.Controllers
             {
                 string token = await _userService
                     .LoginAsync(request.Email, request.Password);
-                HttpContext.Response.Cookies
-                    .Append("auth", token);
-                return Ok();
+                return Ok(token);
             }
             catch (ApiException ex)
             {
