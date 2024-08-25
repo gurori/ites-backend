@@ -15,6 +15,7 @@ services:
       dockerfile: ./ites.Server/Dockerfile
     volumes:
       - ./ssl:/app/ssl
+      - ./:/app
     networks:
       - ites
     depends_on:

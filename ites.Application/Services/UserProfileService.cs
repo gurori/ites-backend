@@ -16,6 +16,7 @@ namespace ites.Application.Services
         IUserService userService,
         IUserRepository userRepository,
         IOrdersService ordersService,
+        ITeamService teamService,
         IMapper mapper)
                 : IUserProfileService
     {
@@ -24,6 +25,7 @@ namespace ites.Application.Services
         private readonly ICompetitionsService _competitionsService = competitionsService;
         private readonly IOrdersService _ordersService = ordersService;
         private readonly IApplicationsService _applicationsService = applicationsService;
+        private readonly ITeamService _teamService = teamService;
         private readonly IMapper _mapper = mapper;
 
         public async Task<ClientResponse> GetClientAsync(string token)
@@ -73,6 +75,9 @@ namespace ites.Application.Services
             IList<Order> ordersApplications = await _ordersService
                 .GetAsync(user.ApplicationsForOrders);
 
+            IList<Team> teamsApplications = await _teamService
+                .GetAsync(user.ApplicationsForTeams);
+
             MemberResponse member = new(
                 user.Id,
                 user.LastName,
@@ -85,7 +90,9 @@ namespace ites.Application.Services
                 competitions,
                 competitionsApplications,
                 orders,
-                ordersApplications
+                ordersApplications,
+                teamsApplications,
+                user.TeamId
                 );
             return member;
         }

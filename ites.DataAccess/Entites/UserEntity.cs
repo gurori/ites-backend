@@ -15,6 +15,8 @@
         public IList<Guid> OrdersIds { get; set; } = [];
         public IList<Guid> ApplicationsForCompetitions { get; set; } = [];
         public IList<Guid> ApplicationsForOrders { get; set; } = [];
+        public IList<Guid> ApplicationsForTeams { get; set; } = [];
         public IList<Guid> ApplicationsIds { get; set; } = [];
+        public Guid? TeamId { get; set; } = null;
     }
 }

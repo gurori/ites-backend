@@ -19,6 +19,8 @@
         public IList<Guid> OrdersIds { get; private set; }
         public IList<Guid> ApplicationsForCompetitions { get; private set; }
         public IList<Guid> ApplicationsForOrders { get; private set; }
+        public IList<Guid> ApplicationsForTeams { get; private set; }
         public IList<Guid> ApplicationsIds { get; private set; }
+        public Guid? TeamId { get; private set; }
     }
 }

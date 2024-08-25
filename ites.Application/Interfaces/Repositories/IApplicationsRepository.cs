@@ -7,5 +7,7 @@
         public Task HandleCompetitionAsync(Guid id, bool isAccept);
         public Task CreateForOrderAsync(Core.Models.Application application);
         public Task HandleOrderAsync(Guid id, bool isAccept);
+        public Task CreateForTeamAsync(Core.Models.Application application);
+        public Task HandleTeamAsync(Guid id, bool isAccept);
     }
 }

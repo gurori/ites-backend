@@ -10,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 namespace ites.Application.Services
 {
     public sealed class OrdersService(
-        IMapper mapper,
         IOrdersRepository ordersRepository,
         IJwtProvider jwtProvider,
         IApplicationsRepository applicationsRepository)
@@ -18,7 +17,6 @@ namespace ites.Application.Services
     {
         private readonly IOrdersRepository _ordersRepository = ordersRepository;
         private readonly IApplicationsRepository _applicationsRepository = applicationsRepository;
-        private readonly IMapper _mapper = mapper;
         private readonly IJwtProvider _jwtProvider = jwtProvider;
 
         public async Task AddApplicationAsync(string token, Guid forId)

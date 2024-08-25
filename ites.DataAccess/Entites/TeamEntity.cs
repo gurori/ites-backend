@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ites.DataAccess.Entites
+﻿namespace ites.DataAccess.Entites
 {
-    internal class TeamEntity
+    public sealed class TeamEntity
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public IList<Guid> MembersIds { get; set; } = [];
+        public Guid AdminId { get; set; }
     }
 }

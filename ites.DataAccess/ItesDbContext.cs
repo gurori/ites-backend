@@ -15,6 +15,7 @@ namespace ites.DataAccess
         public DbSet<CompetitionEntity> Competitions { get; set; }
         public DbSet<ApplicationEntity> Applications { get; set; }
         public DbSet<OrderEntity> Orders { get; set; }
+        public DbSet<TeamEntity> Teams { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

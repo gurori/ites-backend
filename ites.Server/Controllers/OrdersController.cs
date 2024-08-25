@@ -15,32 +15,12 @@ namespace ites.Server.Controllers
         private readonly IOrdersService _ordersService = ordersService;
 
         [HttpPost]
-        [HasPermission(Permission.CreateOrder)]
+        [HasPermission(Permission.CreateOrd)]
         public async Task<IActionResult> Create(OrderRequest request)
         {
             try
             {
                 string token = GetTokenFromHeaders();
-                await _ordersService.CreateAsync(
-                    token,
-                    request.Title,
-                    request.Description,
-                    request.Price,
-                    request.DeadLine);
-                return Ok();
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
-
-        [HttpPost("{token}")]
-        [HasPermission(Permission.CreateOrder)]
-        public async Task<IActionResult> Create(string token, OrderRequest request)
-        {
-            try
-            {
                 await _ordersService.CreateAsync(
                     token,
                     request.Title,
@@ -88,7 +68,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpPut("application/{id:guid}")]
-        [HasPermission(Permission.AddOrderApplication)]
+        [HasPermission(Permission.AddOrdAppl)]
         public async Task<IActionResult> AddApplication(Guid id)
         {
             try
@@ -105,7 +85,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpPut("application/{id:guid}/{accept:bool}")]
-        [HasPermission(Permission.HandleOrderApplication)]
+        [HasPermission(Permission.HandleOrdAppl)]
         public async Task<IActionResult> HandleApplication(Guid id, bool accept)
         {
             try

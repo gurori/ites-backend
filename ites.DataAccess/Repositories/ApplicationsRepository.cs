@@ -84,6 +84,40 @@ namespace ites.DataAccess.Repositories
             }
         }
 
+        public async Task CreateForTeamAsync(Core.Models.Application application)
+        {
+            try
+            {
+                var result = await CreateApplicationAsync(application);
+                ApplicationEntity applicationEntity = result.Item1;
+                UserEntity fromMemeber = result.Item2;
+
+                TeamEntity? forTeam = await _context.Teams
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(t => t.Id == application.For);
+                if (forTeam is null || forTeam.MembersIds.Count >= 5) return;
+
+                fromMemeber.ApplicationsForTeams
+                    .Add(applicationEntity.For);
+
+                UserEntity? admin = await _context.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Id == forTeam.AdminId);
+                if (admin is null) return;
+
+                admin.ApplicationsIds
+                    .Add(applicationEntity.Id);
+
+                await _context.Applications.AddAsync(applicationEntity);
+                _context.Users.UpdateRange([admin, fromMemeber]);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return;
+            }
+        }
+
         public async Task<IList<Core.Models.Application>> GetAsync(IList<Guid> ids)
         {
             IList<ApplicationEntity> applicationEntities = await _context.Applications
@@ -173,19 +207,53 @@ namespace ites.DataAccess.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task HandleTeamAsync(Guid id, bool isAccept)
+        {
+            ApplicationEntity? application = await _context.Applications
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+            if (application is null) return;
+
+            TeamEntity? team = await _context.Teams
+                .FirstOrDefaultAsync(t => t.Id == application.For);
+            if (team is null || team.MembersIds.Count >= 5) return;
+
+            UserEntity? member = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == application.From);
+            if (member is null) return;
+
+            UserEntity? admin = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == team.AdminId);
+            if (admin is null) return;
+
+            member.ApplicationsForTeams
+                .Remove(application.For);
+            admin.ApplicationsIds
+                .Remove(application.Id);
+
+            if (isAccept)
+            {
+                member.TeamId = team.Id;
+                team.MembersIds.Add(member.Id);
+            }
+
+            _context.Users.UpdateRange([member, admin]);
+            _context.Teams.Update(team);
+            _context.Applications.Remove(application);
+            await _context.SaveChangesAsync();
+        }
+
         private async Task<(ApplicationEntity, UserEntity)> CreateApplicationAsync(
             Core.Models.Application application)
         {
-            ApplicationEntity? applRequest1 = await _context.Applications
+            bool isApplicationExist = await _context.Applications
                 .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.From == application.From);
-            ApplicationEntity? applRequest2 = await _context.Applications
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.For == application.For);
+                .AnyAsync(a => a.From == application.From 
+                            && a.For == application.For);
 
-            if (applRequest1 is not null && applRequest2 is not null)
-                if (applRequest1.Id == applRequest2.Id)
-                    throw new Exception();
+            if (isApplicationExist)
+                throw new Exception();
 
             ApplicationEntity applicationEntity = new()
             {

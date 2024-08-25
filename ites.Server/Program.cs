@@ -8,7 +8,6 @@ using ites.Infastructure.Auth;
 using ites.Infastructure.Mapping;
 using ites.Server.Extensions;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,18 +17,7 @@ var environment = builder.Environment;
 
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
-//services.Configure<KestrelServerOptions>(o =>
-//{
-//	o.ListenAnyIP(80);
-//    o.ListenAnyIP(443, lo =>
-//    {
-//        lo.UseHttps("/app/ssl/certificate.pfx", "Egorzak_21_plus_hopes_and_dreams");
-//    }); 
-//});
 
-// Add services to the container.
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddSwaggerGen();
 
 services.AddCors(option =>
@@ -52,12 +40,14 @@ services.AddScoped<IRoleRepository, RoleRepository>();
 services.AddScoped<IApplicationsRepository, ApplicationsRepository>();
 services.AddScoped<ICompetitionsRepository, CompetitionsRepository>();
 services.AddScoped<IOrdersRepository, OrdersRepository>();
+services.AddScoped<ITeamRepository, TeamRepository>();
 
 services.AddScoped<IApplicationsService, ApplicationsService>();
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IPermissionService, PermissionService>();
 services.AddScoped<ICompetitionsService, CompetitionsService>();
 services.AddScoped<IOrdersService, OrdersService>();
+services.AddScoped<ITeamService, TeamService>();
 services.AddScoped<IUserProfileService, UserProfileService>();
 
 services.AddScoped<IJwtProvider, JwtProvider>();
@@ -67,7 +57,8 @@ services.AddAutoMapper(
     typeof(UserAutoMapperProfile),
     typeof(CompetitionAutoMapperProfile),
     typeof(ApplicationAutoMapperProfile),
-    typeof(OrderAutoMapperProfile));
+    typeof(OrderAutoMapperProfile),
+    typeof(TeamAutoMapperProfile));
 
 services.AddAuthentication(configuration);
 

@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using ites.Application.Contracts.Teams;
+using ites.Core.Models;
+using ites.DataAccess.Entites;
 
 namespace ites.Infastructure.Mapping
 {
-    internal class TeamAutoMapperProfile
+    public class TeamAutoMapperProfile 
+        : Profile
     {
+        public TeamAutoMapperProfile()
+        {
+            CreateMap<TeamEntity, Team>();
+
+            CreateMap<Team, TeamResponse>();
+        }
     }
 }

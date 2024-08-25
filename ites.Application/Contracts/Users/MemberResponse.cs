@@ -14,7 +14,9 @@ namespace ites.Application.Contracts.Users
         IList<Competition> competitions,
         IList<Competition> applicationsForCompetitions,
         IList<Order> orders,
-        IList<Order> applicationsForOrders)
+        IList<Order> applicationsForOrders,
+        IList<Team> applicationsForTeams,
+        Guid? teamId) //???
     {
         public Guid Id { get; private set; } = id;
         public string LastName { get; private set; } = lastName;
@@ -28,5 +30,7 @@ namespace ites.Application.Contracts.Users
         public IList<Competition> ApplicationsForCompetitions { get; private set; } = applicationsForCompetitions;
         public IList<Order> Orders { get; private set; } = orders;
         public IList<Order> ApplicationsForOrders { get; private set; } = applicationsForOrders;
+        public IList<Team> ApplicationsForTeams { get; private set; } = applicationsForTeams;
+        public Guid? TeamId { get; private set; } = teamId;
     }
 }
