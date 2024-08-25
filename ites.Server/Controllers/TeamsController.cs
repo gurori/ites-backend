@@ -14,12 +14,13 @@ namespace ites.Server.Controllers
     {
         private readonly ITeamService _teamService = teamService;
 
-        [HttpPost("{token}")]
-        //[HasPermission(Permission.CreateTeam)]
-        public async Task<IActionResult> Create(string token, TeamRequest request)
+        [HttpPost]
+        [HasPermission(Permission.CreateTeam)]
+        public async Task<IActionResult> Create(TeamRequest request)
         {
             try
             {
+                string token = GetTokenFromHeaders();
                 await _teamService
                     .CreateAsync(token, request.Name, request.Description);
                 return Ok();
@@ -50,5 +51,11 @@ namespace ites.Server.Controllers
                 return Problem(detail: ex.Message, statusCode: ex.StatusCode);
             }
         }
+
+        private string GetTokenFromHeaders() =>
+            Request.Headers.Authorization
+                    .FirstOrDefault()!
+                    .Split(" ")
+                    .Last();
     }
 }

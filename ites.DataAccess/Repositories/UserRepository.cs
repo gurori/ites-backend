@@ -42,10 +42,10 @@ namespace ites.DataAccess.Repositories
                 ? null : _mapper.Map<User>(userEntity);
         }
 
-        public async Task<User> GetByIdAsync(Guid id)
+        public async Task<User?> GetByIdAsync(Guid id)
         {
             var userEntity = await GetUserEntityByIdAsync(id);
-
+            if (userEntity is null) return null;
             return _mapper.Map<User>(userEntity);
         }
 

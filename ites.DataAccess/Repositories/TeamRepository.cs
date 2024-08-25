@@ -24,6 +24,7 @@ namespace ites.DataAccess.Repositories
 
             TeamEntity teamEntity = new()
             {
+                Id = Guid.NewGuid(),
                 AdminId = admin.Id,
                 Name = team.Name,
                 Description = team.Description,

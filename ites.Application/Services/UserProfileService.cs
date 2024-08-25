@@ -7,6 +7,7 @@ using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Models;
+using ites.Core.Problems;
 
 namespace ites.Application.Services
 {
@@ -63,7 +64,8 @@ namespace ites.Application.Services
 
         private async Task<MemberResponse> GetMemberByIdAsync(Guid id)
         {
-            User user = await _userRepository.GetByIdAsync(id);
+            User user = await _userRepository.GetByIdAsync(id) 
+                ?? throw UserProblem.NotFound;
 
             IList<Competition> competitions = await _competitionsService
                 .GetAsync(user.CompetitionsIds);
@@ -98,7 +100,8 @@ namespace ites.Application.Services
         }
         private async Task<OrganizerResponse> GetOrganizerByIdAsync(Guid id)
         {
-            User user = await _userRepository.GetByIdAsync(id);
+            User user = await _userRepository.GetByIdAsync(id)
+                ?? throw UserProblem.NotFound;
 
             IList<Competition> competitions = await _competitionsService
                 .GetAsync(user.CompetitionsIds);
@@ -139,7 +142,8 @@ namespace ites.Application.Services
 
         private async Task<ClientResponse> GetClientByIdAsync(Guid id)
         {
-            User user = await _userRepository.GetByIdAsync(id);
+            User user = await _userRepository.GetByIdAsync(id)
+                ?? throw UserProblem.NotFound;
 
             IList<Order> orders = await _ordersService
                 .GetAsync(user.OrdersIds);
