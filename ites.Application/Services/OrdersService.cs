@@ -50,7 +50,7 @@ namespace ites.Application.Services
         public async Task<IList<Order>> GetAsync()
         {
             return await _ordersRepository
-                .GetAllAsync();
+                .GetAllPublicAsync();
         }
 
         public async Task<IList<Order>> GetAsync(IList<Guid> ids)

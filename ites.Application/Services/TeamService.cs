@@ -63,7 +63,7 @@ namespace ites.Application.Services
 
         public async Task<IList<Team>> GetAsync()
         {
-            return await _teamRepo.GetAllAsync();
+            return await _teamRepo.GetAllPublicAsync();
         }
 
         public async Task<IList<Team>> GetAsync(IList<Guid> ids)

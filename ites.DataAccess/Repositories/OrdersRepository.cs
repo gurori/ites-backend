@@ -30,6 +30,7 @@ namespace ites.DataAccess.Repositories
                 Price = order.Price,
                 DeadLine = order.DeadLine,
                 ClientId = clientId,
+                IsPublic = true,
             };
 
             await _context.Orders.AddAsync(orderEntity);
@@ -43,7 +44,7 @@ namespace ites.DataAccess.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IList<Order>> GetAllAsync()
+        public async Task<IList<Order>> GetAllPublicAsync()
         {
             IList<OrderEntity> orders = await _context.Orders
                 .AsNoTracking()

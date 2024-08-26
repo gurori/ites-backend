@@ -6,7 +6,7 @@ namespace ites.Application.Interfaces.Repositories
     {
         public Task CreateAsync(Team team);
         public Task<Team?> GetByIdAsync(Guid id);
-        public Task<IList<Team>> GetAllAsync();
+        public Task<IList<Team>> GetAllPublicAsync();
         public Task<IList<Team>> GetByIdsAsync(IList<Guid> ids);
         public Task DeleteAsync(Guid id);
     }

@@ -28,7 +28,8 @@ namespace ites.DataAccess.Repositories
                 AdminId = admin.Id,
                 Name = team.Name,
                 Description = team.Description,
-                MembersIds = [admin.Id]
+                MembersIds = [admin.Id],
+                IsPublic = true,
             };
 
             admin.TeamId = teamEntity.Id;
@@ -41,7 +42,7 @@ namespace ites.DataAccess.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IList<Team>> GetAllAsync()
+        public async Task<IList<Team>> GetAllPublicAsync()
         {
             IList<TeamEntity> teamEntities = await _context
                 .Teams
