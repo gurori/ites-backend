@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\uploads\users\defualt\" />
-    <Folder Include="ssl\" />
   </ItemGroup>
 
 </Project>

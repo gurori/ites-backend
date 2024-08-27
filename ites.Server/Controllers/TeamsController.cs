@@ -52,6 +52,40 @@ namespace ites.Server.Controllers
             }
         }
 
+        [HttpPut("application/{id:guid}")]
+        [HasPermission(Permission.AddTeamAppl)]
+        public async Task<IActionResult> AddApplication(Guid id)
+        {
+            try
+            {
+                string token = GetTokenFromHeaders();
+                await _teamService
+                    .AddApplicationAsync(token, id);
+                return Ok();
+            }
+            catch (ApiException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
+            }
+        }
+
+        [HttpPut("application/{id:guid}/{accept:bool}")]
+        [HasPermission(Permission.HandleTeamAppl)]
+        public async Task<IActionResult> HandleApplication(Guid id, bool accept)
+        {
+            try
+            {
+                string token = GetTokenFromHeaders();
+                await _teamService
+                    .HandleApplicationAsync(id, accept);
+                return Ok();
+            }
+            catch (ApiException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
+            }
+        }
+
         private string GetTokenFromHeaders() =>
             Request.Headers.Authorization
                     .FirstOrDefault()!

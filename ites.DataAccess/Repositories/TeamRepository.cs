@@ -47,6 +47,7 @@ namespace ites.DataAccess.Repositories
             IList<TeamEntity> teamEntities = await _context
                 .Teams
                 .AsNoTracking()
+                .Where(t => t.IsPublic)
                 .ToListAsync();
 
             return _mapper.Map<Team[]>(teamEntities);

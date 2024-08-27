@@ -9,5 +9,6 @@
         public DateTime DeadLine { get; set; }
         public Guid ClientId { get; set; }
         public Guid MemberId { get; set; }
+        public bool IsPublic { get; set; }
     }
 }

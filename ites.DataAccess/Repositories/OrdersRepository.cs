@@ -48,6 +48,7 @@ namespace ites.DataAccess.Repositories
         {
             IList<OrderEntity> orders = await _context.Orders
                 .AsNoTracking()
+                .Where(o => o.IsPublic)
                 .ToListAsync();
 
             return _mapper.Map<Order[]>(orders);

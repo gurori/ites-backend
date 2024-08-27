@@ -54,14 +54,14 @@ namespace ites.DataAccess.Repositories
         {
             try
             {
-                var result = await CreateApplicationAsync(application);
-                ApplicationEntity applicationEntity = result.Item1;
-                UserEntity fromMemeber = result.Item2;
-
                 OrderEntity? forOrder = await _context.Orders
                     .AsNoTracking()
                     .FirstOrDefaultAsync(o => o.Id == application.For);
-                if (forOrder is null) return;
+                if (forOrder is null || !forOrder.IsPublic) return;
+
+                var result = await CreateApplicationAsync(application);
+                ApplicationEntity applicationEntity = result.Item1;
+                UserEntity fromMemeber = result.Item2;
 
                 fromMemeber.ApplicationsForOrders
                     .Add(applicationEntity.For);
@@ -88,14 +88,17 @@ namespace ites.DataAccess.Repositories
         {
             try
             {
-                var result = await CreateApplicationAsync(application);
-                ApplicationEntity applicationEntity = result.Item1;
-                UserEntity fromMemeber = result.Item2;
-
                 TeamEntity? forTeam = await _context.Teams
                     .AsNoTracking()
                     .FirstOrDefaultAsync(t => t.Id == application.For);
-                if (forTeam is null || forTeam.MembersIds.Count >= 5) return;
+                if (forTeam is null || 
+                    forTeam.MembersIds.Count >= 5 || 
+                    forTeam.IsPublic == false) 
+                        return;
+
+                var result = await CreateApplicationAsync(application);
+                ApplicationEntity applicationEntity = result.Item1;
+                UserEntity fromMemeber = result.Item2;
 
                 fromMemeber.ApplicationsForTeams
                     .Add(applicationEntity.For);
@@ -199,6 +202,7 @@ namespace ites.DataAccess.Repositories
             {
                 member.OrdersIds.Add(application.For);
                 order.MemberId = application.From;
+                order.IsPublic = false;
             }
 
             _context.Users.UpdateRange([member, client]);
@@ -237,6 +241,9 @@ namespace ites.DataAccess.Repositories
                 member.TeamId = team.Id;
                 team.MembersIds.Add(member.Id);
             }
+
+            if (team.MembersIds.Count >= 5)
+                team.IsPublic = false;
 
             _context.Users.UpdateRange([member, admin]);
             _context.Teams.Update(team);

@@ -1,4 +1,5 @@
-﻿using ites.Core.Models;
+﻿using ites.Application.Contracts.Applications;
+using ites.Core.Models;
 
 namespace ites.Application.Contracts.Users
 {
@@ -16,7 +17,8 @@ namespace ites.Application.Contracts.Users
         IList<Order> orders,
         IList<Order> applicationsForOrders,
         IList<Team> applicationsForTeams,
-        Guid? teamId) //???
+        Guid? teamId,
+        IList<TeamApplicationResponse> applications) //???
     {
         public Guid Id { get; private set; } = id;
         public string LastName { get; private set; } = lastName;
@@ -32,5 +34,6 @@ namespace ites.Application.Contracts.Users
         public IList<Order> ApplicationsForOrders { get; private set; } = applicationsForOrders;
         public IList<Team> ApplicationsForTeams { get; private set; } = applicationsForTeams;
         public Guid? TeamId { get; private set; } = teamId;
+        public IList<TeamApplicationResponse> Applications { get; private set; } = applications;
     }
 }

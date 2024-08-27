@@ -79,6 +79,18 @@ namespace ites.Application.Services
 
             IList<Team> teamsApplications = await _teamService
                 .GetAsync(user.ApplicationsForTeams);
+            var applicationsIds = await _applicationsService
+                    .GetAsync(user.ApplicationsIds);
+            IList<TeamApplicationResponse> applications = [];
+
+            foreach (var application in applicationsIds)
+            {
+                UserProfileResponse fromMember = await _userService
+                    .GetAsync(application.From);
+                applications.Add(new(
+                    application.Id,
+                    fromMember));
+            }
 
             MemberResponse member = new(
                 user.Id,
@@ -94,7 +106,8 @@ namespace ites.Application.Services
                 orders,
                 ordersApplications,
                 teamsApplications,
-                user.TeamId
+                user.TeamId,
+                applications
                 );
             return member;
         }
