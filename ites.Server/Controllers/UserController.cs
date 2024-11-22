@@ -32,10 +32,15 @@ namespace ites.Server.Controllers
             {
                 string token = await _userService
                     .LoginAsync(request.Email, request.Password);
-                Response.Cookies.Append("auth", token);
-
+                Response.Cookies.Append("auth", token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict
+                });
+                Console.WriteLine($"AUTH_TOKEN - {token}");
                 //token was returned here
-                return Ok();
+                return Ok(token);
             });
 
         [Authorize]
