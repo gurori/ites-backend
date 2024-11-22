@@ -1,7 +1,6 @@
 ﻿using ites.Application.Contracts.Competitions;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
-using ites.Core.Exeptions;
 using ites.Core.Models;
 using ites.Infastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +10,14 @@ namespace ites.Server.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public sealed class CompetitionsController(ICompetitionsService competitionsService)
-        : ControllerBase
+        : BaseController
     {
         private readonly ICompetitionsService _competitionsService = competitionsService;
 
         [HttpPost("create")]
         [HasPermission(Permission.CreateCmp)]
-        public async Task<IActionResult> Create(CompetitionRequest request)
-        {
-            try
+        public async Task<IActionResult> Create(CompetitionRequest request) =>
+            await TryCatchAsync(async () =>
             {
                 string token = GetTokenFromHeaders();
                 await _competitionsService.CreateAsync(
@@ -29,79 +27,53 @@ namespace ites.Server.Controllers
                     request.StartDate,
                     request.EndDate);
                 return Ok();
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
+            });
+
 
         [HttpGet("get")]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(await _competitionsService.GetAsync());
-        }
+        public async Task<IActionResult> Get() =>
+            await TryCatchAsync(async () =>
+            {
+                return Ok(await _competitionsService.GetAsync());
+            });
 
         [HttpGet("get/{id:guid}")]
-        public async Task<IActionResult> Get(Guid id)
-        {
-            try
+        public async Task<IActionResult> Get(Guid id) =>
+            await TryCatchAsync(async () =>
             {
                 Competition competition = await _competitionsService
                     .GetAsync(id);
                 return Ok(competition);
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
+            });
 
         [HttpGet("get/many")]
-        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids)
-        {
+        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids) =>
+            await TryCatchAsync(async () =>
+            {
                 IList<Competition> competitions = await _competitionsService
                     .GetAsync(ids);
                 return Ok(competitions);
-        }
+            });
 
         [HttpPut("application/{id:guid}")]
         [HasPermission(Permission.AddCmpAppl)]
-        public async Task<IActionResult> AddAppication(Guid id)
-        {
-            try
+        public async Task<IActionResult> AddAppication(Guid id) =>
+            await TryCatchAsync(async () =>
             {
                 string token = GetTokenFromHeaders();
                 await _competitionsService
                     .AddApplicationAsync(token, id);
                 return Ok();
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
+            });
 
         [HttpPut("application/{id:guid}/{accept:bool}")]
         [HasPermission(Permission.HandleCmpAppl)]
-        public async Task<IActionResult> HandleApplication(Guid id, bool accept)
-        {
-            try
+        public async Task<IActionResult> HandleApplication(Guid id, bool accept) =>
+            await TryCatchAsync(async () =>
             {
                 await _competitionsService
                     .HandleApplicationAsync(id, accept);
                 return Ok();
-            }
-            catch(ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
-
-        private string GetTokenFromHeaders() =>
-            Request.Headers.Authorization
-                    .FirstOrDefault()!
-                    .Split(" ")
-                    .Last();
+            });
     }
 }
