@@ -38,9 +38,7 @@ namespace ites.Server.Controllers
                     Secure = true,
                     SameSite = SameSiteMode.Strict
                 });
-                Console.WriteLine($"AUTH_TOKEN - {token}");
-                //token was returned here
-                return Ok(token);
+                return Ok();
             });
 
         [Authorize]
