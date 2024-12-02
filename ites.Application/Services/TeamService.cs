@@ -6,7 +6,7 @@ using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Core.Models;
-using ites.Core.Problems;
+using ites.Core.Exeptions;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ites.Application.Services
@@ -48,7 +48,7 @@ namespace ites.Application.Services
         {
             Team team = await _teamRepo
                 .GetByIdAsync(id) ??
-                    throw TeamProblem.NotFound;
+                    throw new NotFoundException("Команда не найдена");
 
             IList<User> members = await _userRepo
                 .GetManyByIdAsync(team.MembersIds);
@@ -82,10 +82,10 @@ namespace ites.Application.Services
                 .ValidateTokenAsync(token);
 
             if (!validationResult.IsValid)
-                throw UserProblem.TokenProblem;
+                throw new UnauthorizedException();
 
             string id = validationResult.Claims[CustomClaims.UserId].ToString()
-                ?? throw UserProblem.TokenProblem;
+                ?? throw new UnauthorizedException();
 
             return Guid.Parse(id);
         }
