@@ -188,6 +188,15 @@ namespace ites.Server.Controllers
             }
         }
 
+        [HttpPost("organizer/confirm/{key}")]
+        public async Task<IActionResult> ConfirmKey(string key)
+        {
+            await Task.CompletedTask;
+            if (key == "198301")
+                return Ok();
+            return Conflict();
+        }
+
         [HttpGet("client")]
         [HasPermission(Permission.BeClient)]
         public async Task<ActionResult<ClientResponse>> GetClient()
