@@ -10,10 +10,8 @@ namespace ites.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public sealed class UserController(
-        IUserService userService,
-        IUserProfileService profileService)
-            : ControllerBase
+    public sealed class UserController(IUserService userService, IUserProfileService profileService)
+        : ControllerBase
     {
         private readonly IUserService _userService = userService;
         private readonly IUserProfileService _profileService = profileService;
@@ -23,8 +21,12 @@ namespace ites.Server.Controllers
         {
             try
             {
-                await _userService
-                    .RegisterAsync(request.FirstName, request.Email, request.Password, request.Role);
+                await _userService.RegisterAsync(
+                    request.FirstName,
+                    request.Email,
+                    request.Password,
+                    request.Role
+                );
                 return Ok();
             }
             catch (ApiException ex)
@@ -38,8 +40,7 @@ namespace ites.Server.Controllers
         {
             try
             {
-                string token = await _userService
-                    .LoginAsync(request.Email, request.Password);
+                string token = await _userService.LoginAsync(request.Email, request.Password);
                 return Ok(token);
             }
             catch (ApiException ex)
@@ -71,8 +72,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                UserProfileResponse user = await _userService
-                    .GetFromTokenAsync(token);
+                UserProfileResponse user = await _userService.GetFromTokenAsync(token);
                 return Ok(user);
             }
             catch (ApiException ex)
@@ -97,12 +97,14 @@ namespace ites.Server.Controllers
                 string token = GetTokenFromHeaders();
                 Guid id = await _userService.GetIdFromTokenAsync(token);
 
-                await _userService.UpdateAsync(id,
-                                               request.LastName,
-                                               request.FirstName,
-                                               request.MiddleName,
-                                               request.Description,
-                                               request.JobTitle);
+                await _userService.UpdateAsync(
+                    id,
+                    request.LastName,
+                    request.FirstName,
+                    request.MiddleName,
+                    request.Description,
+                    request.JobTitle
+                );
 
                 return Ok();
             }
@@ -133,8 +135,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                MemberResponse member = await _profileService
-                    .GetMemberAsync(token);
+                MemberResponse member = await _profileService.GetMemberAsync(token);
                 return Ok(member);
             }
             catch (ApiException ex)
@@ -148,8 +149,7 @@ namespace ites.Server.Controllers
         {
             try
             {
-                MemberResponse member = await _profileService
-                    .GetMemberAsync(id);
+                MemberResponse member = await _profileService.GetMemberAsync(id);
                 return Ok(member);
             }
             catch (ApiException ex)
@@ -165,8 +165,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                OrganizerResponse organizer = await _profileService
-                    .GetOrganizerAsync(token);
+                OrganizerResponse organizer = await _profileService.GetOrganizerAsync(token);
                 return Ok(organizer);
             }
             catch (ApiException ex)
@@ -180,8 +179,7 @@ namespace ites.Server.Controllers
         {
             try
             {
-                OrganizerResponse organizer = await _profileService
-                    .GetOrganizerAsync(id);
+                OrganizerResponse organizer = await _profileService.GetOrganizerAsync(id);
                 return Ok(organizer);
             }
             catch (ApiException ex)
@@ -197,8 +195,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                ClientResponse client = await _profileService
-                    .GetClientAsync(token);
+                ClientResponse client = await _profileService.GetClientAsync(token);
                 return Ok(client);
             }
             catch (ApiException ex)
@@ -212,8 +209,7 @@ namespace ites.Server.Controllers
         {
             try
             {
-                ClientResponse client = await _profileService
-                    .GetClientAsync(id);
+                ClientResponse client = await _profileService.GetClientAsync(id);
                 return Ok(client);
             }
             catch (ApiException ex)
@@ -222,10 +218,16 @@ namespace ites.Server.Controllers
             }
         }
 
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete()
+        {
+            string token = GetTokenFromHeaders();
+            await _userService.DeleteAsync(token);
+            return Ok();
+        }
+
         private string GetTokenFromHeaders() =>
-            Request.Headers.Authorization
-                    .FirstOrDefault()!
-                    .Split(" ")
-                    .Last();
+            Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last();
     }
 }

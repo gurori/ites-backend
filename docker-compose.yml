@@ -11,13 +11,13 @@ services:
       #- ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
+      #- ASPNETCORE_HTTPS_PORTS=8081
     build:
       context: .
-      dockerfile: ./ites.Server/Dockerfile
+      dockerfile: ./Dockerfile
     volumes:
       - ./ssl:/app/ssl
-      - ./:/app
+      #- ./:/app
     networks:
       - ites
     depends_on:

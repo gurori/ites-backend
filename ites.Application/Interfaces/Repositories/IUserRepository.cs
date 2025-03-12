@@ -10,8 +10,15 @@ namespace ites.Application.Interfaces.Repositories
 
         public Task<User?> GetByIdAsync(Guid id);
         public Task UpdateAsync(
-            Guid id, string lastName, string firstName, string middleName, string description, string jobTitle);
+            Guid id,
+            string lastName,
+            string firstName,
+            string middleName,
+            string description,
+            string jobTitle
+        );
         public Task<string?> GetRoleByIdAsync(Guid id);
         public Task<IList<User>> GetManyByIdAsync(IList<Guid> ids);
+        public Task DeleteByIdAsync(Guid id);
     }
 }

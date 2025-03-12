@@ -10,11 +10,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ites.Application.Services
 {
-    public class UserService(IPasswordHasher passwordHasher,
-                             IUserRepository userRepository,
-                             IJwtProvider jwtProvider,
-                             IMapper mapper) 
-        : IUserService
+    public class UserService(
+        IPasswordHasher passwordHasher,
+        IUserRepository userRepository,
+        IJwtProvider jwtProvider,
+        IMapper mapper
+    ) : IUserService
     {
         private readonly IPasswordHasher _passwordHasher = passwordHasher;
         private readonly IUserRepository _userRepository = userRepository;
@@ -34,8 +35,8 @@ namespace ites.Application.Services
 
         public async Task<string> LoginAsync(string email, string password)
         {
-            var userEntity = await _userRepository.GetByEmailAsync(email)
-                ?? throw UserProblem.NotExistEmail;
+            var userEntity =
+                await _userRepository.GetByEmailAsync(email) ?? throw UserProblem.NotExistEmail;
 
             if (!_passwordHasher.IsVerify(password, userEntity.PasswordHash))
                 throw UserProblem.WrongPassword;
@@ -49,8 +50,7 @@ namespace ites.Application.Services
         public async Task<UserProfileResponse> GetFromTokenAsync(string token)
         {
             Guid id = await GetIdFromTokenAsync(token);
-            User user = await _userRepository
-                .GetByIdAsync(id);
+            User user = await _userRepository.GetByIdAsync(id);
 
             return _mapper.Map<UserProfileResponse>(user);
         }
@@ -62,27 +62,33 @@ namespace ites.Application.Services
         }
 
         public async Task UpdateAsync(
-            Guid id, string lastName, string firstName, string middleName, string description, string? jobTitle)
+            Guid id,
+            string lastName,
+            string firstName,
+            string middleName,
+            string description,
+            string? jobTitle
+        )
         {
-            await _userRepository
-                .UpdateAsync(
+            await _userRepository.UpdateAsync(
                 id,
                 lastName,
                 firstName,
                 middleName,
                 description,
-                jobTitle ?? string.Empty);
+                jobTitle ?? string.Empty
+            );
         }
 
         public async Task<Guid> GetIdFromTokenAsync(string token)
         {
-            TokenValidationResult validationResult = await _jwtProvider
-                .ValidateTokenAsync(token);
+            TokenValidationResult validationResult = await _jwtProvider.ValidateTokenAsync(token);
 
             if (!validationResult.IsValid)
                 throw UserProblem.TokenProblem;
 
-            string id = validationResult.Claims[CustomClaims.UserId].ToString()
+            string id =
+                validationResult.Claims[CustomClaims.UserId].ToString()
                 ?? throw UserProblem.TokenProblem;
 
             return Guid.Parse(id);
@@ -91,8 +97,7 @@ namespace ites.Application.Services
         public async Task<string> GetRoleAsync(string token)
         {
             Guid id = await GetIdFromTokenAsync(token);
-            string role = await _userRepository.GetRoleByIdAsync(id)
-                ?? throw UserProblem.NotFound;
+            string role = await _userRepository.GetRoleByIdAsync(id) ?? throw UserProblem.NotFound;
 
             return role;
         }
@@ -101,6 +106,13 @@ namespace ites.Application.Services
         {
             IList<User> users = await _userRepository.GetManyByIdAsync(ids);
             return _mapper.Map<UserProfileResponse[]>(users);
+        }
+
+        public async Task DeleteAsync(string token)
+        {
+            Guid id = await GetIdFromTokenAsync(token);
+
+            await _userRepository.DeleteByIdAsync(id);
         }
     }
 }

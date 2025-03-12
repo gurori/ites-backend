@@ -24,9 +24,7 @@ services.AddCors(option =>
 {
     option.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(environment.IsDevelopment() 
-            ? "https://localhost:3000" 
-            : "https://ites.vercel.app");
+        policy.WithOrigins("https://localhost:3000", "http://localhost:3000");
         policy.AllowCredentials();
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
@@ -58,14 +56,16 @@ services.AddAutoMapper(
     typeof(CompetitionAutoMapperProfile),
     typeof(ApplicationAutoMapperProfile),
     typeof(OrderAutoMapperProfile),
-    typeof(TeamAutoMapperProfile));
+    typeof(TeamAutoMapperProfile)
+);
 
 services.AddAuthentication(configuration);
 
 services.AddControllers();
 
 services.AddDbContext<ItesDbContext>(options =>
-        options.UseNpgsql(configuration.GetConnectionString(nameof(ItesDbContext))));
+    options.UseNpgsql(configuration.GetConnectionString(nameof(ItesDbContext)))
+);
 
 var app = builder.Build();
 
@@ -85,12 +85,14 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    MinimumSameSitePolicy = SameSiteMode.None,
-    HttpOnly = HttpOnlyPolicy.Always,
-    Secure = CookieSecurePolicy.Always,
-});
+app.UseCookiePolicy(
+    new CookiePolicyOptions
+    {
+        MinimumSameSitePolicy = SameSiteMode.None,
+        HttpOnly = HttpOnlyPolicy.Always,
+        Secure = CookieSecurePolicy.Always,
+    }
+);
 
 app.MapControllers();
 

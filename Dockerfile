@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-COPY ["ites.Server/ites.Server.csproj", "ites.Server/"]
+COPY ["./ites.Server/ites.Server.csproj", "./ites.Server/"]
 RUN dotnet restore "./ites.Server/ites.Server.csproj"
 
 COPY . .
