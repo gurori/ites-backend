@@ -5,8 +5,7 @@ using ites.DataAccess.Entites;
 
 namespace ites.Infastructure.Mapping
 {
-    public class TeamAutoMapperProfile 
-        : Profile
+    public class TeamAutoMapperProfile : Profile
     {
         public TeamAutoMapperProfile()
         {

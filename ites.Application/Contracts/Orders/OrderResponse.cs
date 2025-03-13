@@ -6,5 +6,5 @@
         string Description,
         decimal Price,
         DateTime DeadLine
-        );
+    );
 }

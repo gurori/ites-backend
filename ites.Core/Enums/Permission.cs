@@ -14,5 +14,6 @@
         BeMember,
         BeOrganizer,
         BeClient,
+        Moderate,
     }
 }

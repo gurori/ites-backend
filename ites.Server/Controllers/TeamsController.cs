@@ -9,8 +9,7 @@ namespace ites.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class TeamsController(ITeamService teamService)
-        : ControllerBase
+    public sealed class TeamsController(ITeamService teamService) : ControllerBase
     {
         private readonly ITeamService _teamService = teamService;
 
@@ -21,8 +20,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                await _teamService
-                    .CreateAsync(token, request.Name, request.Description);
+                await _teamService.CreateAsync(token, request.Name, request.Description);
                 return Ok();
             }
             catch (ApiException ex)
@@ -34,8 +32,7 @@ namespace ites.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _teamService
-                .GetAsync());
+            return Ok(await _teamService.GetAsync());
         }
 
         [HttpGet("{id:guid}")]
@@ -43,8 +40,7 @@ namespace ites.Server.Controllers
         {
             try
             {
-                return Ok(await _teamService
-                    .GetAsync(id));
+                return Ok(await _teamService.GetAsync(id));
             }
             catch (ApiException ex)
             {
@@ -59,8 +55,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                await _teamService
-                    .AddApplicationAsync(token, id);
+                await _teamService.AddApplicationAsync(token, id);
                 return Ok();
             }
             catch (ApiException ex)
@@ -76,8 +71,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                await _teamService
-                    .HandleApplicationAsync(id, accept);
+                await _teamService.HandleApplicationAsync(id, accept);
                 return Ok();
             }
             catch (ApiException ex)
@@ -87,9 +81,6 @@ namespace ites.Server.Controllers
         }
 
         private string GetTokenFromHeaders() =>
-            Request.Headers.Authorization
-                    .FirstOrDefault()!
-                    .Split(" ")
-                    .Last();
+            Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last();
     }
 }

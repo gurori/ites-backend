@@ -16,8 +16,8 @@ namespace ites.Application.Services
         IJwtProvider jwtProvider,
         IApplicationsRepository applicationsRepo,
         IUserRepository userRepo,
-        IMapper mapper)
-            : ITeamService
+        IMapper mapper
+    ) : ITeamService
     {
         private readonly ITeamRepository _teamRepo = teamRepo;
         private readonly IJwtProvider _jwtProvider = jwtProvider;
@@ -46,19 +46,17 @@ namespace ites.Application.Services
 
         public async Task<TeamResponse> GetAsync(Guid id)
         {
-            Team team = await _teamRepo
-                .GetByIdAsync(id) ??
-                    throw TeamProblem.NotFound;
+            Team team = await _teamRepo.GetByIdAsync(id) ?? throw TeamProblem.NotFound;
 
-            IList<User> members = await _userRepo
-                .GetManyByIdAsync(team.MembersIds);
+            IList<User> members = await _userRepo.GetManyByIdAsync(team.MembersIds);
 
             return new(
                 team.Id,
                 team.Name,
                 team.Description,
                 _mapper.Map<UserProfileResponse[]>(members),
-                team.AdminId);
+                team.AdminId
+            );
         }
 
         public async Task<IList<Team>> GetAsync()
@@ -78,13 +76,13 @@ namespace ites.Application.Services
 
         private async Task<Guid> GetUserIdFromTokenAsync(string token)
         {
-            TokenValidationResult validationResult = await _jwtProvider
-                .ValidateTokenAsync(token);
+            TokenValidationResult validationResult = await _jwtProvider.ValidateTokenAsync(token);
 
             if (!validationResult.IsValid)
                 throw UserProblem.TokenProblem;
 
-            string id = validationResult.Claims[CustomClaims.UserId].ToString()
+            string id =
+                validationResult.Claims[CustomClaims.UserId].ToString()
                 ?? throw UserProblem.TokenProblem;
 
             return Guid.Parse(id);

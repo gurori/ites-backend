@@ -9,8 +9,7 @@ namespace ites.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class OrdersController(IOrdersService ordersService)
-        : ControllerBase
+    public sealed class OrdersController(IOrdersService ordersService) : ControllerBase
     {
         private readonly IOrdersService _ordersService = ordersService;
 
@@ -26,7 +25,8 @@ namespace ites.Server.Controllers
                     request.Title,
                     request.Description,
                     request.Price,
-                    request.DeadLine);
+                    request.DeadLine
+                );
                 return Ok();
             }
             catch (ApiException ex)
@@ -74,8 +74,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                await _ordersService
-                    .AddApplicationAsync(token, id);
+                await _ordersService.AddApplicationAsync(token, id);
                 return Ok();
             }
             catch (ApiException ex)
@@ -91,8 +90,7 @@ namespace ites.Server.Controllers
             try
             {
                 string token = GetTokenFromHeaders();
-                await _ordersService
-                    .HandleApplicationAsync(id, accept);
+                await _ordersService.HandleApplicationAsync(id, accept);
                 return Ok();
             }
             catch (ApiException ex)
@@ -102,9 +100,6 @@ namespace ites.Server.Controllers
         }
 
         private string GetTokenFromHeaders() =>
-            Request.Headers.Authorization
-                    .FirstOrDefault()!
-                    .Split(" ")
-                    .Last();
+            Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last();
     }
 }

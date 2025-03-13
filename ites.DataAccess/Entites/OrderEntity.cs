@@ -10,5 +10,6 @@
         public Guid ClientId { get; set; }
         public Guid MemberId { get; set; }
         public bool IsPublic { get; set; }
+        public string ContentInHtml { get; set; } = string.Empty;
     }
 }

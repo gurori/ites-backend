@@ -9,5 +9,6 @@
         public DateTime EndDate { get; set; }
         public IList<Guid> MembersIds { get; set; } = [];
         public IList<Guid> OrganizersIds { get; set; } = [];
+        public string ContentInHtml { get; set; } = string.Empty;
     }
 }

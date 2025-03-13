@@ -3,6 +3,7 @@
     public sealed class Team
     {
         public Team() { }
+
         public Team(string name, string description, Guid adminId)
         {
             Name = name;

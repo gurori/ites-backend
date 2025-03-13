@@ -47,6 +47,7 @@ services.AddScoped<ICompetitionsService, CompetitionsService>();
 services.AddScoped<IOrdersService, OrdersService>();
 services.AddScoped<ITeamService, TeamService>();
 services.AddScoped<IUserProfileService, UserProfileService>();
+services.AddScoped<ModersService>();
 
 services.AddScoped<IJwtProvider, JwtProvider>();
 services.AddScoped<IPasswordHasher, PasswordHasher>();

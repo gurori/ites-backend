@@ -11,6 +11,7 @@
         public string Role { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string JobTitle { get; set; } = string.Empty;
+        public int Coins { get; set; } = 0;
         public IList<Guid> CompetitionsIds { get; set; } = [];
         public IList<Guid> OrdersIds { get; set; } = [];
         public IList<Guid> ApplicationsForCompetitions { get; set; } = [];

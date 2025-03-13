@@ -2,11 +2,29 @@
 
 namespace ites.Application.Contracts.Teams
 {
-    public record TeamResponse(
-        Guid Id,
-        string Name,
-        string Description,
-        IList<UserProfileResponse> Members,
-        Guid AdminId
-        );
+    public class TeamResponse
+    {
+        public TeamResponse() { }
+
+        public TeamResponse(
+            Guid id,
+            string name,
+            string description,
+            IList<UserProfileResponse> members,
+            Guid adminId
+        )
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            Members = members;
+            AdminId = adminId;
+        }
+
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public IList<UserProfileResponse> Members { get; private set; }
+        public Guid AdminId { get; private set; }
+    }
 }
