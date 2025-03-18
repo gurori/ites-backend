@@ -24,10 +24,7 @@ namespace ites.Server.Controllers
                 string token = GetTokenFromHeaders();
                 await _competitionsService.CreateAsync(
                     token,
-                    request.Title,
-                    request.Description,
-                    request.StartDate,
-                    request.EndDate
+                    request.ContentInHtml
                 );
                 return Ok();
             }

@@ -2,16 +2,14 @@
 {
     public sealed class Competition(
         Guid id,
-        string title,
-        string description,
-        DateTime startDate,
-        DateTime endDate)
+        string contentInHtml)
     {
         public Guid Id { get; private set; } = id;
-        public string Title { get; private set; } = title;
-        public string Description { get; private set; } = description;
-        public DateTime StartDate { get; private set; } = startDate;
-        public DateTime EndDate { get; private set; } = endDate;
+        public string ContentInHtml { get; private set; } = contentInHtml;
+        // public string Title { get; private set; } = title;
+        // public string Description { get; private set; } = description;
+        // public DateTime StartDate { get; private set; } = startDate;
+        // public DateTime EndDate { get; private set; } = endDate;
         public IList<Guid> MembersIds { get; private set; }
         public IList<Guid> OrganizersIds { get; private set; }
     }

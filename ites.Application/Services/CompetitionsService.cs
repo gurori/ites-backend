@@ -33,10 +33,10 @@ namespace ites.Application.Services
 
         }
 
-        public async Task CreateAsync(string token, string title, string description, DateTime startDate, DateTime endDate)
+        public async Task CreateAsync(string token, string contentInHtml)
         {
             Guid orgId = await GetUserIdFromTokenAsync(token);
-            Competition competition = new(Guid.NewGuid(), title, description, startDate, endDate);
+            Competition competition = new(Guid.NewGuid(), contentInHtml);
 
             bool isCreated = await _competitionsRepository
                 .CreateAsync(orgId, competition);
