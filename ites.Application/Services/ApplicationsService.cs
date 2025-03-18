@@ -1,14 +1,12 @@
-﻿using AutoMapper;
-using ites.Application.Interfaces.Repositories;
+﻿using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 
 namespace ites.Application.Services
 {
-    public sealed class ApplicationsService(IApplicationsRepository applicationsRepository, IMapper mapper)
+    public sealed class ApplicationsService(IApplicationsRepository applicationsRepository)
                 : IApplicationsService
     {
         private readonly IApplicationsRepository _applicationsRepository = applicationsRepository;
-        private readonly IMapper _mapper = mapper;
 
         public Task CreateAsync(Guid from, Guid to)
         {

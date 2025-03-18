@@ -4,8 +4,8 @@ using ites.Application.Interfaces.Auth;
 using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
+using ites.Core.Exeptions;
 using ites.Core.Models;
-using ites.Core.Problems;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ites.Application.Services
@@ -30,16 +30,17 @@ namespace ites.Application.Services
             bool isUserExist = !await _userRepository.CreateAsync(user);
 
             if (isUserExist)
-                throw UserProblem.UserAlreadyExist;
+                throw new ConflictException("Данный пользователь уже существует");
         }
 
         public async Task<string> LoginAsync(string email, string password)
         {
             var userEntity =
-                await _userRepository.GetByEmailAsync(email) ?? throw UserProblem.NotExistEmail;
+                await _userRepository.GetByEmailAsync(email)
+                ?? throw new NotFoundException("Пользователь с данной почтой не зарегистрирован");
 
             if (!_passwordHasher.IsVerify(password, userEntity.PasswordHash))
-                throw UserProblem.WrongPassword;
+                throw new ConflictException("Неверный пароль");
 
             var user = _mapper.Map<User>(userEntity);
             var token = await _jwtProvider.GenerateTokenAsync(user);
@@ -50,14 +51,14 @@ namespace ites.Application.Services
         public async Task<UserProfileResponse> GetFromTokenAsync(string token)
         {
             Guid id = await GetIdFromTokenAsync(token);
-            User user = await _userRepository.GetByIdAsync(id);
+            User? user = await _userRepository.GetByIdAsync(id);
 
             return _mapper.Map<UserProfileResponse>(user);
         }
 
         public async Task<UserProfileResponse> GetAsync(Guid id)
         {
-            User user = await _userRepository.GetByIdAsync(id);
+            User? user = await _userRepository.GetByIdAsync(id);
             return _mapper.Map<UserProfileResponse>(user);
         }
 
@@ -85,11 +86,11 @@ namespace ites.Application.Services
             TokenValidationResult validationResult = await _jwtProvider.ValidateTokenAsync(token);
 
             if (!validationResult.IsValid)
-                throw UserProblem.TokenProblem;
+                throw new UnauthorizedException();
 
             string id =
                 validationResult.Claims[CustomClaims.UserId].ToString()
-                ?? throw UserProblem.TokenProblem;
+                ?? throw new UnauthorizedException();
 
             return Guid.Parse(id);
         }
@@ -97,7 +98,9 @@ namespace ites.Application.Services
         public async Task<string> GetRoleAsync(string token)
         {
             Guid id = await GetIdFromTokenAsync(token);
-            string role = await _userRepository.GetRoleByIdAsync(id) ?? throw UserProblem.NotFound;
+            string role =
+                await _userRepository.GetRoleByIdAsync(id)
+                ?? throw new NotFoundException("Пользователь не найден");
 
             return role;
         }

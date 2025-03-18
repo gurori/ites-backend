@@ -4,7 +4,7 @@ using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Core.Models;
-using ites.Core.Problems;
+using ites.Core.Exeptions;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ites.Application.Services
@@ -41,7 +41,7 @@ namespace ites.Application.Services
             bool isCreated = await _competitionsRepository
                 .CreateAsync(orgId, competition);
 
-            if (!isCreated) throw UserProblem.NotFound;
+            if (!isCreated) throw new NotFoundException("Пользователь не найден");
         }
 
         public Task DeleteAsync(Guid id)
@@ -53,7 +53,7 @@ namespace ites.Application.Services
         {
             Competition competition = await _competitionsRepository
                 .GetByIdAsync(id)
-                    ?? throw CompetitionProblem.NotFound;
+                    ?? throw new NotFoundException("Конкурс не найден");
 
             return competition;
         }
@@ -87,10 +87,10 @@ namespace ites.Application.Services
                 .ValidateTokenAsync(token);
 
             if (!validationResult.IsValid)
-                throw UserProblem.TokenProblem;
+                throw new UnauthorizedException();
 
             string id = validationResult.Claims[CustomClaims.UserId].ToString()
-                ?? throw UserProblem.TokenProblem;
+                ?? throw new UnauthorizedException();
 
             return Guid.Parse(id);
         }

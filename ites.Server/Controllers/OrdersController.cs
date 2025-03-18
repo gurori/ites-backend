@@ -1,7 +1,6 @@
 ﻿using ites.Application.Contracts.Orders;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
-using ites.Core.Exeptions;
 using ites.Infastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,15 +8,14 @@ namespace ites.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class OrdersController(IOrdersService ordersService) : ControllerBase
+    public sealed class OrdersController(IOrdersService ordersService) : BaseController
     {
         private readonly IOrdersService _ordersService = ordersService;
 
         [HttpPost]
         [HasPermission(Permission.CreateOrd)]
-        public async Task<IActionResult> Create(OrderRequest request)
-        {
-            try
+        public async Task<IActionResult> Create(OrderRequest request) =>
+            await TryCatchAsync(async () =>
             {
                 string token = GetTokenFromHeaders();
                 await _ordersService.CreateAsync(
@@ -28,12 +26,7 @@ namespace ites.Server.Controllers
                     request.DeadLine
                 );
                 return Ok();
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
+            });
 
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -42,64 +35,37 @@ namespace ites.Server.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> Get(Guid id)
-        {
-            try
+        public async Task<IActionResult> Get(Guid id) =>
+            await TryCatchAsync(async () =>
             {
                 return Ok(await _ordersService.GetAsync(id));
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
+            });
 
         [HttpGet("many")]
-        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids)
-        {
-            try
+        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids) =>
+            await TryCatchAsync(async () =>
             {
                 return Ok(await _ordersService.GetAsync(ids));
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
+            });
 
         [HttpPut("application/{id:guid}")]
         [HasPermission(Permission.AddOrdAppl)]
-        public async Task<IActionResult> AddApplication(Guid id)
-        {
-            try
+        public async Task<IActionResult> AddApplication(Guid id) =>
+            await TryCatchAsync(async () =>
             {
                 string token = GetTokenFromHeaders();
                 await _ordersService.AddApplicationAsync(token, id);
                 return Ok();
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
+            });
 
         [HttpPut("application/{id:guid}/{accept:bool}")]
         [HasPermission(Permission.HandleOrdAppl)]
-        public async Task<IActionResult> HandleApplication(Guid id, bool accept)
-        {
-            try
+        public async Task<IActionResult> HandleApplication(Guid id, bool accept) =>
+            await TryCatchAsync(async () =>
             {
                 string token = GetTokenFromHeaders();
                 await _ordersService.HandleApplicationAsync(id, accept);
                 return Ok();
-            }
-            catch (ApiException ex)
-            {
-                return Problem(detail: ex.Message, statusCode: ex.StatusCode);
-            }
-        }
-
-        private string GetTokenFromHeaders() =>
-            Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last();
+            });
     }
 }

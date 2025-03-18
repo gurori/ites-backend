@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using ites.Application.Interfaces.Auth;
+﻿using ites.Application.Interfaces.Auth;
 using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Core.Models;
-using ites.Core.Problems;
+using ites.Core.Exeptions;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ites.Application.Services
@@ -43,7 +42,7 @@ namespace ites.Application.Services
         {
             Order order = await _ordersRepository
                 .GetByIdAsync(id)
-                    ?? throw OrderProblem.NotFound;
+                    ?? throw new NotFoundException("Заказ не найден");
             return order;
         }
 
@@ -76,10 +75,10 @@ namespace ites.Application.Services
                 .ValidateTokenAsync(token);
 
             if (!validationResult.IsValid)
-                throw UserProblem.TokenProblem;
+                throw new UnauthorizedException();
 
             string id = validationResult.Claims[CustomClaims.UserId].ToString()
-                ?? throw UserProblem.TokenProblem;
+                ?? throw new UnauthorizedException();
 
             return Guid.Parse(id);
         }
