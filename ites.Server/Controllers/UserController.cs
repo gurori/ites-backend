@@ -33,17 +33,7 @@ namespace ites.Server.Controllers
             await TryCatchAsync(async () =>
             {
                 string token = await _userService.LoginAsync(request.Email, request.Password);
-                Response.Cookies.Append(
-                    "auth",
-                    token,
-                    new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = true,
-                        SameSite = SameSiteMode.Strict,
-                    }
-                );
-                return Ok();
+                return Ok(token);
             });
 
         [Authorize]

@@ -1,6 +1,6 @@
-﻿using ites.Core.Models;
+﻿using System.Security.Claims;
+using ites.Core.Models;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 
 namespace ites.Application.Interfaces.Auth
 {
