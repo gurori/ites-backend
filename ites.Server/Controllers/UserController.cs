@@ -31,7 +31,9 @@ namespace ites.Server.Controllers
         public async Task<IActionResult> Login(LoginUserRequest request)
         {
             string token = await _userService.LoginAsync(request.Email, request.Password);
-            return Ok(token);
+            SetAuthCookie(token);
+
+            return Ok();
         }
 
         [Authorize]
@@ -140,6 +142,21 @@ namespace ites.Server.Controllers
         {
             ClientResponse client = await _profileService.GetClientAsync(id);
             return Ok(client);
+        }
+
+        private void SetAuthCookie(string token)
+        {
+            Response.Cookies.Append(
+                "auth",
+                token,
+                new CookieOptions
+                {
+                    SameSite = SameSiteMode.None,
+                    HttpOnly = true,
+                    Secure = true,
+                    IsEssential = true
+                }
+            );
         }
     }
 }
