@@ -2,6 +2,7 @@ using ites.DataAccess;
 using ites.Infastructure.Auth;
 using ites.Infastructure.Mapping;
 using ites.Server.Extensions;
+using ites.Server.Filters;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,7 +46,10 @@ services.AddAutoMapper(
 
 services.AddAuthentication(configuration);
 
-services.AddControllers();
+services.AddControllers(options =>
+{
+    options.Filters.Add<ApiExceptionFilter>();
+});
 
 services.AddDbContext<ItesDbContext>(options =>
     options.UseNpgsql(configuration.GetConnectionString(nameof(ItesDbContext)))
