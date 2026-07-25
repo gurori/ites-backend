@@ -16,7 +16,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.CreateTeam)]
         public async Task<IActionResult> Create(TeamRequest request)
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             await _teamService.CreateAsync(token, request.Name, request.Description);
             return Ok();
         }
@@ -37,7 +37,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.AddTeamAppl)]
         public async Task<IActionResult> AddApplication(Guid id)
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             await _teamService.AddApplicationAsync(token, id);
             return Ok();
         }
@@ -46,7 +46,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.HandleTeamAppl)]
         public async Task<IActionResult> HandleApplication(Guid id, bool accept)
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             await _teamService.HandleApplicationAsync(id, accept);
             return Ok();
         }

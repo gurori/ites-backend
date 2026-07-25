@@ -5,7 +5,11 @@ namespace ites.Server.Controllers
 {
     public abstract class BaseController : ControllerBase
     {
-        protected string GetTokenFromHeaders() =>
-            Request.Headers.Authorization.FirstOrDefault()!.Split(" ").Last();
+        protected string GetTokenFromCookies()
+        {
+            string? token = Request.Cookies["auth"] ?? throw new UnauthorizedException();
+            
+            return token;
+        }
     }
 }

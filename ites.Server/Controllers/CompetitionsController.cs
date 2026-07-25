@@ -18,7 +18,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.CreateCmp)]
         public async Task<IActionResult> Create(CompetitionRequest request)
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             await _competitionsService.CreateAsync(token, request.ContentInHtml);
             return Ok();
         }
@@ -47,7 +47,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.AddCmpAppl)]
         public async Task<IActionResult> AddAppication(Guid id)
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             await _competitionsService.AddApplicationAsync(token, id);
             return Ok();
         }

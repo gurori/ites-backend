@@ -38,7 +38,7 @@ namespace ites.Server.Controllers
         [HttpGet("role")]
         public async Task<IActionResult> GetRole()
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             string role = await _userService.GetRoleAsync(token);
             return Ok(role);
         }
@@ -47,7 +47,7 @@ namespace ites.Server.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> Get()
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             UserProfileResponse user = await _userService.GetFromTokenAsync(token);
             return Ok(user);
         }
@@ -63,7 +63,7 @@ namespace ites.Server.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update(UpdateUserRequest request)
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             Guid id = await _userService.GetIdFromTokenAsync(token);
 
             await _userService.UpdateAsync(
@@ -89,7 +89,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeMember)]
         public async Task<IActionResult> GetMember()
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             MemberResponse member = await _profileService.GetMemberAsync(token);
             return Ok(member);
         }
@@ -105,7 +105,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeOrganizer)]
         public async Task<IActionResult> GetOrganizer()
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             OrganizerResponse organizer = await _profileService.GetOrganizerAsync(token);
             return Ok(organizer);
         }
@@ -130,7 +130,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeClient)]
         public async Task<IActionResult> GetClient()
         {
-            string token = GetTokenFromHeaders();
+            string token = GetTokenFromCookies();
             ClientResponse client = await _profileService.GetClientAsync(token);
             return Ok(client);
         }
