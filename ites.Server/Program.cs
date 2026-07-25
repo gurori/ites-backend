@@ -1,9 +1,4 @@
-using ites.Application.Interfaces.Auth;
-using ites.Application.Interfaces.Repositories;
-using ites.Application.Interfaces.Services;
-using ites.Application.Services;
 using ites.DataAccess;
-using ites.DataAccess.Repositories;
 using ites.Infastructure.Auth;
 using ites.Infastructure.Mapping;
 using ites.Server.Extensions;
@@ -36,24 +31,9 @@ services.AddCors(option =>
     });
 });
 
-services.AddScoped<IUserRepository, UserRepository>();
-services.AddScoped<IRoleRepository, RoleRepository>();
-services.AddScoped<IApplicationsRepository, ApplicationsRepository>();
-services.AddScoped<ICompetitionsRepository, CompetitionsRepository>();
-services.AddScoped<IOrdersRepository, OrdersRepository>();
-services.AddScoped<ITeamRepository, TeamRepository>();
+services.AddRepositories();
 
-services.AddScoped<IApplicationsService, ApplicationsService>();
-services.AddScoped<IUserService, UserService>();
-services.AddScoped<IPermissionService, PermissionService>();
-services.AddScoped<ICompetitionsService, CompetitionsService>();
-services.AddScoped<IOrdersService, OrdersService>();
-services.AddScoped<ITeamService, TeamService>();
-services.AddScoped<IUserProfileService, UserProfileService>();
-services.AddScoped<ModersService>();
-
-services.AddScoped<IJwtProvider, JwtProvider>();
-services.AddScoped<IPasswordHasher, PasswordHasher>();
+services.AddApplicationServices();
 
 services.AddAutoMapper(
     typeof(UserAutoMapperProfile),
