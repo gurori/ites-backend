@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var services = builder.Services;
 var configuration = builder.Configuration;
 var environment = builder.Environment;
@@ -20,24 +21,20 @@ services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(Authori
 
 services.AddSwaggerGen();
 
+var corsOrigins =
+    configuration.GetSection("Cors:Origins").Get<string[]>()
+    ?? throw new InvalidOperationException("Configuration string 'Cors:Origins' not found.");
+
 services.AddCors(option =>
 {
     option.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(
-            "https://vercel.com",
-            "https://ites.vercel.app",
-            "https://ites-guroris-projects.vercel.app",
-            "https://ites-git-main-guroris-projects.vercel.app",
-            "https://vercel.app"
-        );
+        policy.WithOrigins(corsOrigins);
         policy.AllowCredentials();
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
     });
 });
-
-services.AddMvc();
 
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IRoleRepository, RoleRepository>();
@@ -82,14 +79,14 @@ await dbContext.Database.EnsureCreatedAsync();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
 }
 
-app.UseStaticFiles();
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseCookiePolicy(
@@ -101,11 +98,11 @@ app.UseCookiePolicy(
     }
 );
 
-app.MapControllers();
-
 app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
