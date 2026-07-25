@@ -16,28 +16,25 @@ namespace ites.Server.Controllers
 
         [HttpPost("create")]
         [HasPermission(Permission.CreateCmp)]
-        public async Task<IActionResult> Create(CompetitionRequest request) =>
-            await TryCatchAsync(async () =>
-            {
-                string token = GetTokenFromHeaders();
-                await _competitionsService.CreateAsync(token, request.ContentInHtml);
-                return Ok();
-            });
+        public async Task<IActionResult> Create(CompetitionRequest request)
+        {
+            string token = GetTokenFromHeaders();
+            await _competitionsService.CreateAsync(token, request.ContentInHtml);
+            return Ok();
+        }
 
         [HttpGet("get")]
-        public async Task<IActionResult> Get() =>
-            await TryCatchAsync(async () =>
-            {
-                return Ok(await _competitionsService.GetAsync());
-            });
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _competitionsService.GetAsync());
+        }
 
         [HttpGet("get/{id:guid}")]
-        public async Task<IActionResult> Get(Guid id) =>
-            await TryCatchAsync(async () =>
-            {
-                Competition competition = await _competitionsService.GetAsync(id);
-                return Ok(competition);
-            });
+        public async Task<IActionResult> Get(Guid id)
+        {
+            Competition competition = await _competitionsService.GetAsync(id);
+            return Ok(competition);
+        }
 
         [HttpGet("get/many")]
         public async Task<IActionResult> Get([FromQuery] IList<Guid> ids)
@@ -48,21 +45,19 @@ namespace ites.Server.Controllers
 
         [HttpPut("application/{id:guid}")]
         [HasPermission(Permission.AddCmpAppl)]
-        public async Task<IActionResult> AddAppication(Guid id) =>
-            await TryCatchAsync(async () =>
-            {
-                string token = GetTokenFromHeaders();
-                await _competitionsService.AddApplicationAsync(token, id);
-                return Ok();
-            });
+        public async Task<IActionResult> AddAppication(Guid id)
+        {
+            string token = GetTokenFromHeaders();
+            await _competitionsService.AddApplicationAsync(token, id);
+            return Ok();
+        }
 
         [HttpPut("application/{id:guid}/{accept:bool}")]
         [HasPermission(Permission.HandleCmpAppl)]
-        public async Task<IActionResult> HandleApplication(Guid id, bool accept) =>
-            await TryCatchAsync(async () =>
-            {
-                await _competitionsService.HandleApplicationAsync(id, accept);
-                return Ok();
-            });
+        public async Task<IActionResult> HandleApplication(Guid id, bool accept)
+        {
+            await _competitionsService.HandleApplicationAsync(id, accept);
+            return Ok();
+        }
     }
 }

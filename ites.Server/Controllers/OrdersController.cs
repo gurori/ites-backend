@@ -14,19 +14,18 @@ namespace ites.Server.Controllers
 
         [HttpPost]
         [HasPermission(Permission.CreateOrd)]
-        public async Task<IActionResult> Create(OrderRequest request) =>
-            await TryCatchAsync(async () =>
-            {
-                string token = GetTokenFromHeaders();
-                await _ordersService.CreateAsync(
-                    token,
-                    request.Title,
-                    request.Description,
-                    request.Price,
-                    request.DeadLine
-                );
-                return Ok();
-            });
+        public async Task<IActionResult> Create(OrderRequest request)
+        {
+            string token = GetTokenFromHeaders();
+            await _ordersService.CreateAsync(
+                token,
+                request.Title,
+                request.Description,
+                request.Price,
+                request.DeadLine
+            );
+            return Ok();
+        }
 
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -35,37 +34,33 @@ namespace ites.Server.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> Get(Guid id) =>
-            await TryCatchAsync(async () =>
-            {
-                return Ok(await _ordersService.GetAsync(id));
-            });
+        public async Task<IActionResult> Get(Guid id)
+        {
+            return Ok(await _ordersService.GetAsync(id));
+        }
 
         [HttpGet("many")]
-        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids) =>
-            await TryCatchAsync(async () =>
-            {
-                return Ok(await _ordersService.GetAsync(ids));
-            });
+        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids)
+        {
+            return Ok(await _ordersService.GetAsync(ids));
+        }
 
         [HttpPut("application/{id:guid}")]
         [HasPermission(Permission.AddOrdAppl)]
-        public async Task<IActionResult> AddApplication(Guid id) =>
-            await TryCatchAsync(async () =>
-            {
-                string token = GetTokenFromHeaders();
-                await _ordersService.AddApplicationAsync(token, id);
-                return Ok();
-            });
+        public async Task<IActionResult> AddApplication(Guid id)
+        {
+            string token = GetTokenFromHeaders();
+            await _ordersService.AddApplicationAsync(token, id);
+            return Ok();
+        }
 
         [HttpPut("application/{id:guid}/{accept:bool}")]
         [HasPermission(Permission.HandleOrdAppl)]
-        public async Task<IActionResult> HandleApplication(Guid id, bool accept) =>
-            await TryCatchAsync(async () =>
-            {
-                string token = GetTokenFromHeaders();
-                await _ordersService.HandleApplicationAsync(id, accept);
-                return Ok();
-            });
+        public async Task<IActionResult> HandleApplication(Guid id, bool accept)
+        {
+            string token = GetTokenFromHeaders();
+            await _ordersService.HandleApplicationAsync(id, accept);
+            return Ok();
+        }
     }
 }
