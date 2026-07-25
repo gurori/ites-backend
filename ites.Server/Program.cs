@@ -25,13 +25,11 @@ services.AddCors(option =>
     option.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins(
-            "https://95.163.230.141/",
-            "http://95.163.230.141/",
-            "https://vercel.com/",
-            "https://ites.vercel.app/",
-            "https://ites-guroris-projects.vercel.app/",
-            "https://ites-git-main-guroris-projects.vercel.app/",
-            "https://vercel.app/"
+            "https://vercel.com",
+            "https://ites.vercel.app",
+            "https://ites-guroris-projects.vercel.app",
+            "https://ites-git-main-guroris-projects.vercel.app",
+            "https://vercel.app"
         );
         policy.AllowCredentials();
         policy.AllowAnyHeader();
