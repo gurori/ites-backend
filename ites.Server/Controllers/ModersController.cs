@@ -1,4 +1,4 @@
-using ites.Application.Services;
+using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Infastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +8,9 @@ namespace ites.Server.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [HasPermission(Permission.Moderate)]
-    public sealed class ModersController(ModersService modersService) : ControllerBase
+    public sealed class ModersController(IModersService modersService) : ControllerBase
     {
-        private readonly ModersService _modersService = modersService;
+        private readonly IModersService _modersService = modersService;
 
         [HttpGet]
         public async Task<IActionResult> Get()

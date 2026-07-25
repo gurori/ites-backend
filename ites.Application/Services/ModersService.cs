@@ -3,6 +3,7 @@ using ites.Application.Contracts.Moders;
 using ites.Application.Contracts.Orders;
 using ites.Application.Contracts.Teams;
 using ites.Application.Interfaces.Repositories;
+using ites.Application.Interfaces.Services;
 
 namespace ites.Application.Services
 {
@@ -10,7 +11,7 @@ namespace ites.Application.Services
         ITeamRepository teamRepository,
         IOrdersRepository orderRepository,
         IMapper mapper
-    )
+    ) : IModersService
     {
         private readonly ITeamRepository _teamRepository = teamRepository;
         private readonly IOrdersRepository _orderRepository = orderRepository;
