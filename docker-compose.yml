@@ -1,27 +1,18 @@
-version: '3.4'
-
 services:
   api:
     container_name: ites.server
-    image: itesserver
     ports:
       - "8080:8080"
-      - "8081:8081"
-    environment:
-      #- ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      #- ASPNETCORE_HTTPS_PORTS=8081
     build:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - ./ssl:/app/ssl
-      #- ./:/app
+      - ./:/src
     networks:
       - ites
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     container_name: ites.db
@@ -29,18 +20,19 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_DB: itesdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ites -d itesdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - ites
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
 
 networks:
   ites:
     driver: bridge
 
 volumes:
-  postgres-data:
+  postgres_data:

@@ -1,0 +1,25 @@
+services:
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+
+  db:
+    environment:
+      POSTGRES_DB: itesdb
+      POSTGRES_USER: ites
+      POSTGRES_PASSWORD: ites
+
+  pgadmin:
+    container_name: ites.pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - ites

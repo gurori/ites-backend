@@ -1,0 +1,12 @@
+services:
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTPS_PORTS=8080
+
+  db:
+    environment:
+      POSTGRES_DB: itesdb
+      POSTGRES_USER: ites
+      POSTGRES_PASSWORD: ites
+
