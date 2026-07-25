@@ -1,5 +1,5 @@
 ﻿using ites.Core.Enums;
-using ites.DataAccess.Entites;
+using ites.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,5 +1,5 @@
 ﻿using ites.DataAccess.Configurations;
-using ites.DataAccess.Entites;
+using ites.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

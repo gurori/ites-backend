@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ites.Core.Models;
 using ites.Application.Contracts.Competitions;
-using ites.DataAccess.Entites;
+using ites.Core.Entities;
 
 namespace ites.Infastructure.Mapping
 {

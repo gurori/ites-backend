@@ -2,7 +2,7 @@
 using ites.Application.Interfaces.Repositories;
 using ites.Core.Enums;
 using ites.Core.Models;
-using ites.DataAccess.Entites;
+using ites.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories

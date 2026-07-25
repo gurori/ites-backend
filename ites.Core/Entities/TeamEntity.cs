@@ -1,4 +1,4 @@
-﻿namespace ites.DataAccess.Entites
+﻿namespace ites.Core.Entities
 {
     public sealed class TeamEntity
     {

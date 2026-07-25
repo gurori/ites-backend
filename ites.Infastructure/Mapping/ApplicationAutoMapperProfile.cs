@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ites.DataAccess.Entites;
+using ites.Core.Entities;
 
 namespace ites.Infastructure.Mapping
 {
