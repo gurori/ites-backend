@@ -6,8 +6,8 @@ using ites.Application.Contracts.Orders;
 using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
-using ites.Core.Models;
 using ites.Core.Exeptions;
+using ites.Core.Models;
 
 namespace ites.Application.Services
 {
@@ -18,8 +18,8 @@ namespace ites.Application.Services
         IUserRepository userRepository,
         IOrdersService ordersService,
         ITeamService teamService,
-        IMapper mapper)
-                : IUserProfileService
+        IMapper mapper
+    ) : IUserProfileService
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IUserService _userService = userService;
@@ -29,67 +29,32 @@ namespace ites.Application.Services
         private readonly ITeamService _teamService = teamService;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ClientResponse> GetClientAsync(string token)
-        {
-            Guid id = await _userService.GetIdFromTokenAsync(token);
-            return await GetClientByIdAsync(id);
-        }
-
-        public async Task<ClientResponse> GetClientAsync(Guid id)
-        {
-            return await GetClientByIdAsync(id);
-        }
-
-        public async Task<MemberResponse> GetMemberAsync(string token)
-        {
-            Guid id = await _userService.GetIdFromTokenAsync(token);
-            return await GetMemberByIdAsync(id);
-        }
-
         public async Task<MemberResponse> GetMemberAsync(Guid id)
         {
-             return await GetMemberByIdAsync(id);
-        }
-
-        public async Task<OrganizerResponse> GetOrganizerAsync(string token)
-        {
-            Guid id = await _userService.GetIdFromTokenAsync(token);
-            return await GetOrganizerByIdAsync(id);
-        }
-
-        public async Task<OrganizerResponse> GetOrganizerAsync(Guid id)
-        {
-            return await GetOrganizerByIdAsync(id);
-        }
-
-        private async Task<MemberResponse> GetMemberByIdAsync(Guid id)
-        {
-            User user = await _userRepository.GetByIdAsync(id) 
+            User user =
+                await _userRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException("Пользователь не найден");
 
-            IList<Competition> competitions = await _competitionsService
-                .GetAsync(user.CompetitionsIds);
-            IList<Competition> competitionsApplications = await _competitionsService
-                .GetAsync(user.ApplicationsForCompetitions);
+            IList<Competition> competitions = await _competitionsService.GetAsync(
+                user.CompetitionsIds
+            );
+            IList<Competition> competitionsApplications = await _competitionsService.GetAsync(
+                user.ApplicationsForCompetitions
+            );
 
-            IList<Order> orders = await _ordersService
-                .GetAsync(user.OrdersIds);
-            IList<Order> ordersApplications = await _ordersService
-                .GetAsync(user.ApplicationsForOrders);
+            IList<Order> orders = await _ordersService.GetAsync(user.OrdersIds);
+            IList<Order> ordersApplications = await _ordersService.GetAsync(
+                user.ApplicationsForOrders
+            );
 
-            IList<Team> teamsApplications = await _teamService
-                .GetAsync(user.ApplicationsForTeams);
-            var applicationsIds = await _applicationsService
-                    .GetAsync(user.ApplicationsIds);
+            IList<Team> teamsApplications = await _teamService.GetAsync(user.ApplicationsForTeams);
+            var applicationsIds = await _applicationsService.GetAsync(user.ApplicationsIds);
             IList<TeamApplicationResponse> applications = [];
 
             foreach (var application in applicationsIds)
             {
-                UserProfileResponse fromMember = await _userService
-                    .GetAsync(application.From);
-                applications.Add(new(
-                    application.Id,
-                    fromMember));
+                UserProfileResponse fromMember = await _userService.GetAsync(application.From);
+                applications.Add(new(application.Id, fromMember));
             }
 
             MemberResponse member = new(
@@ -108,35 +73,33 @@ namespace ites.Application.Services
                 teamsApplications,
                 user.TeamId,
                 applications
-                );
+            );
             return member;
         }
-        private async Task<OrganizerResponse> GetOrganizerByIdAsync(Guid id)
+
+        public async Task<OrganizerResponse> GetOrganizerAsync(Guid id)
         {
-            User user = await _userRepository.GetByIdAsync(id)
+            User user =
+                await _userRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException("Пользователь не найден");
 
-            IList<Competition> competitions = await _competitionsService
-                .GetAsync(user.CompetitionsIds);
-            IList<Core.Models.Application> applicationsIds = await _applicationsService
-                .GetAsync(user.ApplicationsIds);
+            IList<Competition> competitions = await _competitionsService.GetAsync(
+                user.CompetitionsIds
+            );
+            IList<Core.Models.Application> applicationsIds = await _applicationsService.GetAsync(
+                user.ApplicationsIds
+            );
             IList<CompetitionApplicationResponse> applications = [];
 
             foreach (Core.Models.Application a in applicationsIds)
             {
-                UserProfileResponse fromMember = await _userService
-                    .GetAsync(a.From);
-                Competition competition = await _competitionsService
-                    .GetAsync(a.For);
-                CompetitionResponse forCompetition = _mapper
-                    .Map<CompetitionResponse>(competition);
+                UserProfileResponse fromMember = await _userService.GetAsync(a.From);
+                Competition competition = await _competitionsService.GetAsync(a.For);
+                CompetitionResponse forCompetition = _mapper.Map<CompetitionResponse>(competition);
 
-                applications.Add(new(
-                    a.Id,
-                    fromMember,
-                    forCompetition
-                    ));
-            };
+                applications.Add(new(a.Id, fromMember, forCompetition));
+            }
+            ;
 
             OrganizerResponse organizer = new(
                 user.Id,
@@ -149,36 +112,31 @@ namespace ites.Application.Services
                 user.JobTitle,
                 competitions,
                 applications
-                );
+            );
             return organizer;
         }
 
-        private async Task<ClientResponse> GetClientByIdAsync(Guid id)
+        public async Task<ClientResponse> GetClientAsync(Guid id)
         {
-            User user = await _userRepository.GetByIdAsync(id)
+            User user =
+                await _userRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException("Пользователь не найден");
 
-            IList<Order> orders = await _ordersService
-                .GetAsync(user.OrdersIds);
-            IList<Core.Models.Application> applicationsIds = await _applicationsService
-                .GetAsync(user.ApplicationsIds);
+            IList<Order> orders = await _ordersService.GetAsync(user.OrdersIds);
+            IList<Core.Models.Application> applicationsIds = await _applicationsService.GetAsync(
+                user.ApplicationsIds
+            );
             IList<OrderApplicationResponse> applications = [];
 
             foreach (Core.Models.Application a in applicationsIds)
             {
-                UserProfileResponse fromMember = await _userService
-                    .GetAsync(a.From);
-                Order order = await _ordersService
-                    .GetAsync(a.For);
-                OrderResponse forOrder = _mapper
-                    .Map<OrderResponse>(order);
+                UserProfileResponse fromMember = await _userService.GetAsync(a.From);
+                Order order = await _ordersService.GetAsync(a.For);
+                OrderResponse forOrder = _mapper.Map<OrderResponse>(order);
 
-                applications.Add(new(
-                    a.Id,
-                    fromMember,
-                    forOrder
-                    ));
-            };
+                applications.Add(new(a.Id, fromMember, forOrder));
+            }
+            ;
 
             ClientResponse client = new(
                 user.Id,
@@ -191,7 +149,7 @@ namespace ites.Application.Services
                 user.JobTitle,
                 orders,
                 applications
-                );
+            );
             return client;
         }
     }

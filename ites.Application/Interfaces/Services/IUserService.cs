@@ -1,5 +1,4 @@
 ﻿using ites.Application.Contracts.Users;
-using ites.Core.Models;
 
 namespace ites.Application.Interfaces.Services
 {
@@ -7,8 +6,6 @@ namespace ites.Application.Interfaces.Services
     {
         Task<string> LoginAsync(string email, string password);
         Task RegisterAsync(string name, string email, string password, string role);
-        Task<UserProfileResponse> GetFromTokenAsync(string token);
-        Task<Guid> GetIdFromTokenAsync(string token);
         Task<UserProfileResponse> GetAsync(Guid id);
         Task UpdateAsync(
             Guid id,
@@ -18,8 +15,8 @@ namespace ites.Application.Interfaces.Services
             string description,
             string? jobTitle
         );
-        Task<string> GetRoleAsync(string token);
+        Task<string> GetRoleAsync(Guid userId);
         Task<IList<UserProfileResponse>> GetManyAsync(IList<Guid> ids);
-        Task DeleteAsync(string token);
+        Task DeleteAsync(Guid userId);
     }
 }

@@ -3,45 +3,34 @@ using ites.Application.Interfaces.Auth;
 using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
-using ites.Core.Models;
 using ites.Core.Exeptions;
+using ites.Core.Models;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ites.Application.Services
 {
     public sealed class CompetitionsService(
-        IMapper mapper,
         ICompetitionsRepository competitionsRepository,
-        IJwtProvider jwtProvider,
-        IUserService userService,
-        IApplicationsRepository applicationsRepository)
-            : ICompetitionsService
+        IApplicationsRepository applicationsRepository
+    ) : ICompetitionsService
     {
         private readonly ICompetitionsRepository _competitionsRepository = competitionsRepository;
         private readonly IApplicationsRepository _applicationsRepository = applicationsRepository;
-        private readonly IUserService _userService = userService;
-        private readonly IMapper _mapper = mapper;
-        private readonly IJwtProvider _jwtProvider = jwtProvider;
 
-        public async Task AddApplicationAsync(string token, Guid forId)
+        public async Task AddApplicationAsync(Guid userId, Guid forId)
         {
-            Guid fromMemberId = await _userService
-                .GetIdFromTokenAsync(token);
-            Core.Models.Application application = new(Guid.Empty, fromMemberId, forId);
-            await _applicationsRepository
-                .CreateForCompetitionAsync(application);
-
+            Core.Models.Application application = new(Guid.Empty, userId, forId);
+            await _applicationsRepository.CreateForCompetitionAsync(application);
         }
 
-        public async Task CreateAsync(string token, string contentInHtml)
+        public async Task CreateAsync(Guid userId, string contentInHtml)
         {
-            Guid orgId = await GetUserIdFromTokenAsync(token);
             Competition competition = new(Guid.NewGuid(), contentInHtml);
 
-            bool isCreated = await _competitionsRepository
-                .CreateAsync(orgId, competition);
+            bool isCreated = await _competitionsRepository.CreateAsync(userId, competition);
 
-            if (!isCreated) throw new NotFoundException("Пользователь не найден");
+            if (!isCreated)
+                throw new NotFoundException("Пользователь не найден");
         }
 
         public Task DeleteAsync(Guid id)
@@ -51,48 +40,37 @@ namespace ites.Application.Services
 
         public async Task<Competition> GetAsync(Guid id)
         {
-            Competition competition = await _competitionsRepository
-                .GetByIdAsync(id)
-                    ?? throw new NotFoundException("Конкурс не найден");
+            Competition competition =
+                await _competitionsRepository.GetByIdAsync(id)
+                ?? throw new NotFoundException("Конкурс не найден");
 
             return competition;
         }
 
         public async Task<IList<Competition>> GetAsync()
         {
-            return await _competitionsRepository
-                .GetAllAsync();
+            return await _competitionsRepository.GetAllAsync();
         }
 
         public async Task<IList<Competition>> GetAsync(IList<Guid> ids)
         {
-            return await _competitionsRepository
-                .GetAllWithIdAsync(ids);
+            return await _competitionsRepository.GetAllWithIdAsync(ids);
         }
 
         public async Task HandleApplicationAsync(Guid id, bool isAccept)
         {
-            await _applicationsRepository
-                .HandleCompetitionAsync(id, isAccept);
+            await _applicationsRepository.HandleCompetitionAsync(id, isAccept);
         }
 
-        public Task UpdateAsync(Guid id, string title, string description, DateTime startDate, DateTime endDate)
+        public Task UpdateAsync(
+            Guid id,
+            string title,
+            string description,
+            DateTime startDate,
+            DateTime endDate
+        )
         {
             throw new NotImplementedException();
-        }
-
-        private async Task<Guid> GetUserIdFromTokenAsync(string token)
-        {
-            TokenValidationResult validationResult = await _jwtProvider
-                .ValidateTokenAsync(token);
-
-            if (!validationResult.IsValid)
-                throw new UnauthorizedException();
-
-            string id = validationResult.Claims[CustomClaims.UserId].ToString()
-                ?? throw new UnauthorizedException();
-
-            return Guid.Parse(id);
         }
     }
 }

@@ -3,10 +3,8 @@ using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Auth;
 using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
-using ites.Core.Enums;
 using ites.Core.Exeptions;
 using ites.Core.Models;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ites.Application.Services
 {
@@ -48,14 +46,6 @@ namespace ites.Application.Services
             return token;
         }
 
-        public async Task<UserProfileResponse> GetFromTokenAsync(string token)
-        {
-            Guid id = await GetIdFromTokenAsync(token);
-            User? user = await _userRepository.GetByIdAsync(id);
-
-            return _mapper.Map<UserProfileResponse>(user);
-        }
-
         public async Task<UserProfileResponse> GetAsync(Guid id)
         {
             User? user = await _userRepository.GetByIdAsync(id);
@@ -81,25 +71,10 @@ namespace ites.Application.Services
             );
         }
 
-        public async Task<Guid> GetIdFromTokenAsync(string token)
+        public async Task<string> GetRoleAsync(Guid userId)
         {
-            TokenValidationResult validationResult = await _jwtProvider.ValidateTokenAsync(token);
-
-            if (!validationResult.IsValid)
-                throw new UnauthorizedException();
-
-            string id =
-                validationResult.Claims[CustomClaims.UserId].ToString()
-                ?? throw new UnauthorizedException();
-
-            return Guid.Parse(id);
-        }
-
-        public async Task<string> GetRoleAsync(string token)
-        {
-            Guid id = await GetIdFromTokenAsync(token);
             string role =
-                await _userRepository.GetRoleByIdAsync(id)
+                await _userRepository.GetRoleByIdAsync(userId)
                 ?? throw new NotFoundException("Пользователь не найден");
 
             return role;
@@ -111,11 +86,9 @@ namespace ites.Application.Services
             return _mapper.Map<UserProfileResponse[]>(users);
         }
 
-        public async Task DeleteAsync(string token)
+        public async Task DeleteAsync(Guid userId)
         {
-            Guid id = await GetIdFromTokenAsync(token);
-
-            await _userRepository.DeleteByIdAsync(id);
+            await _userRepository.DeleteByIdAsync(userId);
         }
     }
 }

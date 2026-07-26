@@ -40,8 +40,8 @@ namespace ites.Server.Controllers
         [HttpGet("role")]
         public async Task<IActionResult> GetRole()
         {
-            string token = GetJwtFromHeaders();
-            string role = await _userService.GetRoleAsync(token);
+            Guid userId = GetUserIdFromJwt();
+            string role = await _userService.GetRoleAsync(userId);
             return Ok(role);
         }
 
@@ -49,8 +49,8 @@ namespace ites.Server.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> Get()
         {
-            string token = GetJwtFromHeaders();
-            UserProfileResponse user = await _userService.GetFromTokenAsync(token);
+            Guid userId = GetUserIdFromJwt();
+            UserProfileResponse user = await _userService.GetAsync(userId);
             return Ok(user);
         }
 
@@ -65,11 +65,10 @@ namespace ites.Server.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update(UpdateUserRequest request)
         {
-            string token = GetJwtFromHeaders();
-            Guid id = await _userService.GetIdFromTokenAsync(token);
+            Guid userId = GetUserIdFromJwt();
 
             await _userService.UpdateAsync(
-                id,
+                userId,
                 request.LastName,
                 request.FirstName,
                 request.MiddleName,
@@ -91,8 +90,8 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeMember)]
         public async Task<IActionResult> GetMember()
         {
-            string token = GetJwtFromHeaders();
-            MemberResponse member = await _profileService.GetMemberAsync(token);
+            Guid userId = GetUserIdFromJwt();
+            MemberResponse member = await _profileService.GetMemberAsync(userId);
             return Ok(member);
         }
 
@@ -107,8 +106,8 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeOrganizer)]
         public async Task<IActionResult> GetOrganizer()
         {
-            string token = GetJwtFromHeaders();
-            OrganizerResponse organizer = await _profileService.GetOrganizerAsync(token);
+            Guid userId = GetUserIdFromJwt();
+            OrganizerResponse organizer = await _profileService.GetOrganizerAsync(userId);
             return Ok(organizer);
         }
 
@@ -132,8 +131,8 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeClient)]
         public async Task<IActionResult> GetClient()
         {
-            string token = GetJwtFromHeaders();
-            ClientResponse client = await _profileService.GetClientAsync(token);
+            Guid userId = GetUserIdFromJwt();
+            ClientResponse client = await _profileService.GetClientAsync(userId);
             return Ok(client);
         }
 
