@@ -40,7 +40,7 @@ namespace ites.Server.Controllers
         [HttpGet("role")]
         public async Task<IActionResult> GetRole()
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             string role = await _userService.GetRoleAsync(token);
             return Ok(role);
         }
@@ -49,7 +49,7 @@ namespace ites.Server.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> Get()
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             UserProfileResponse user = await _userService.GetFromTokenAsync(token);
             return Ok(user);
         }
@@ -65,7 +65,7 @@ namespace ites.Server.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update(UpdateUserRequest request)
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             Guid id = await _userService.GetIdFromTokenAsync(token);
 
             await _userService.UpdateAsync(
@@ -91,7 +91,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeMember)]
         public async Task<IActionResult> GetMember()
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             MemberResponse member = await _profileService.GetMemberAsync(token);
             return Ok(member);
         }
@@ -107,7 +107,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeOrganizer)]
         public async Task<IActionResult> GetOrganizer()
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             OrganizerResponse organizer = await _profileService.GetOrganizerAsync(token);
             return Ok(organizer);
         }
@@ -132,7 +132,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeClient)]
         public async Task<IActionResult> GetClient()
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             ClientResponse client = await _profileService.GetClientAsync(token);
             return Ok(client);
         }
@@ -154,7 +154,7 @@ namespace ites.Server.Controllers
                     SameSite = SameSiteMode.None,
                     HttpOnly = true,
                     Secure = true,
-                    IsEssential = true
+                    IsEssential = true,
                 }
             );
         }

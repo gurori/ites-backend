@@ -5,11 +5,19 @@ namespace ites.Server.Controllers
 {
     public abstract class BaseController : ControllerBase
     {
-        protected string GetTokenFromCookies()
+        private const string _bearerPrefix = "Bearer ";
+
+        protected string GetJwtFromHeaders()
         {
-            string? token = Request.Cookies["auth"] ?? throw new UnauthorizedException();
-            
-            return token;
+            var authorization = Request.Headers.Authorization.ToString();
+
+            if (
+                string.IsNullOrWhiteSpace(authorization)
+                || !authorization.StartsWith(_bearerPrefix, StringComparison.OrdinalIgnoreCase)
+            )
+                throw new UnauthorizedException();
+
+            return authorization[_bearerPrefix.Length..].Trim();
         }
     }
 }

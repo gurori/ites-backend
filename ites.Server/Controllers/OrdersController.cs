@@ -16,7 +16,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.CreateOrd)]
         public async Task<IActionResult> Create(OrderRequest request)
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             await _ordersService.CreateAsync(
                 token,
                 request.Title,
@@ -49,7 +49,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.AddOrdAppl)]
         public async Task<IActionResult> AddApplication(Guid id)
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             await _ordersService.AddApplicationAsync(token, id);
             return Ok();
         }
@@ -58,7 +58,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.HandleOrdAppl)]
         public async Task<IActionResult> HandleApplication(Guid id, bool accept)
         {
-            string token = GetTokenFromCookies();
+            string token = GetJwtFromHeaders();
             await _ordersService.HandleApplicationAsync(id, accept);
             return Ok();
         }
