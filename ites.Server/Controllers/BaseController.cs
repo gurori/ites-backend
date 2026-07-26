@@ -1,4 +1,5 @@
-﻿using ites.Core.Exeptions;
+﻿using ites.Core.Enums;
+using ites.Core.Exeptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ites.Server.Controllers
@@ -18,6 +19,15 @@ namespace ites.Server.Controllers
                 throw new UnauthorizedException();
 
             return authorization[_bearerPrefix.Length..].Trim();
+        }
+
+        protected Guid GetUserIdFromJwt()
+        {
+            string? userIdString =
+                (User.Claims.FirstOrDefault(c => c.Type == CustomClaims.UserId)?.Value)
+                ?? throw new UnauthorizedException();
+
+            return new Guid(userIdString);
         }
     }
 }
