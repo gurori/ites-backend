@@ -3,7 +3,6 @@ using ites.Infastructure.Auth;
 using ites.Infastructure.Mapping;
 using ites.Server.Extensions;
 using ites.Server.Filters;
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -72,15 +71,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseCookiePolicy(
-    new CookiePolicyOptions
-    {
-        MinimumSameSitePolicy = SameSiteMode.None,
-        HttpOnly = HttpOnlyPolicy.Always,
-        Secure = CookieSecurePolicy.Always,
-    }
-);
 
 app.UseCors();
 
