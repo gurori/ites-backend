@@ -28,16 +28,6 @@ namespace ites.Server.Extensions
 
                     options.TokenValidationParameters = JwtParameters
                         .GetTokenValidationParameters(jwtOptions!);
-
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            context.Token = context.Request.Cookies["auth"];
-
-                            return Task.CompletedTask;
-                        }
-                    };
                 });
 
             services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
