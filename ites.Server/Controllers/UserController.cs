@@ -14,6 +14,9 @@ namespace ites.Server.Controllers
     {
         private readonly IUserService _userService = userService;
         private readonly IUserProfileService _profileService = profileService;
+        private static readonly string _orginizerConfirmKey =
+            Environment.GetEnvironmentVariable("ORGANIZER_CONFIRM_KEY")
+            ?? throw new Exception("Enviroment variable 'ORGANIZER_CONFIRM_KEY' is not found");
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
@@ -121,10 +124,9 @@ namespace ites.Server.Controllers
         [HttpPost("organizer/confirm/{key}")]
         public async Task<IActionResult> ConfirmKey(string key)
         {
-            await Task.CompletedTask;
-            if (key == "198301")
-                return Ok();
-            return Conflict();
+            return await Task.FromResult<IActionResult>(
+                key.Trim() == _orginizerConfirmKey ? Ok() : Conflict()
+            );
         }
 
         [HttpGet("client")]

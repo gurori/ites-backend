@@ -3,6 +3,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTPS_PORTS=8080
+      - ORGANIZER_CONFIRM_KEY=198301
 
   db:
     environment:
