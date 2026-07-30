@@ -4,6 +4,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ORGANIZER_CONFIRM_KEY=198301
+    volumes:
+      - ./:/src
 
   db:
     environment:

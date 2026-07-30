@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    volumes:
-      - ./:/src
     networks:
       - ites
     depends_on:
