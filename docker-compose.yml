@@ -14,7 +14,7 @@ services:
 
   db:
     container_name: ites.db
-    image: postgres:latest
+    image: postgres:18
     restart: always
     ports:
       - "5432:5432"
