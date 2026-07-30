@@ -16,8 +16,8 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.CreateTeam)]
         public async Task<IActionResult> Create(TeamRequest request)
         {
-            string token = GetJwtFromHeaders();
-            await _teamService.CreateAsync(token, request.Name, request.Description);
+            Guid userId = GetUserId();
+            await _teamService.CreateAsync(userId, request.Name, request.Description);
             return Ok();
         }
 
@@ -37,8 +37,8 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.AddTeamAppl)]
         public async Task<IActionResult> AddApplication(Guid id)
         {
-            string token = GetJwtFromHeaders();
-            await _teamService.AddApplicationAsync(token, id);
+            Guid userId = GetUserId();
+            await _teamService.AddApplicationAsync(userId, id);
             return Ok();
         }
 
@@ -46,7 +46,6 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.HandleTeamAppl)]
         public async Task<IActionResult> HandleApplication(Guid id, bool accept)
         {
-            string token = GetJwtFromHeaders();
             await _teamService.HandleApplicationAsync(id, accept);
             return Ok();
         }

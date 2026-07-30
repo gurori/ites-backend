@@ -2,34 +2,18 @@
 using ites.Core.Exeptions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ites.Server.Controllers
+namespace ites.Server.Controllers;
+
+public abstract class BaseController : ControllerBase
 {
-    public abstract class BaseController : ControllerBase
+    protected Guid GetUserId()
     {
-        private const string _bearerPrefix = "Bearer ";
+        string userIdString =
+            User.FindFirst(CustomClaims.UserId)?.Value ?? throw new UnauthorizedException();
 
-        protected string GetJwtFromHeaders()
-        {
-            var authorization = Request.Headers.Authorization.ToString();
+        if (!Guid.TryParse(userIdString, out var userId))
+            throw new UnauthorizedException();
 
-            if (
-                string.IsNullOrWhiteSpace(authorization)
-                || !authorization.StartsWith(_bearerPrefix, StringComparison.OrdinalIgnoreCase)
-            )
-                throw new UnauthorizedException();
-
-            return authorization[_bearerPrefix.Length..].Trim();
-        }
-
-        protected Guid GetUserId()
-        {
-            string userIdString =
-                User.FindFirst(CustomClaims.UserId)?.Value ?? throw new UnauthorizedException();
-
-            if (!Guid.TryParse(userIdString, out var userId))
-                throw new UnauthorizedException();
-
-            return userId;
-        }
+        return userId;
     }
 }
