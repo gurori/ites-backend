@@ -43,7 +43,7 @@ namespace ites.Server.Controllers
         [HttpGet("role")]
         public async Task<IActionResult> GetRole()
         {
-            Guid userId = GetUserIdFromJwt();
+            Guid userId = GetUserId();
             string role = await _userService.GetRoleAsync(userId);
             return Ok(role);
         }
@@ -52,7 +52,7 @@ namespace ites.Server.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> Get()
         {
-            Guid userId = GetUserIdFromJwt();
+            Guid userId = GetUserId();
             UserProfileResponse user = await _userService.GetAsync(userId);
             return Ok(user);
         }
@@ -68,7 +68,7 @@ namespace ites.Server.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update(UpdateUserRequest request)
         {
-            Guid userId = GetUserIdFromJwt();
+            Guid userId = GetUserId();
 
             await _userService.UpdateAsync(
                 userId,
@@ -93,7 +93,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeMember)]
         public async Task<IActionResult> GetMember()
         {
-            Guid userId = GetUserIdFromJwt();
+            Guid userId = GetUserId();
             MemberResponse member = await _profileService.GetMemberAsync(userId);
             return Ok(member);
         }
@@ -109,7 +109,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeOrganizer)]
         public async Task<IActionResult> GetOrganizer()
         {
-            Guid userId = GetUserIdFromJwt();
+            Guid userId = GetUserId();
             OrganizerResponse organizer = await _profileService.GetOrganizerAsync(userId);
             return Ok(organizer);
         }
@@ -133,7 +133,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.BeClient)]
         public async Task<IActionResult> GetClient()
         {
-            Guid userId = GetUserIdFromJwt();
+            Guid userId = GetUserId();
             ClientResponse client = await _profileService.GetClientAsync(userId);
             return Ok(client);
         }

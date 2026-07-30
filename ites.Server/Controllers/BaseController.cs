@@ -21,13 +21,15 @@ namespace ites.Server.Controllers
             return authorization[_bearerPrefix.Length..].Trim();
         }
 
-        protected Guid GetUserIdFromJwt()
+        protected Guid GetUserId()
         {
-            string? userIdString =
-                (User.Claims.FirstOrDefault(c => c.Type == CustomClaims.UserId)?.Value)
-                ?? throw new UnauthorizedException();
+            string userIdString =
+                User.FindFirst(CustomClaims.UserId)?.Value ?? throw new UnauthorizedException();
 
-            return new Guid(userIdString);
+            if (!Guid.TryParse(userIdString, out var userId))
+                throw new UnauthorizedException();
+
+            return userId;
         }
     }
 }

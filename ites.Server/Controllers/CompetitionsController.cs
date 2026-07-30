@@ -18,7 +18,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.CreateCmp)]
         public async Task<IActionResult> Create(CompetitionRequest request)
         {
-            Guid userId = GetUserIdFromJwt();
+            Guid userId = GetUserId();
             await _competitionsService.CreateAsync(userId, request.ContentInHtml);
             return Ok();
         }
@@ -47,7 +47,7 @@ namespace ites.Server.Controllers
         [HasPermission(Permission.AddCmpAppl)]
         public async Task<IActionResult> AddAppication(Guid id)
         {
-            Guid userId = GetUserIdFromJwt();
+            Guid userId = GetUserId();
             await _competitionsService.AddApplicationAsync(userId, id);
             return Ok();
         }
