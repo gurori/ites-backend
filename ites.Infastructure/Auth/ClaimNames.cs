@@ -1,6 +1,6 @@
-﻿namespace ites.Core.Structs;
+﻿namespace ites.Infastructure.Auth;
 
-public struct CustomClaims
+public static class ClaimNames
 {
     public const string Permissions = "ps";
     public const string UserId = "uid";
