@@ -1,5 +1,5 @@
-﻿using ites.Core.Enums;
-using ites.Core.Exeptions;
+﻿using ites.Core.Exeptions;
+using ites.Core.Structs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ites.Server.Controllers;

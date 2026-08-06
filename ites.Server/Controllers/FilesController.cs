@@ -1,4 +1,4 @@
-﻿using ites.Core.Enums;
+﻿using ites.Core.Structs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static System.IO.File;
@@ -87,7 +87,7 @@ namespace ites.Server.Controllers
 
             return fileNameWithoutExtension switch
             {
-                ApiFileName.Avatar => $"{fileNameWithoutExtension}.jpg",
+                FileNames.UserAvatar => $"{fileNameWithoutExtension}.jpg",
 
                 _ => fileName,
             };
