@@ -1,5 +1,4 @@
 using ites.Core.Exeptions;
-using ites.Core.Structs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 
