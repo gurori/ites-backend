@@ -1,4 +1,5 @@
 ﻿using ites.Application.Interfaces.Repositories;
+using ites.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories
@@ -7,7 +8,7 @@ namespace ites.DataAccess.Repositories
     {
         private readonly ItesDbContext _context = context;
 
-        public async Task<HashSet<string>> GetPermissionsAsync(string roleName)
+        public async Task<HashSet<int>> GetPermissionsIdsAsync(string roleName)
         {
             var permissions = await _context
                 .Roles.Include(r => r.Permissions)
@@ -15,7 +16,10 @@ namespace ites.DataAccess.Repositories
                 .Select(r => r.Permissions)
                 .ToArrayAsync();
 
-            return permissions.SelectMany(p => p).Select(p => p.Name).ToHashSet();
+            return permissions
+                .SelectMany(p => p)
+                .Select(p => (int)Enum.Parse<Permission>(p.Name))
+                .ToHashSet();
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IRoleRepository
     {
-        public Task<HashSet<string>> GetPermissionsAsync(string roleName);
+        public Task<HashSet<int>> GetPermissionsIdsAsync(string roleName);
     }
 }

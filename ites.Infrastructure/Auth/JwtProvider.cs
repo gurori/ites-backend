@@ -19,10 +19,11 @@ namespace ites.Infrastructure.Auth
         {
             List<Claim> claims = [new(ClaimNames.UserId, user.Id.ToString())];
 
-            HashSet<string> permissions = await _permissionService.GetPermissionsAsync(user.Role);
+            HashSet<int> permissionsIds = await _permissionService.GetPermissionsIdsAsync(
+                user.Role
+            );
 
-            foreach (string permission in permissions)
-                claims.Add(new(ClaimNames.Permissions, permission));
+            claims.Add(new(ClaimNames.Permissions, string.Join(';', permissionsIds)));
 
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
