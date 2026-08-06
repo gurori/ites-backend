@@ -3,7 +3,7 @@ using ites.Core.Structs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 
-namespace ites.Infastructure.Files;
+namespace ites.Infrastructure.Files;
 
 public sealed class FileService(IWebHostEnvironment environment) : IFileService
 {

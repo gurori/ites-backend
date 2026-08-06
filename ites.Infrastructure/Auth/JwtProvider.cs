@@ -6,7 +6,7 @@ using ites.Core.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ites.Infastructure.Auth
+namespace ites.Infrastructure.Auth
 {
     public class JwtProvider(IOptions<JwtOptions> options, IPermissionService permissionService)
         : IJwtProvider

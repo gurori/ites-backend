@@ -1,11 +1,13 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.Text;
+﻿using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
-namespace ites.Infastructure.Auth
+namespace ites.Infrastructure.Auth
 {
     public static class JwtParameters
     {
-        public static TokenValidationParameters GetTokenValidationParameters(JwtOptions jwtOptions) =>
+        public static TokenValidationParameters GetTokenValidationParameters(
+            JwtOptions jwtOptions
+        ) =>
             new()
             {
                 ValidateIssuer = true,
@@ -15,7 +17,8 @@ namespace ites.Infastructure.Auth
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(jwtOptions!.SecretKey)),
+                    Encoding.UTF8.GetBytes(jwtOptions!.SecretKey)
+                ),
             };
     }
 }

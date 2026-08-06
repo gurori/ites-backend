@@ -2,7 +2,7 @@
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Core.Models;
-using ites.Infastructure.Auth;
+using ites.Infrastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ites.Server.Controllers

@@ -1,7 +1,7 @@
 ﻿using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
-using ites.Infastructure.Auth;
+using ites.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

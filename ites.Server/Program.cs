@@ -1,6 +1,6 @@
 using ites.DataAccess;
-using ites.Infastructure.Auth;
-using ites.Infastructure.Mapping;
+using ites.Infrastructure.Auth;
+using ites.Infrastructure.Mapping;
 using ites.Server.Extensions;
 using ites.Server.Filters;
 using Microsoft.EntityFrameworkCore;

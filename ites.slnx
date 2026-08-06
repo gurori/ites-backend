@@ -2,6 +2,6 @@
   <Project Path="ites.Application/ites.Application.csproj" />
   <Project Path="ites.Core/ites.Core.csproj" />
   <Project Path="ites.DataAccess/ites.DataAccess.csproj" />
-  <Project Path="ites.Infastructure/ites.Infastructure.csproj" />
+  <Project Path="ites.Infrastructure/ites.Infrastructure.csproj" />
   <Project Path="ites.Server/ites.Server.csproj" />
 </Solution>

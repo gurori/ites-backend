@@ -1,4 +1,4 @@
-﻿using ites.Infastructure.Files;
+﻿using ites.Infrastructure.Files;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,4 +1,4 @@
-﻿namespace ites.Infastructure.Auth
+﻿namespace ites.Infrastructure.Auth
 {
     public class JwtOptions
     {

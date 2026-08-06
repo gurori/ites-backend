@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using ites.Core.Entities;
 
-namespace ites.Infastructure.Mapping
+namespace ites.Infrastructure.Mapping
 {
-    public class ApplicationAutoMapperProfile
-        : Profile
+    public class ApplicationAutoMapperProfile : Profile
     {
         public ApplicationAutoMapperProfile()
         {

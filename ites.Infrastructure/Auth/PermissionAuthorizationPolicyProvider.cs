@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace ites.Infastructure.Auth
+namespace ites.Infrastructure.Auth
 {
     public class PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
-                : DefaultAuthorizationPolicyProvider(options)
+        : DefaultAuthorizationPolicyProvider(options)
     {
         public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
         {
             AuthorizationPolicy? policy = await base.GetPolicyAsync(policyName);
-            
-            if(policy is not null)
+
+            if (policy is not null)
                 return policy;
 
             return new AuthorizationPolicyBuilder()

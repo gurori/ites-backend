@@ -1,4 +1,4 @@
-namespace ites.Infastructure.Files;
+namespace ites.Infrastructure.Files;
 
 public interface IFileService
 {

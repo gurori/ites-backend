@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using ites.Application.Contracts.Orders;
-using ites.Core.Models;
 using ites.Core.Entities;
+using ites.Core.Models;
 
-namespace ites.Infastructure.Mapping
+namespace ites.Infrastructure.Mapping
 {
-    public class OrderAutoMapperProfile
-        : Profile
+    public class OrderAutoMapperProfile : Profile
     {
         public OrderAutoMapperProfile()
         {

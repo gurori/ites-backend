@@ -3,8 +3,8 @@ using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Application.Services;
 using ites.DataAccess.Repositories;
-using ites.Infastructure.Auth;
-using ites.Infastructure.Files;
+using ites.Infrastructure.Auth;
+using ites.Infrastructure.Files;
 
 namespace ites.Server.Extensions;
 

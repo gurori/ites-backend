@@ -1,8 +1,8 @@
 ﻿using ites.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ites.Infastructure.Auth
+namespace ites.Infrastructure.Auth
 {
-    public sealed class HasPermissionAttribute(Permission permission) 
+    public sealed class HasPermissionAttribute(Permission permission)
         : AuthorizeAttribute(policy: permission.ToString()) { }
 }

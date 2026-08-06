@@ -1,5 +1,5 @@
 ﻿using ites.Core.Exeptions;
-using ites.Infastructure.Auth;
+using ites.Infrastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ites.Server.Controllers;
