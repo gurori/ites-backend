@@ -2,15 +2,15 @@
 {
     public enum Permission
     {
-        CreateOrd = 1,
-        CreateCmp,
+        CreateOrder = 1,
+        CreateCompetition,
         CreateTeam,
-        AddCmpAppl,
-        AddOrdAppl,
-        AddTeamAppl,
-        HandleCmpAppl,
-        HandleOrdAppl,
-        HandleTeamAppl,
+        AddCompetitionApplication,
+        AddOrderApplication,
+        AddTeamApplication,
+        HandleCompetitionApplication,
+        HandleOrderApplication,
+        HandleTeamApplication,
         BeMember,
         BeOrganizer,
         BeClient,

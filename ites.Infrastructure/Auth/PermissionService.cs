@@ -7,9 +7,9 @@ namespace ites.Infrastructure.Auth
     {
         private readonly IRoleRepository _roleRepository = roleRepository;
 
-        public async Task<HashSet<string>> GetPermissionsAsync(string roleName)
+        public async Task<HashSet<int>> GetPermissionsIdsAsync(string roleName)
         {
-            return await _roleRepository.GetPermissionsAsync(roleName);
+            return await _roleRepository.GetPermissionsIdsAsync(roleName);
         }
     }
 }

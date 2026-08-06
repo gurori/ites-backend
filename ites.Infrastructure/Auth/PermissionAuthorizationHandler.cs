@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ites.Core.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ites.Infrastructure.Auth
 {
@@ -9,12 +10,15 @@ namespace ites.Infrastructure.Auth
             PermissionRequirement requirement
         )
         {
-            HashSet<string> permissions = context
+            var permissionsIds = context
                 .User.Claims.Where(c => c.Type == ClaimNames.Permissions)
                 .Select(c => c.Value)
+                .First()
+                .Split()
+                .Select(Enum.Parse<Permission>)
                 .ToHashSet();
 
-            if (permissions.Contains(requirement.Permission))
+            if (permissionsIds.Contains(requirement.Permission))
                 context.Succeed(requirement);
 
             return Task.CompletedTask;
