@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using ites.Application.Interfaces.Auth;
-using ites.Application.Interfaces.Repositories;
+﻿using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
-using ites.Core.Enums;
 using ites.Core.Exeptions;
 using ites.Core.Models;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ites.Application.Services
 {

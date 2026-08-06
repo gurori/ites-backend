@@ -39,19 +39,5 @@ namespace ites.Infastructure.Auth
 
             return _tokenHandler.WriteToken(token);
         }
-
-        public ClaimsPrincipal ValidateToken(string token)
-        {
-            var tokenValidationParameters = JwtParameters.GetTokenValidationParameters(_options);
-
-            return _tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
-        }
-
-        public async Task<TokenValidationResult> ValidateTokenAsync(string token)
-        {
-            var tokenValidationParameters = JwtParameters.GetTokenValidationParameters(_options);
-
-            return await _tokenHandler.ValidateTokenAsync(token, tokenValidationParameters);
-        }
     }
 }
