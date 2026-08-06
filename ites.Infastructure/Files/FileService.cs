@@ -1,58 +1,64 @@
-using System.IO;
 using ites.Core.Exeptions;
 using ites.Core.Structs;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace ites.Infastructure.Files;
 
 public sealed class FileService(IWebHostEnvironment environment) : IFileService
 {
     private readonly string _webRootPath = environment.WebRootPath;
+    private readonly FileExtensionContentTypeProvider _contentTypeProvider = new();
 
-    public async Task UploadAsync(string directory, Guid id, IFormFile file)
+    public async Task UploadAsync(string directory, Guid id, Stream stream, string fileName)
     {
+        directory = Path.GetFileName(directory);
+        fileName = Path.GetFileName(fileName);
+
         string uploadFolder = Path.Combine(_webRootPath, "uploads", directory, id.ToString());
 
         Directory.CreateDirectory(uploadFolder);
 
-        string fileName = GetApiFileName(file.FileName);
-        string filePath = Path.Combine(uploadFolder, fileName);
+        string apiFileName = GetApiFileName(fileName);
+        string filePath = Path.Combine(uploadFolder, apiFileName);
 
-        await using FileStream stream = new(filePath, FileMode.Create);
-        await file.CopyToAsync(stream);
+        await using FileStream fileStream = new(
+            filePath,
+            FileMode.Create,
+            FileAccess.Write,
+            FileShare.None
+        );
+
+        await stream.CopyToAsync(fileStream);
     }
 
-    public async Task<(Stream FileStream, string ContentType)> GetAsync(
+    public Task<(Stream FileStream, string ContentType)> GetAsync(
         string directory,
         Guid id,
         string fileName
     )
     {
+        fileName = Path.GetFileName(fileName);
+        directory = Path.GetFileName(directory);
+
         string rootFolder = Path.Combine(_webRootPath, "uploads", directory);
         string folder = Path.Combine(rootFolder, id.ToString());
 
-        string contentType = GetContentType(Path.GetExtension(fileName));
-        string filePath;
-
-        if (!Directory.Exists(folder))
-        {
-            filePath = Path.Combine(rootFolder, "default", fileName);
-
-            if (!File.Exists(filePath))
-                throw new NotFoundException($"File {fileName} not found.");
-        }
-        else
-        {
-            filePath = Path.Combine(folder, fileName);
-        }
+        string filePath = Directory.Exists(folder)
+            ? Path.Combine(folder, fileName)
+            : Path.Combine(rootFolder, "default", fileName);
 
         if (!File.Exists(filePath))
             throw new NotFoundException($"File {fileName} not found.");
 
-        Stream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        if (!_contentTypeProvider.TryGetContentType(filePath, out string? contentType))
+        {
+            contentType = "application/octet-stream";
+        }
 
-        return (stream, contentType);
+        Stream stream = File.OpenRead(filePath);
+
+        return Task.FromResult((stream, contentType));
     }
 
     private static string GetApiFileName(string fileName)
@@ -65,11 +71,4 @@ public sealed class FileService(IWebHostEnvironment environment) : IFileService
             _ => fileName,
         };
     }
-
-    private static string GetContentType(string extension) =>
-        extension switch
-        {
-            ".jpg" => "image/jpeg",
-            _ => "application/octet-stream",
-        };
 }

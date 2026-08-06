@@ -20,7 +20,12 @@ namespace ites.Server.Controllers
             if (image.FormFile is null || image.FormFile.Length == 0)
                 return BadRequest("File is required.");
 
-            await _fileService.UploadAsync(directory, id, image.FormFile);
+            await _fileService.UploadAsync(
+                directory,
+                id,
+                image.FormFile.OpenReadStream(),
+                image.FormFile.FileName
+            );
 
             return Ok();
         }
