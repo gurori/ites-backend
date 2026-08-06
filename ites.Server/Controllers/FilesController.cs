@@ -1,107 +1,40 @@
-﻿using ites.Core.Structs;
+﻿using ites.Infastructure.Files;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static System.IO.File;
 
 namespace ites.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FilesController(IWebHostEnvironment webHostEnvironment) : ControllerBase
+    public class FilesController(IFileService fileService) : ControllerBase
     {
-        private readonly string _webRootPath = webHostEnvironment.WebRootPath;
+        private readonly IFileService _fileService = fileService;
 
         [Authorize]
         [HttpPost("{directory}/{id:guid}")]
         public async Task<IActionResult> Upload(string directory, Guid id, [FromForm] Image image)
         {
-            try
-            {
-                Console.WriteLine(
-                    $"Incoming request: directory={directory}, id={id}, image={image.FormFile?.FileName}"
-                );
-                if (!ModelState.IsValid)
-                {
-                    Console.WriteLine(ModelState);
-                    return BadRequest(ModelState);
-                }
-                IFormFile? file = image.FormFile;
-                if (file is null || file.Length == 0)
-                    return BadRequest("file is null");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                string uploadFolder = Path.Combine(
-                    _webRootPath,
-                    "uploads",
-                    directory,
-                    id.ToString()
-                );
+            if (image.FormFile is null || image.FormFile.Length == 0)
+                return BadRequest("File is required.");
 
-                if (!Directory.Exists(uploadFolder))
-                    Directory.CreateDirectory(uploadFolder);
+            await _fileService.UploadAsync(directory, id, image.FormFile);
 
-                string fileName = GetApiFileName(file.FileName);
-                string filePath = Path.Combine(uploadFolder, fileName);
-
-                using FileStream stream = new(filePath, FileMode.Create);
-                await file.CopyToAsync(stream);
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return BadRequest(ex.ToString());
-            }
+            return Ok();
         }
 
         [HttpGet("{directory}/{id:guid}/{fileName}")]
         public async Task<IActionResult> Get(string directory, Guid id, string fileName)
         {
-            string rootFolder = Path.Combine(_webRootPath, "uploads", directory);
-            string folder = Path.Combine(rootFolder, id.ToString());
+            var (file, contentType) = await _fileService.GetAsync(directory, id, fileName);
 
-            string contentType = GetContentType(Path.GetExtension(fileName));
-
-            if (!Directory.Exists(folder))
-            {
-                string defualtFolder = Path.Combine(rootFolder, "defualt", fileName);
-
-                if (!Exists(defualtFolder))
-                    return NotFound();
-
-                byte[] defualtFileBytes = await ReadAllBytesAsync(defualtFolder);
-
-                return File(defualtFileBytes, contentType);
-            }
-
-            string filePath = Path.Combine(folder, fileName);
-
-            byte[] fileBytes = await ReadAllBytesAsync(filePath);
-
-            return File(fileBytes, contentType);
+            return File(file, contentType);
         }
-
-        private static string GetApiFileName(string fileName)
-        {
-            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-
-            return fileNameWithoutExtension switch
-            {
-                FileNames.UserAvatar => $"{fileNameWithoutExtension}.jpg",
-
-                _ => fileName,
-            };
-        }
-
-        private static string GetContentType(string fileExtension) =>
-            fileExtension switch
-            {
-                ".jpg" => "image/jpeg",
-                _ => "application/octet-stream",
-            };
     }
 
-    public class Image
+    public sealed class Image
     {
         [FromForm(Name = "file")]
         public IFormFile? FormFile { get; set; }

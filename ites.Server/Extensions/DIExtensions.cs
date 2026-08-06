@@ -4,6 +4,7 @@ using ites.Application.Interfaces.Services;
 using ites.Application.Services;
 using ites.DataAccess.Repositories;
 using ites.Infastructure.Auth;
+using ites.Infastructure.Files;
 
 namespace ites.Server.Extensions;
 
@@ -31,6 +32,8 @@ public static class DIExtensions
         services.AddScoped<ITeamService, TeamService>();
         services.AddScoped<IUserProfileService, UserProfileService>();
         services.AddScoped<IModersService, ModersService>();
+
+        services.AddScoped<IFileService, FileService>();
 
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();

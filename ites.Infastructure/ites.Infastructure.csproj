@@ -20,4 +20,8 @@
     <ProjectReference Include="..\ites.DataAccess\ites.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
 </Project>
