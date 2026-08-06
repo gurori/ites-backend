@@ -13,7 +13,7 @@ namespace ites.Server.Controllers
         private readonly IOrdersService _ordersService = ordersService;
 
         [HttpPost]
-        [HasPermission(Permission.CreateOrd)]
+        [HasPermission(Permission.CreateOrder)]
         public async Task<IActionResult> Create(OrderRequest request)
         {
             Guid userId = GetUserId();
@@ -46,7 +46,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpPut("application/{id:guid}")]
-        [HasPermission(Permission.AddOrdAppl)]
+        [HasPermission(Permission.AddOrderApplication)]
         public async Task<IActionResult> AddApplication(Guid id)
         {
             Guid userId = GetUserId();
@@ -55,7 +55,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpPut("application/{id:guid}/{accept:bool}")]
-        [HasPermission(Permission.HandleOrdAppl)]
+        [HasPermission(Permission.HandleOrderApplication)]
         public async Task<IActionResult> HandleApplication(Guid id, bool accept)
         {
             await _ordersService.HandleApplicationAsync(id, accept);

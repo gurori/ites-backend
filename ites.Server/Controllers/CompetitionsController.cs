@@ -15,7 +15,7 @@ namespace ites.Server.Controllers
         private readonly ICompetitionsService _competitionsService = competitionsService;
 
         [HttpPost("create")]
-        [HasPermission(Permission.CreateCmp)]
+        [HasPermission(Permission.CreateCompetition)]
         public async Task<IActionResult> Create(CompetitionRequest request)
         {
             Guid userId = GetUserId();
@@ -44,7 +44,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpPut("application/{id:guid}")]
-        [HasPermission(Permission.AddCmpAppl)]
+        [HasPermission(Permission.AddCompetitionApplication)]
         public async Task<IActionResult> AddAppication(Guid id)
         {
             Guid userId = GetUserId();
@@ -53,7 +53,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpPut("application/{id:guid}/{accept:bool}")]
-        [HasPermission(Permission.HandleCmpAppl)]
+        [HasPermission(Permission.HandleCompetitionApplication)]
         public async Task<IActionResult> HandleApplication(Guid id, bool accept)
         {
             await _competitionsService.HandleApplicationAsync(id, accept);

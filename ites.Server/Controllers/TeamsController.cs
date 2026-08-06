@@ -34,7 +34,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpPut("application/{id:guid}")]
-        [HasPermission(Permission.AddTeamAppl)]
+        [HasPermission(Permission.AddTeamApplication)]
         public async Task<IActionResult> AddApplication(Guid id)
         {
             Guid userId = GetUserId();
@@ -43,7 +43,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpPut("application/{id:guid}/{accept:bool}")]
-        [HasPermission(Permission.HandleTeamAppl)]
+        [HasPermission(Permission.HandleTeamApplication)]
         public async Task<IActionResult> HandleApplication(Guid id, bool accept)
         {
             await _teamService.HandleApplicationAsync(id, accept);
