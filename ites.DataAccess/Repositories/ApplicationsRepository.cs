@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using ites.Application.Interfaces.Repositories;
-using ites.Core.Models;
 using ites.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using ites.Core.Interfaces.Repositories;
 
 namespace ites.DataAccess.Repositories
 {

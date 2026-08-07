@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Auth;
-using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
 using ites.Core.Exeptions;
+using ites.Core.Interfaces.Repositories;
 using ites.Core.Models;
 
 namespace ites.Application.Services

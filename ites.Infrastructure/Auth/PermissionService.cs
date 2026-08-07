@@ -1,5 +1,5 @@
 ﻿using ites.Application.Interfaces.Auth;
-using ites.Application.Interfaces.Repositories;
+using ites.Core.Interfaces.Repositories;
 
 namespace ites.Infrastructure.Auth
 {

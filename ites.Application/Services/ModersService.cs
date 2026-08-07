@@ -2,8 +2,8 @@ using AutoMapper;
 using ites.Application.Contracts.Moders;
 using ites.Application.Contracts.Orders;
 using ites.Application.Contracts.Teams;
-using ites.Application.Interfaces.Repositories;
 using ites.Application.Interfaces.Services;
+using ites.Core.Interfaces.Repositories;
 
 namespace ites.Application.Services
 {

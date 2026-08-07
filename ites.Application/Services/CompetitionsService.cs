@@ -1,6 +1,6 @@
-﻿using ites.Application.Interfaces.Repositories;
-using ites.Application.Interfaces.Services;
+﻿using ites.Application.Interfaces.Services;
 using ites.Core.Exeptions;
+using ites.Core.Interfaces.Repositories;
 using ites.Core.Models;
 
 namespace ites.Application.Services

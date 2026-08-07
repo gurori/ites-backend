@@ -1,5 +1,5 @@
-﻿using ites.Application.Interfaces.Repositories;
-using ites.Core.Enums;
+﻿using ites.Core.Enums;
+using ites.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories
