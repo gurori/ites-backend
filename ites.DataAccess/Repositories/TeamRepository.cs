@@ -20,7 +20,7 @@ namespace ites.DataAccess.Repositories
 
             TeamEntity teamEntity = new()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.CreateVersion7(),
                 AdminId = admin.Id,
                 Name = team.Name,
                 Description = team.Description,

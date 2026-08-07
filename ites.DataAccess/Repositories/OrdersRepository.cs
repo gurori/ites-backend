@@ -22,7 +22,7 @@ namespace ites.DataAccess.Repositories
 
             OrderEntity orderEntity = new()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.CreateVersion7(),
                 Title = order.Title,
                 Description = order.Description,
                 Price = order.Price,

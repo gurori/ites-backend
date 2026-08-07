@@ -23,7 +23,7 @@ namespace ites.DataAccess.Repositories
 
             CompetitionEntity competitionEntity = new()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.CreateVersion7(),
                 ContentInHtml = competition.ContentInHtml,
                 OrganizersIds = [userId],
             };

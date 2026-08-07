@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using ites.Core.Models;
 using ites.Core.Entities;
-using Microsoft.EntityFrameworkCore;
 using ites.Core.Interfaces.Repositories;
+using ites.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories
 {
@@ -13,16 +13,14 @@ namespace ites.DataAccess.Repositories
 
         public async Task<bool> CreateAsync(User user)
         {
-            bool isUserExist = await _context
-                .Users.AsNoTracking()
-                .AnyAsync(u => u.Email == user.Email);
+            bool isUserExist = await _context.Users.AnyAsync(u => u.Email == user.Email);
 
             if (isUserExist)
                 return false;
 
             var userEntity = new UserEntity()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.CreateVersion7(),
                 FirstName = user.FirstName,
                 PasswordHash = user.PasswordHash,
                 Email = user.Email,

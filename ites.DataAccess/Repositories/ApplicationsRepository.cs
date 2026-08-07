@@ -263,7 +263,7 @@ namespace ites.DataAccess.Repositories
 
             ApplicationEntity applicationEntity = new()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.CreateVersion7(),
                 For = application.For,
                 From = application.From,
             };
