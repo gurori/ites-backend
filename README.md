@@ -1,8 +1,12 @@
 # ITes Backend
 
-![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-10-blueviolet)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-blue)
-![Docker](https://img.shields.io/badge/docker-ready-blue)
+![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-10-512BD4?logo=dotnet)
+![C#](https://img.shields.io/badge/C%23-14-239120?logo=csharp)
+![Entity Framework Core](https://img.shields.io/badge/EF_Core-10-512BD4?logo=dotnet)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)
+![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?logo=swagger)
 
 > Backend of **ITes** — a platform for organizing IT competitions, hackathons, freelance orders, and team building.
 
