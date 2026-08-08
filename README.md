@@ -3,7 +3,6 @@
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-10-blueviolet)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-blue)
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 > Backend of **ITes** — a platform for organizing IT competitions, hackathons, freelance orders, and team building.
 
