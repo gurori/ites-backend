@@ -1,91 +1,90 @@
 ﻿using AutoMapper;
-using ites.Core.Models;
 using ites.Core.Entities;
-using Microsoft.EntityFrameworkCore;
 using ites.Core.Interfaces.Repositories;
+using ites.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace ites.DataAccess.Repositories
+namespace ites.DataAccess.Repositories;
+
+public sealed class TeamRepository(ItesDbContext context, IMapper mapper) : ITeamRepository
 {
-    public sealed class TeamRepository(ItesDbContext context, IMapper mapper) : ITeamRepository
+    private readonly ItesDbContext _context = context;
+    private readonly IMapper _mapper = mapper;
+
+    public async Task CreateAsync(Team team)
     {
-        private readonly ItesDbContext _context = context;
-        private readonly IMapper _mapper = mapper;
+        UserEntity? admin = await _context.Users.FirstOrDefaultAsync(u => u.Id == team.AdminId);
 
-        public async Task CreateAsync(Team team)
+        if (admin is null || admin.TeamId is not null)
+            return;
+
+        TeamEntity teamEntity = new()
         {
-            UserEntity? admin = await _context.Users.FirstOrDefaultAsync(u => u.Id == team.AdminId);
+            Id = Guid.CreateVersion7(),
+            AdminId = admin.Id,
+            Name = team.Name,
+            Description = team.Description,
+            MembersIds = [admin.Id],
+            IsPublic = false,
+        };
 
-            if (admin is null || admin.TeamId is not null)
-                return;
+        admin.TeamId = teamEntity.Id;
+        await _context.Teams.AddAsync(teamEntity);
+        await _context.SaveChangesAsync();
+    }
 
-            TeamEntity teamEntity = new()
-            {
-                Id = Guid.CreateVersion7(),
-                AdminId = admin.Id,
-                Name = team.Name,
-                Description = team.Description,
-                MembersIds = [admin.Id],
-                IsPublic = false,
-            };
+    public async Task DeleteAsync(Guid id)
+    {
+        await _context.Teams.Where(x => x.Id == id).ExecuteDeleteAsync();
+    }
 
-            admin.TeamId = teamEntity.Id;
-            await _context.Teams.AddAsync(teamEntity);
-            await _context.SaveChangesAsync();
-        }
+    public async Task SetIsPublicAsync(Guid id, bool isPublic)
+    {
+        var teamEntity = await _context.Teams.Where(x => x.Id == id).FirstOrDefaultAsync();
+        teamEntity?.IsPublic = isPublic;
 
-        public async Task DeleteAsync(Guid id)
-        {
-            await _context.Teams.Where(x => x.Id == id).ExecuteDeleteAsync();
-        }
+        await _context.SaveChangesAsync();
+    }
 
-        public async Task SetIsPublicAsync(Guid id, bool isPublic)
-        {
-            var teamEntity = await _context.Teams.Where(x => x.Id == id).FirstOrDefaultAsync();
-            teamEntity.IsPublic = isPublic;
+    public async Task<IList<Team>> GetAllPublicAsync()
+    {
+        IList<TeamEntity> teamEntities = await _context
+            .Teams.AsNoTracking()
+            .Where(t => t.IsPublic)
+            .ToListAsync();
 
-            await _context.SaveChangesAsync();
-        }
+        return _mapper.Map<Team[]>(teamEntities);
+    }
 
-        public async Task<IList<Team>> GetAllPublicAsync()
-        {
-            IList<TeamEntity> teamEntities = await _context
-                .Teams.AsNoTracking()
-                .Where(t => t.IsPublic)
-                .ToListAsync();
+    public async Task<Team?> GetByIdAsync(Guid id)
+    {
+        TeamEntity? teamEntity = await _context
+            .Teams.AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Id == id);
 
-            return _mapper.Map<Team[]>(teamEntities);
-        }
+        if (teamEntity is null)
+            return null;
 
-        public async Task<Team?> GetByIdAsync(Guid id)
-        {
-            TeamEntity? teamEntity = await _context
-                .Teams.AsNoTracking()
-                .FirstOrDefaultAsync(t => t.Id == id);
+        return _mapper.Map<Team>(teamEntity);
+    }
 
-            if (teamEntity is null)
-                return null;
+    public async Task<IList<Team>> GetByIdsAsync(IList<Guid> ids)
+    {
+        IList<TeamEntity> teamEntities = await _context
+            .Teams.AsNoTracking()
+            .Where(t => ids.Contains(t.Id) && t.IsPublic == true)
+            .ToListAsync();
 
-            return _mapper.Map<Team>(teamEntity);
-        }
+        return _mapper.Map<Team[]>(teamEntities);
+    }
 
-        public async Task<IList<Team>> GetByIdsAsync(IList<Guid> ids)
-        {
-            IList<TeamEntity> teamEntities = await _context
-                .Teams.AsNoTracking()
-                .Where(t => ids.Contains(t.Id) && t.IsPublic == true)
-                .ToListAsync();
+    public async Task<IList<Team>> GetAllNotPublicAsync()
+    {
+        IList<TeamEntity> teamEntities = await _context
+            .Teams.AsNoTracking()
+            .Where(t => t.IsPublic == false)
+            .ToListAsync();
 
-            return _mapper.Map<Team[]>(teamEntities);
-        }
-
-        public async Task<IList<Team>> GetAllNotPublicAsync()
-        {
-            IList<TeamEntity> teamEntities = await _context
-                .Teams.AsNoTracking()
-                .Where(t => t.IsPublic == false)
-                .ToListAsync();
-
-            return _mapper.Map<Team[]>(teamEntities);
-        }
+        return _mapper.Map<Team[]>(teamEntities);
     }
 }
