@@ -1,6 +1,5 @@
 # ITes Backend
 
-![.NET](https://img.shields.io/badge/.NET-10-512BD4)
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-10-512BD4)
 ![C#](https://img.shields.io/badge/C%23-14-239120?logo=csharp)
 ![Entity Framework Core](https://img.shields.io/badge/EF_Core-10-512BD4)
