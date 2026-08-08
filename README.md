@@ -1,9 +1,9 @@
 # ITes Backend
 
-![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet)
-![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-10-512BD4?logo=dotnet)
+![.NET](https://img.shields.io/badge/.NET-10-512BD4)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-10-512BD4)
 ![C#](https://img.shields.io/badge/C%23-14-239120?logo=csharp)
-![Entity Framework Core](https://img.shields.io/badge/EF_Core-10-512BD4?logo=dotnet)
+![Entity Framework Core](https://img.shields.io/badge/EF_Core-10-512BD4)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)
 ![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?logo=swagger)
