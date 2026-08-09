@@ -1,9 +1,15 @@
 services:
   api:
+    ports:
+      - "443:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_HTTPS_PORTS=8080
-      - ORGANIZER_CONFIRM_KEY=198301
+      ASPNETCORE_ENVIRONMENT: Production
+      Kestrel__Endpoints__Https__Certificate__Password: "${CERT_PASSWORD}"
+      JwtOptions__SecretKey: "${JWT_SECRET}"
+      ORGANIZER_CONFIRM_KEY: "${ORGANIZER_CONFIRM_KEY}"
+    volumes:
+      - ./certs/certificate.pfx:/https/certificate.pfx:ro
+      - ./:/src
 
   db:
     environment:
