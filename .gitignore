@@ -123,3 +123,6 @@ AutoTest.Net/
 
 # Installshield output folder
 [Ee]xpress/
+
+.env
+certs/
