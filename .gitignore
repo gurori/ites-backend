@@ -126,3 +126,4 @@ AutoTest.Net/
 
 .env
 certs/
+ssl/
