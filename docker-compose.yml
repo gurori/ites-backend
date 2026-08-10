@@ -5,7 +5,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
     networks:
-      - ites
+      - app
+      - database
     depends_on:
       db:
         condition: service_healthy
@@ -21,12 +22,14 @@ services:
       timeout: 5s
       retries: 10
     networks:
-      - ites
+      - database
     volumes:
       - postgres_data:/var/lib/postgresql
 
 networks:
-  ites:
+  app:
+    driver: bridge
+  database:
     driver: bridge
 
 volumes:
