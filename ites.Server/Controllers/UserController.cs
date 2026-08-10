@@ -152,9 +152,10 @@ namespace ites.Server.Controllers
                 token,
                 new CookieOptions
                 {
-                    SameSite = SameSiteMode.None,
                     HttpOnly = true,
                     Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/",
                     IsEssential = true,
                 }
             );
