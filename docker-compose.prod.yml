@@ -12,6 +12,8 @@ services:
       - ./:/src
 
   db:
+    expose:
+      - "5432"
     environment:
       POSTGRES_DB: itesdb
       POSTGRES_USER: ites
