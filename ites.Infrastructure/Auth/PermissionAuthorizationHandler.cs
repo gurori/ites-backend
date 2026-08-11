@@ -14,7 +14,7 @@ namespace ites.Infrastructure.Auth
                 .User.Claims.Where(c => c.Type == ClaimNames.Permissions)
                 .Select(c => c.Value)
                 .First()
-                .Split()
+                .Split(';')
                 .Select(Enum.Parse<Permission>)
                 .ToHashSet();
 
