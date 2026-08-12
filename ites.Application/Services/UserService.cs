@@ -31,7 +31,7 @@ namespace ites.Application.Services
                 throw new ConflictException("Данный пользователь уже существует");
         }
 
-        public async Task<string> LoginAsync(string email, string password)
+        public async Task<LoginUserResponse> LoginAsync(string email, string password)
         {
             var userEntity =
                 await _userRepository.GetByEmailAsync(email)
@@ -43,7 +43,7 @@ namespace ites.Application.Services
             var user = _mapper.Map<User>(userEntity);
             var token = await _jwtProvider.GenerateTokenAsync(user);
 
-            return token;
+            return new LoginUserResponse(token, user.Role);
         }
 
         public async Task<UserProfileResponse> GetAsync(Guid id)

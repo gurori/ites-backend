@@ -4,7 +4,7 @@ namespace ites.Application.Interfaces.Services
 {
     public interface IUserService
     {
-        Task<string> LoginAsync(string email, string password);
+        Task<LoginUserResponse> LoginAsync(string email, string password);
         Task RegisterAsync(string name, string email, string password, string role);
         Task<UserProfileResponse> GetAsync(Guid id);
         Task UpdateAsync(
