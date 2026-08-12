@@ -18,29 +18,6 @@ namespace ites.Server.Controllers
             Environment.GetEnvironmentVariable("ORGANIZER_CONFIRM_KEY")
             ?? throw new Exception("Enviroment variable 'ORGANIZER_CONFIRM_KEY' is not found");
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserRequest request)
-        {
-            await _userService.RegisterAsync(
-                request.FirstName,
-                request.Email,
-                request.Password,
-                request.Role
-            );
-            return Ok();
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserRequest request)
-        {
-            LoginUserResponse loginResponse = await _userService.LoginAsync(
-                request.Email,
-                request.Password
-            );
-
-            return Ok(loginResponse);
-        }
-
         [Authorize]
         [HttpGet("profile")]
         public async Task<IActionResult> Get()
