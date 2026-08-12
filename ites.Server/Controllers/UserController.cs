@@ -42,15 +42,6 @@ namespace ites.Server.Controllers
         }
 
         [Authorize]
-        [HttpGet("role")]
-        public async Task<IActionResult> GetRole()
-        {
-            Guid userId = GetUserId();
-            string role = await _userService.GetRoleAsync(userId);
-            return Ok(role);
-        }
-
-        [Authorize]
         [HttpGet("profile")]
         public async Task<IActionResult> Get()
         {
