@@ -5,11 +5,9 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
-      Kestrel__Endpoints__Https__Certificate__Password: "${CERT_PASSWORD}"
       JwtOptions__SecretKey: "${JWT_SECRET}"
       ORGANIZER_CONFIRM_KEY: "${ORGANIZER_CONFIRM_KEY}"
     volumes:
-      - ./certs/certificate.pfx:/https/certificate.pfx:ro
       - ./:/src
 
   db:
