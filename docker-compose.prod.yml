@@ -18,20 +18,6 @@ services:
       POSTGRES_USER: ites
       POSTGRES_PASSWORD: ites
 
-  site:
-    build:
-      context: ../site
-      dockerfile: Dockerfile
-    container_name: ites.site
-    expose:
-      - "3000"
-    restart: unless-stopped
-    depends_on:
-      api:
-        condition: service_completed_successfully
-    networks:
-      - app
-  
   nginx:
     image: nginx:alpine
     container_name: ites.nginx
