@@ -57,15 +57,6 @@ namespace ites.DataAccess.Repositories
             return _mapper.Map<User[]>(userEntities);
         }
 
-        public async Task<string?> GetRoleByIdAsync(Guid id)
-        {
-            return await _context
-                .Users.AsNoTracking()
-                .Where(u => u.Id == id)
-                .Select(u => u.Role)
-                .FirstOrDefaultAsync();
-        }
-
         public async Task UpdateAsync(
             Guid id,
             string lastName,

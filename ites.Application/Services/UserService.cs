@@ -71,15 +71,6 @@ namespace ites.Application.Services
             );
         }
 
-        public async Task<string> GetRoleAsync(Guid userId)
-        {
-            string role =
-                await _userRepository.GetRoleByIdAsync(userId)
-                ?? throw new NotFoundException("Пользователь не найден");
-
-            return role;
-        }
-
         public async Task<IList<UserProfileResponse>> GetManyAsync(IList<Guid> ids)
         {
             IList<User> users = await _userRepository.GetManyByIdAsync(ids);
