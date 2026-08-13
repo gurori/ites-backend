@@ -91,11 +91,11 @@ namespace ites.Server.Controllers
             return Ok(organizer);
         }
 
-        [HttpPost("organizer/confirm/{key}")]
-        public async Task<IActionResult> ConfirmKey(string key)
+        [HttpPost("organizer/confirm")]
+        public async Task<IActionResult> ConfirmKey(UserConfirmKeyRequest request)
         {
             return await Task.FromResult<IActionResult>(
-                key.Trim() == _orginizerConfirmKey ? Ok() : Conflict()
+                request.Key.Trim() == _orginizerConfirmKey ? Ok() : Conflict()
             );
         }
 
