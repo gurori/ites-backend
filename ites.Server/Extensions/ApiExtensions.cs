@@ -30,6 +30,18 @@ namespace ites.Server.Extensions
 
                         options.TokenValidationParameters =
                             JwtParameters.GetTokenValidationParameters(jwtOptions!);
+
+                        options.Events.OnMessageReceived = context =>
+                        {
+                            var token = context.Request.Cookies["auth"];
+
+                            if (token is not null)
+                            {
+                                context.Token = token;
+                            }
+
+                            return Task.CompletedTask;
+                        };
                     }
                 );
 
