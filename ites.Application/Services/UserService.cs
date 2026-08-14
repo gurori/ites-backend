@@ -5,6 +5,7 @@ using ites.Application.Interfaces.Services;
 using ites.Core.Exeptions;
 using ites.Core.Interfaces.Repositories;
 using ites.Core.Models;
+using Microsoft.Extensions.Options;
 
 namespace ites.Application.Services
 {
