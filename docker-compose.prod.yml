@@ -29,7 +29,6 @@ services:
       - ./ssl/fullchain.crt:/etc/nginx/ssl/fullchain.crt:ro
       - ./ssl/private.key:/etc/nginx/ssl/private.key:ro
     depends_on:
-      - site
       - api
     restart: unless-stopped
     networks:
