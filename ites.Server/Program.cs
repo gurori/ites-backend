@@ -31,6 +31,11 @@ services.AddCors(option =>
     });
 });
 
+services.AddRouting(options => 
+{
+    options.LowercaseUrls = true;
+});
+
 services.AddRepositories();
 
 services.AddApplicationServices();
@@ -65,8 +70,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
