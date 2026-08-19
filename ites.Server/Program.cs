@@ -40,13 +40,7 @@ services.AddRepositories();
 
 services.AddApplicationServices();
 
-services.AddAutoMapper(
-    typeof(UserAutoMapperProfile),
-    typeof(CompetitionAutoMapperProfile),
-    typeof(ApplicationAutoMapperProfile),
-    typeof(OrderAutoMapperProfile),
-    typeof(TeamAutoMapperProfile)
-);
+services.AddAutoMapper(typeof(Program).Assembly);
 
 services.AddAuthentication(configuration);
 
