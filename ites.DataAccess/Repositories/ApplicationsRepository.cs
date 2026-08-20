@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories
 {
-    public sealed class ApplicationsRepository(ItesDbContext context, IMapper mapper)
+    public sealed class RequestEntityRepository(ItesDbContext context, IMapper mapper)
         : IRequestEntityRepository
     {
         private readonly ItesDbContext _context = context;

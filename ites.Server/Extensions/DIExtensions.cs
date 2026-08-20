@@ -14,7 +14,7 @@ public static class DIExtensions
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IRequestEntityRepository, ApplicationsRepository>();
+        services.AddScoped<IRequestEntityRepository, RequestEntityRepository>();
         services.AddScoped<ICompetitionsRepository, CompetitionsRepository>();
         services.AddScoped<IOrdersRepository, OrdersRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
