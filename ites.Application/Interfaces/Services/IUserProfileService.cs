@@ -1,5 +1,4 @@
 ﻿using ites.Application.Contracts.Users;
-using ites.Core.Models;
 
 namespace ites.Application.Interfaces.Services
 {

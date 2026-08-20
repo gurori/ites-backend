@@ -1,4 +1,5 @@
 ﻿using ites.Application.Interfaces.Services;
+using ites.Core.Entities;
 using ites.Core.Interfaces.Repositories;
 
 namespace ites.Application.Services
@@ -18,12 +19,12 @@ namespace ites.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<Core.Models.Application> GetAsync(Guid id)
+        public Task<RequestEntity> GetAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IList<Core.Models.Application>> GetAsync(ICollection<Guid> ids)
+        public async Task<IList<RequestEntity>> GetAsync(ICollection<Guid> ids)
         {
             return await _applicationsRepository.GetAsync(ids);
         }

@@ -1,12 +1,14 @@
-﻿namespace ites.Core.Interfaces.Repositories;
+﻿using ites.Core.Entities;
+
+namespace ites.Core.Interfaces.Repositories;
 
 public interface IApplicationsRepository
 {
-    public Task<IList<Models.Application>> GetAsync(ICollection<Guid> ids);
-    public Task CreateForCompetitionAsync(Models.Application application);
+    public Task<IList<RequestEntity>> GetAsync(ICollection<Guid> ids);
+    public Task CreateForCompetitionAsync(RequestEntity application);
     public Task HandleCompetitionAsync(Guid id, bool isAccept);
-    public Task CreateForOrderAsync(Models.Application application);
+    public Task CreateForOrderAsync(RequestEntity application);
     public Task HandleOrderAsync(Guid id, bool isAccept);
-    public Task CreateForTeamAsync(Models.Application application);
+    public Task CreateForTeamAsync(RequestEntity application);
     public Task HandleTeamAsync(Guid id, bool isAccept);
 }

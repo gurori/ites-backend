@@ -1,5 +1,5 @@
 ﻿using ites.Application.Contracts.Teams;
-using ites.Core.Models;
+using ites.Core.Entities;
 
 namespace ites.Application.Interfaces.Services
 {

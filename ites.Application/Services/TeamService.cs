@@ -22,7 +22,7 @@ public sealed class TeamService(
 
     public async Task AddApplicationAsync(Guid userId, Guid forId)
     {
-        Core.Models.Application application = new(Guid.Empty, userId, forId);
+        RequestEntity application = new(Guid.Empty, userId, forId);
         await _applicationsRepo.CreateForTeamAsync(application);
     }
 

@@ -86,12 +86,12 @@ namespace ites.Application.Services
             IList<Competition> competitions = await _competitionsService.GetAsync(
                 user.CompetitionsIds
             );
-            IList<Core.Models.Application> applicationsIds = await _applicationsService.GetAsync(
+            IList<RequestEntity> applicationsIds = await _applicationsService.GetAsync(
                 user.ApplicationsIds
             );
             IList<CompetitionApplicationResponse> applications = [];
 
-            foreach (Core.Models.Application a in applicationsIds)
+            foreach (RequestEntity a in applicationsIds)
             {
                 UserProfileResponse fromMember = await _userService.GetAsync(a.From);
                 Competition competition = await _competitionsService.GetAsync(a.For);
@@ -123,12 +123,12 @@ namespace ites.Application.Services
                 ?? throw new NotFoundException("Пользователь не найден");
 
             IList<Order> orders = await _ordersService.GetAsync(user.OrdersIds);
-            IList<Core.Models.Application> applicationsIds = await _applicationsService.GetAsync(
+            IList<RequestEntity> applicationsIds = await _applicationsService.GetAsync(
                 user.ApplicationsIds
             );
             IList<OrderApplicationResponse> applications = [];
 
-            foreach (Core.Models.Application a in applicationsIds)
+            foreach (RequestEntity a in applicationsIds)
             {
                 UserProfileResponse fromMember = await _userService.GetAsync(a.From);
                 Order order = await _ordersService.GetAsync(a.For);

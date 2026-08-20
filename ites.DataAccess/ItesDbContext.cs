@@ -13,7 +13,7 @@ namespace ites.DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<Competition> Competitions { get; set; }
-        public DbSet<Application> Applications { get; set; }
+        public DbSet<RequestEntity> Applications { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Team> Teams { get; set; }
 

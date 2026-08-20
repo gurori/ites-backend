@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ites.DataAccess.Configurations
 {
-    public partial class ApplicationConfiguration : IEntityTypeConfiguration<Application>
+    public partial class ApplicationConfiguration : IEntityTypeConfiguration<RequestEntity>
     {
-        public void Configure(EntityTypeBuilder<Application> builder)
+        public void Configure(EntityTypeBuilder<RequestEntity> builder)
         {
             builder.HasKey(a => a.Id);
 

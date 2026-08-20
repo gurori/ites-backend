@@ -1,7 +1,7 @@
 ﻿using ites.Application.Interfaces.Services;
+using ites.Core.Entities;
 using ites.Core.Exeptions;
 using ites.Core.Interfaces.Repositories;
-using ites.Core.Models;
 
 namespace ites.Application.Services
 {
@@ -15,7 +15,7 @@ namespace ites.Application.Services
 
         public async Task AddApplicationAsync(Guid userId, Guid forId)
         {
-            Core.Models.Application application = new(Guid.Empty, userId, forId);
+            RequestEntity application = new(Guid.Empty, userId, forId);
             await _applicationsRepository.CreateForCompetitionAsync(application);
         }
 
