@@ -24,7 +24,7 @@ public static class DIExtensions
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IRequestEntityService, ApplicationsService>();
+        services.AddScoped<IRequestEntityService, RequestEntityService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<ICompetitionsService, CompetitionsService>();
