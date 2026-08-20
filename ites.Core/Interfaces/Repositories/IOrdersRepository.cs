@@ -1,10 +1,16 @@
-﻿using ites.Core.Entities;
+﻿using System.Linq.Expressions;
+using ites.Core.Entities;
 
 namespace ites.Core.Interfaces.Repositories;
 
 public interface IOrdersRepository : IRepository<Order>
 {
-    public Task<IList<Order>> GetAllPublicAsync();
-    public Task<IList<Order>> GetAllNotPublicAsync();
+    public Task<IReadOnlyCollection<Order>> GetAllAsync<T>(
+        Expression<Func<Order, T>> selector,
+        bool isPublic = true,
+        int skip = 0,
+        int take = 100,
+        CancellationToken ct = default
+    );
     public Task SetIsPublicAsync(Guid id, bool isPublic);
 }
