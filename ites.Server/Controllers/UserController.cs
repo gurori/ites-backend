@@ -114,5 +114,13 @@ namespace ites.Server.Controllers
             ClientResponse client = await _profileService.GetClientAsync(id);
             return Ok(client);
         }
+
+        [Authorize]
+        [HttpDelete]
+        public async Task<IActionResult> Delete()
+        {
+            await _userService.DeleteAsync(GetUserId());
+            return Ok();
+        }
     }
 }
