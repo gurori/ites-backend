@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ites.Application.Contracts.Users;
 using ites.Core.Entities;
-using ites.Core.Models;
 
 namespace ites.Infrastructure.Mapping
 {
@@ -9,9 +8,8 @@ namespace ites.Infrastructure.Mapping
     {
         public UserAutoMapperProfile()
         {
-            CreateMap<User, User>();
 
-            CreateMap<Core.Models.User, UserProfileResponse>();
+            CreateMap<User, UserProfileResponse>();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ites.Core.Entities;
 
 namespace ites.Infrastructure.Mapping
 {
@@ -7,7 +6,7 @@ namespace ites.Infrastructure.Mapping
     {
         public ApplicationAutoMapperProfile()
         {
-            CreateMap<Application, Core.Models.Application>();
+            
         }
     }
 }

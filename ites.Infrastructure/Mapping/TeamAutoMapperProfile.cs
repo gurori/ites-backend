@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ites.Application.Contracts.Teams;
 using ites.Core.Entities;
-using ites.Core.Models;
 
 namespace ites.Infrastructure.Mapping
 {
@@ -9,9 +8,8 @@ namespace ites.Infrastructure.Mapping
     {
         public TeamAutoMapperProfile()
         {
-            CreateMap<Team, Team>();
 
-            CreateMap<Core.Models.Team, TeamResponse>();
+            CreateMap<Team, TeamResponse>();
         }
     }
 }
