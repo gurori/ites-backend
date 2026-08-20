@@ -7,11 +7,11 @@ namespace ites.Application.Services;
 
 public sealed class OrdersService(
     IOrdersRepository ordersRepository,
-    IApplicationsRepository applicationsRepository
+    IRequestEntityRepository applicationsRepository
 ) : IOrdersService
 {
     private readonly IOrdersRepository _ordersRepository = ordersRepository;
-    private readonly IApplicationsRepository _applicationsRepository = applicationsRepository;
+    private readonly IRequestEntityRepository _applicationsRepository = applicationsRepository;
 
     public async Task AddApplicationAsync(Guid userId, Guid forId)
     {

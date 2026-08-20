@@ -4,10 +4,10 @@ using ites.Core.Interfaces.Repositories;
 
 namespace ites.Application.Services
 {
-    public sealed class ApplicationsService(IApplicationsRepository applicationsRepository)
+    public sealed class ApplicationsService(IRequestEntityRepository applicationsRepository)
         : IApplicationsService
     {
-        private readonly IApplicationsRepository _applicationsRepository = applicationsRepository;
+        private readonly IRequestEntityRepository _applicationsRepository = applicationsRepository;
 
         public Task CreateAsync(Guid from, Guid to)
         {

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ites.DataAccess.Repositories
 {
     public sealed class ApplicationsRepository(ItesDbContext context, IMapper mapper)
-        : IApplicationsRepository
+        : IRequestEntityRepository
     {
         private readonly ItesDbContext _context = context;
         private readonly IMapper _mapper = mapper;
@@ -220,7 +220,9 @@ namespace ites.DataAccess.Repositories
             if (team is null || team.MembersIds.Count >= 5)
                 return;
 
-            User? member = await _context.Users.FirstOrDefaultAsync(u => u.Id == requestEntity.From);
+            User? member = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Id == requestEntity.From
+            );
             if (member is null)
                 return;
 

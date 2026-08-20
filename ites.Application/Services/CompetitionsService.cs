@@ -7,11 +7,11 @@ namespace ites.Application.Services
 {
     public sealed class CompetitionsService(
         ICompetitionsRepository competitionsRepository,
-        IApplicationsRepository applicationsRepository
+        IRequestEntityRepository applicationsRepository
     ) : ICompetitionsService
     {
         private readonly ICompetitionsRepository _competitionsRepository = competitionsRepository;
-        private readonly IApplicationsRepository _applicationsRepository = applicationsRepository;
+        private readonly IRequestEntityRepository _applicationsRepository = applicationsRepository;
 
         public async Task AddApplicationAsync(Guid userId, Guid forId)
         {

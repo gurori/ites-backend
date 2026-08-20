@@ -10,13 +10,13 @@ namespace ites.Application.Services;
 
 public sealed class TeamService(
     ITeamRepository teamRepo,
-    IApplicationsRepository applicationsRepo,
+    IRequestEntityRepository applicationsRepo,
     IUserRepository userRepo,
     IMapper mapper
 ) : ITeamService
 {
     private readonly ITeamRepository _teamRepo = teamRepo;
-    private readonly IApplicationsRepository _applicationsRepo = applicationsRepo;
+    private readonly IRequestEntityRepository _applicationsRepo = applicationsRepo;
     private readonly IUserRepository _userRepo = userRepo;
     private readonly IMapper _mapper = mapper;
 

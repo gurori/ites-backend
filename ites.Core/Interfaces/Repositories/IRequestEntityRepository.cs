@@ -2,7 +2,7 @@
 
 namespace ites.Core.Interfaces.Repositories;
 
-public interface IApplicationsRepository
+public interface IRequestEntityRepository
 {
     public Task<IList<RequestEntity>> GetAsync(ICollection<Guid> ids);
     public Task CreateForCompetitionAsync(RequestEntity application);
