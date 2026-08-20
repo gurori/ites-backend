@@ -1,14 +1,10 @@
-﻿using ites.Core.Models;
+﻿using ites.Core.Entities;
 
 namespace ites.Core.Interfaces.Repositories;
 
-public interface ITeamRepository
+public interface ITeamRepository : IRepository<Team>
 {
-    public Task CreateAsync(Team team);
-    public Task<Team?> GetByIdAsync(Guid id);
     public Task<IList<Team>> GetAllPublicAsync();
     public Task<IList<Team>> GetAllNotPublicAsync();
-    public Task<IList<Team>> GetByIdsAsync(ICollection<Guid> ids);
-    public Task DeleteAsync(Guid id);
     public Task SetIsPublicAsync(Guid id, bool isPublic);
 }
