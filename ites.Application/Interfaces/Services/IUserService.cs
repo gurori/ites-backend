@@ -15,7 +15,7 @@ namespace ites.Application.Interfaces.Services
             string description,
             string? jobTitle
         );
-        Task<IList<UserProfileResponse>> GetManyAsync(IList<Guid> ids);
+        Task<IList<UserProfileResponse>> GetManyAsync(ICollection<Guid> ids);
         Task DeleteAsync(Guid userId);
     }
 }

@@ -11,11 +11,11 @@ public class User(Guid id, string firstName, string email, string passwordHash, 
     public string Role { get; private set; } = role;
     public string Description { get; private set; } = string.Empty;
     public string JobTitle { get; private set; } = string.Empty;
-    public IList<Guid> CompetitionsIds { get; private set; } = [];
-    public IList<Guid> OrdersIds { get; private set; } = [];
-    public IList<Guid> ApplicationsForCompetitions { get; private set; } = [];
-    public IList<Guid> ApplicationsForOrders { get; private set; } = [];
-    public IList<Guid> ApplicationsForTeams { get; private set; } = [];
-    public IList<Guid> ApplicationsIds { get; private set; } = [];
+    public ICollection<Guid> CompetitionsIds { get; private set; } = [];
+    public ICollection<Guid> OrdersIds { get; private set; } = [];
+    public ICollection<Guid> ApplicationsForCompetitions { get; private set; } = [];
+    public ICollection<Guid> ApplicationsForOrders { get; private set; } = [];
+    public ICollection<Guid> ApplicationsForTeams { get; private set; } = [];
+    public ICollection<Guid> ApplicationsIds { get; private set; } = [];
     public Guid? TeamId { get; private set; }
 }

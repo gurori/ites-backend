@@ -54,7 +54,7 @@ namespace ites.Server.Controllers
 
         [Authorize]
         [HttpGet("profile/many")]
-        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids)
+        public async Task<IActionResult> Get([FromQuery] ICollection<Guid> ids)
         {
             return Ok(await _userService.GetManyAsync(ids));
         }

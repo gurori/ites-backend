@@ -70,7 +70,7 @@ public sealed class TeamRepository(ItesDbContext context, IMapper mapper) : ITea
         return _mapper.Map<Core.Models.Team>(teamEntity);
     }
 
-    public async Task<IList<Core.Models.Team>> GetByIdsAsync(IList<Guid> ids)
+    public async Task<IList<Core.Models.Team>> GetByIdsAsync(ICollection<Guid> ids)
     {
         IList<Core.Entities.Team> teamEntities = await _context
             .Teams.AsNoTracking()

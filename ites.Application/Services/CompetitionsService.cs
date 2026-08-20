@@ -48,7 +48,7 @@ namespace ites.Application.Services
             return await _competitionsRepository.GetAllAsync();
         }
 
-        public async Task<IList<Competition>> GetAsync(IList<Guid> ids)
+        public async Task<IList<Competition>> GetAsync(ICollection<Guid> ids)
         {
             return await _competitionsRepository.GetAllWithIdAsync(ids);
         }

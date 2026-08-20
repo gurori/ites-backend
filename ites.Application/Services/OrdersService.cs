@@ -49,7 +49,7 @@ public sealed class OrdersService(
         return await _ordersRepository.GetAllPublicAsync();
     }
 
-    public async Task<IList<Order>> GetAsync(IList<Guid> ids)
+    public async Task<IList<Order>> GetAsync(ICollection<Guid> ids)
     {
         return await _ordersRepository.GetWithIdsAsync(ids);
     }

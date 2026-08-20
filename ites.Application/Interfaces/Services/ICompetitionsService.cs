@@ -7,7 +7,7 @@ namespace ites.Application.Interfaces.Services
         public Task CreateAsync(Guid userId, string contentInHtml);
         public Task<Competition> GetAsync(Guid id);
         public Task<IList<Competition>> GetAsync();
-        public Task<IList<Competition>> GetAsync(IList<Guid> ids);
+        public Task<IList<Competition>> GetAsync(ICollection<Guid> ids);
         public Task AddApplicationAsync(Guid userId, Guid forId);
         public Task HandleApplicationAsync(Guid id, bool isAccept);
         public Task UpdateAsync(

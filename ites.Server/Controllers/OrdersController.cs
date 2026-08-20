@@ -40,7 +40,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpGet("many")]
-        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids)
+        public async Task<IActionResult> Get([FromQuery] ICollection<Guid> ids)
         {
             return Ok(await _ordersService.GetAsync(ids));
         }

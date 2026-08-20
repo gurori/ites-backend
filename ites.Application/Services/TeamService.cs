@@ -58,7 +58,7 @@ public sealed class TeamService(
         return await _teamRepo.GetAllPublicAsync();
     }
 
-    public async Task<IList<Team>> GetAsync(IList<Guid> ids)
+    public async Task<IList<Team>> GetAsync(ICollection<Guid> ids)
     {
         return await _teamRepo.GetByIdsAsync(ids);
     }

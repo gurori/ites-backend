@@ -2,7 +2,7 @@
 
 public interface IApplicationsRepository
 {
-    public Task<IList<Models.Application>> GetAsync(IList<Guid> ids);
+    public Task<IList<Models.Application>> GetAsync(ICollection<Guid> ids);
     public Task CreateForCompetitionAsync(Models.Application application);
     public Task HandleCompetitionAsync(Guid id, bool isAccept);
     public Task CreateForOrderAsync(Models.Application application);

@@ -72,7 +72,7 @@ namespace ites.Application.Services
             );
         }
 
-        public async Task<IList<UserProfileResponse>> GetManyAsync(IList<Guid> ids)
+        public async Task<IList<UserProfileResponse>> GetManyAsync(ICollection<Guid> ids)
         {
             IList<User> users = await _userRepository.GetManyByIdAsync(ids);
             return _mapper.Map<UserProfileResponse[]>(users);

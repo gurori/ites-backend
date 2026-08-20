@@ -3,7 +3,7 @@
     public sealed class Competition : BaseEntity
     {
         public string ContentInHtml { get; set; } = string.Empty;
-        public IList<Guid> MembersIds { get; set; } = [];
-        public IList<Guid> OrganizersIds { get; set; } = [];
+        public ICollection<Guid> MembersIds { get; set; } = [];
+        public ICollection<Guid> OrganizersIds { get; set; } = [];
     }
 }

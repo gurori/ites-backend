@@ -9,10 +9,11 @@ namespace ites.Application.Interfaces.Services
             string title,
             string description,
             decimal price,
-            DateTime deadLine);
+            DateTime deadLine
+        );
         public Task<Order> GetAsync(Guid id);
         public Task<IList<Order>> GetAsync();
-        public Task<IList<Order>> GetAsync(IList<Guid> ids);
+        public Task<IList<Order>> GetAsync(ICollection<Guid> ids);
         public Task AddApplicationAsync(Guid userId, Guid forId);
         public Task HandleApplicationAsync(Guid id, bool isAccept);
         public Task UpdateAsync(
@@ -21,7 +22,8 @@ namespace ites.Application.Interfaces.Services
             string title,
             string description,
             decimal price,
-            DateTime deadLine);
+            DateTime deadLine
+        );
         public Task DeleteAsync(Guid id);
     }
 }

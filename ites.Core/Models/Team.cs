@@ -14,6 +14,6 @@ public sealed class Team
     public Guid Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
-    public IList<Guid> MembersIds { get; private set; } = [];
+    public ICollection<Guid> MembersIds { get; private set; } = [];
     public Guid AdminId { get; private set; }
 }

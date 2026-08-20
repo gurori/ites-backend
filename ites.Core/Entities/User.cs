@@ -11,12 +11,12 @@
         public string Description { get; set; } = string.Empty;
         public string JobTitle { get; set; } = string.Empty;
         public int Coins { get; set; } = 0;
-        public IList<Guid> CompetitionsIds { get; set; } = [];
-        public IList<Guid> OrdersIds { get; set; } = [];
-        public IList<Guid> ApplicationsForCompetitions { get; set; } = [];
-        public IList<Guid> ApplicationsForOrders { get; set; } = [];
-        public IList<Guid> ApplicationsForTeams { get; set; } = [];
-        public IList<Guid> ApplicationsIds { get; set; } = [];
+        public ICollection<Guid> CompetitionsIds { get; set; } = [];
+        public ICollection<Guid> OrdersIds { get; set; } = [];
+        public ICollection<Guid> ApplicationsForCompetitions { get; set; } = [];
+        public ICollection<Guid> ApplicationsForOrders { get; set; } = [];
+        public ICollection<Guid> ApplicationsForTeams { get; set; } = [];
+        public ICollection<Guid> ApplicationsIds { get; set; } = [];
         public Guid? TeamId { get; set; } = null;
     }
 }

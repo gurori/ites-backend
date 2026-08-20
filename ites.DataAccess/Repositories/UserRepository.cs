@@ -47,7 +47,7 @@ namespace ites.DataAccess.Repositories
             return _mapper.Map<Core.Models.User>(userEntity);
         }
 
-        public async Task<IList<Core.Models.User>> GetManyByIdAsync(IList<Guid> ids)
+        public async Task<IList<Core.Models.User>> GetManyByIdAsync(ICollection<Guid> ids)
         {
             var userEntities = await _context
                 .Users.AsNoTracking()

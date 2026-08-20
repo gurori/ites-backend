@@ -49,7 +49,7 @@ namespace ites.DataAccess.Repositories
             return _mapper.Map<Core.Models.Competition[]>(competitions);
         }
 
-        public async Task<IList<Core.Models.Competition>> GetAllWithIdAsync(IList<Guid> ids)
+        public async Task<IList<Core.Models.Competition>> GetAllWithIdAsync(ICollection<Guid> ids)
         {
             IList<Core.Entities.Competition> competitions = await _context
                 .Competitions.AsNoTracking()

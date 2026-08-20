@@ -12,6 +12,6 @@ public sealed class Competition
 
     public Guid Id { get; private set; }
     public string ContentInHtml { get; private set; } = string.Empty;
-    public IList<Guid> MembersIds { get; private set; } = [];
-    public IList<Guid> OrganizersIds { get; private set; } = [];
+    public ICollection<Guid> MembersIds { get; private set; } = [];
+    public ICollection<Guid> OrganizersIds { get; private set; } = [];
 }

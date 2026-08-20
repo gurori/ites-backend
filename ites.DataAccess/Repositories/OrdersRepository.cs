@@ -71,7 +71,7 @@ public sealed class OrdersRepository(ItesDbContext context, IMapper mapper) : IO
         return _mapper.Map<Core.Models.Order>(order);
     }
 
-    public async Task<IList<Core.Models.Order>> GetWithIdsAsync(IList<Guid> ids)
+    public async Task<IList<Core.Models.Order>> GetWithIdsAsync(ICollection<Guid> ids)
     {
         IList<Core.Entities.Order> orders = await _context
             .Orders.AsNoTracking()

@@ -17,6 +17,6 @@ public interface IUserRepository
         string description,
         string jobTitle
     );
-    public Task<IList<User>> GetManyByIdAsync(IList<Guid> ids);
+    public Task<IList<User>> GetManyByIdAsync(ICollection<Guid> ids);
     public Task DeleteByIdAsync(Guid id);
 }

@@ -114,7 +114,7 @@ namespace ites.DataAccess.Repositories
             }
         }
 
-        public async Task<IList<Core.Models.Application>> GetAsync(IList<Guid> ids)
+        public async Task<IList<Core.Models.Application>> GetAsync(ICollection<Guid> ids)
         {
             IList<Application> applicationEntities = await _context
                 .Applications.AsNoTracking()

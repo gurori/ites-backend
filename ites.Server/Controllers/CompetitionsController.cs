@@ -37,7 +37,7 @@ namespace ites.Server.Controllers
         }
 
         [HttpGet("get/many")]
-        public async Task<IActionResult> Get([FromQuery] IList<Guid> ids)
+        public async Task<IActionResult> Get([FromQuery] ICollection<Guid> ids)
         {
             IList<Competition> competitions = await _competitionsService.GetAsync(ids);
             return Ok(competitions);

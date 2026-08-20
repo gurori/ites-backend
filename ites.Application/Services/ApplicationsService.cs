@@ -4,7 +4,7 @@ using ites.Core.Interfaces.Repositories;
 namespace ites.Application.Services
 {
     public sealed class ApplicationsService(IApplicationsRepository applicationsRepository)
-                : IApplicationsService
+        : IApplicationsService
     {
         private readonly IApplicationsRepository _applicationsRepository = applicationsRepository;
 
@@ -23,10 +23,9 @@ namespace ites.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IList<Core.Models.Application>> GetAsync(IList<Guid> ids)
+        public async Task<IList<Core.Models.Application>> GetAsync(ICollection<Guid> ids)
         {
-            return await _applicationsRepository
-                .GetAsync(ids);
+            return await _applicationsRepository.GetAsync(ids);
         }
     }
 }
