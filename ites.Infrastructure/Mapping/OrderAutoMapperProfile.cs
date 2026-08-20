@@ -9,9 +9,9 @@ namespace ites.Infrastructure.Mapping
     {
         public OrderAutoMapperProfile()
         {
-            CreateMap<OrderEntity, Order>();
+            CreateMap<Order, Order>();
 
-            CreateMap<Order, OrderResponse>();
+            CreateMap<Core.Models.Order, OrderResponse>();
         }
     }
 }

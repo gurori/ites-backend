@@ -1,6 +1,6 @@
 ﻿namespace ites.Core.Entities
 {
-    public sealed class OrderEntity : BaseEntity
+    public sealed class Order : BaseEntity
     {
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

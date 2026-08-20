@@ -9,9 +9,9 @@ namespace ites.Infrastructure.Mapping
     {
         public CompetitionAutoMapperProfile()
         {
-            CreateMap<CompetitionEntity, Competition>();
+            CreateMap<Competition, Competition>();
 
-            CreateMap<Competition, CompetitionResponse>();
+            CreateMap<Core.Models.Competition, CompetitionResponse>();
         }
     }
 }

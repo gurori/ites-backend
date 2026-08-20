@@ -9,9 +9,9 @@ namespace ites.Infrastructure.Mapping
     {
         public UserAutoMapperProfile()
         {
-            CreateMap<UserEntity, User>();
+            CreateMap<User, User>();
 
-            CreateMap<User, UserProfileResponse>();
+            CreateMap<Core.Models.User, UserProfileResponse>();
         }
     }
 }

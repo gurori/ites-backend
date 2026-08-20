@@ -11,16 +11,16 @@ public sealed class OrdersRepository(ItesDbContext context, IMapper mapper) : IO
     private readonly ItesDbContext _context = context;
     private readonly IMapper _mapper = mapper;
 
-    public async Task CreateAsync(Guid clientId, Order order)
+    public async Task CreateAsync(Guid clientId, Core.Models.Order order)
     {
-        UserEntity? client = await _context
+        Core.Entities.User? client = await _context
             .Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == clientId);
 
         if (client is null)
             return;
 
-        OrderEntity orderEntity = new()
+        Core.Entities.Order orderEntity = new()
         {
             Id = Guid.CreateVersion7(),
             Title = order.Title,
@@ -50,44 +50,44 @@ public sealed class OrdersRepository(ItesDbContext context, IMapper mapper) : IO
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IList<Order>> GetAllPublicAsync()
+    public async Task<IList<Core.Models.Order>> GetAllPublicAsync()
     {
-        IList<OrderEntity> orders = await _context
+        IList<Core.Entities.Order> orders = await _context
             .Orders.AsNoTracking()
             .Where(o => o.IsPublic)
             .ToListAsync();
 
-        return _mapper.Map<Order[]>(orders);
+        return _mapper.Map<Core.Models.Order[]>(orders);
     }
 
-    public async Task<Order?> GetByIdAsync(Guid id)
+    public async Task<Core.Models.Order?> GetByIdAsync(Guid id)
     {
-        OrderEntity? order = await _context
+        Core.Entities.Order? order = await _context
             .Orders.AsNoTracking()
             .FirstOrDefaultAsync(o => o.Id == id);
         if (order is null)
             return null;
 
-        return _mapper.Map<Order>(order);
+        return _mapper.Map<Core.Models.Order>(order);
     }
 
-    public async Task<IList<Order>> GetWithIdsAsync(IList<Guid> ids)
+    public async Task<IList<Core.Models.Order>> GetWithIdsAsync(IList<Guid> ids)
     {
-        IList<OrderEntity> orders = await _context
+        IList<Core.Entities.Order> orders = await _context
             .Orders.AsNoTracking()
             .Where(o => ids.Contains(o.Id) && o.IsPublic == true)
             .ToListAsync();
 
-        return _mapper.Map<Order[]>(orders);
+        return _mapper.Map<Core.Models.Order[]>(orders);
     }
 
-    public async Task<IList<Order>> GetAllNotPublicAsync()
+    public async Task<IList<Core.Models.Order>> GetAllNotPublicAsync()
     {
-        IList<OrderEntity> orders = await _context
+        IList<Core.Entities.Order> orders = await _context
             .Orders.AsNoTracking()
             .Where(o => o.IsPublic == false)
             .ToListAsync();
 
-        return _mapper.Map<Order[]>(orders);
+        return _mapper.Map<Core.Models.Order[]>(orders);
     }
 }

@@ -1,5 +1,5 @@
-﻿using ites.DataAccess.Configurations;
-using ites.Core.Entities;
+﻿using ites.Core.Entities;
+using ites.DataAccess.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -10,12 +10,12 @@ namespace ites.DataAccess
         IOptions<AuthorizationOptions> authOptions
     ) : DbContext(options)
     {
-        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
-        public DbSet<CompetitionEntity> Competitions { get; set; }
-        public DbSet<ApplicationEntity> Applications { get; set; }
-        public DbSet<OrderEntity> Orders { get; set; }
-        public DbSet<TeamEntity> Teams { get; set; }
+        public DbSet<Competition> Competitions { get; set; }
+        public DbSet<Application> Applications { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Team> Teams { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

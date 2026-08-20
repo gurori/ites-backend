@@ -1,6 +1,6 @@
 ﻿namespace ites.Core.Entities
 {
-    public sealed class CompetitionEntity : BaseEntity
+    public sealed class Competition : BaseEntity
     {
         public string ContentInHtml { get; set; } = string.Empty;
         public IList<Guid> MembersIds { get; set; } = [];

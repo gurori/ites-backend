@@ -11,14 +11,16 @@ public sealed class TeamRepository(ItesDbContext context, IMapper mapper) : ITea
     private readonly ItesDbContext _context = context;
     private readonly IMapper _mapper = mapper;
 
-    public async Task CreateAsync(Team team)
+    public async Task CreateAsync(Core.Models.Team team)
     {
-        UserEntity? admin = await _context.Users.FirstOrDefaultAsync(u => u.Id == team.AdminId);
+        Core.Entities.User? admin = await _context.Users.FirstOrDefaultAsync(u =>
+            u.Id == team.AdminId
+        );
 
         if (admin is null || admin.TeamId is not null)
             return;
 
-        TeamEntity teamEntity = new()
+        Core.Entities.Team teamEntity = new()
         {
             Id = Guid.CreateVersion7(),
             AdminId = admin.Id,
@@ -46,45 +48,45 @@ public sealed class TeamRepository(ItesDbContext context, IMapper mapper) : ITea
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IList<Team>> GetAllPublicAsync()
+    public async Task<IList<Core.Models.Team>> GetAllPublicAsync()
     {
-        IList<TeamEntity> teamEntities = await _context
+        IList<Core.Entities.Team> teamEntities = await _context
             .Teams.AsNoTracking()
             .Where(t => t.IsPublic)
             .ToListAsync();
 
-        return _mapper.Map<Team[]>(teamEntities);
+        return _mapper.Map<Core.Models.Team[]>(teamEntities);
     }
 
-    public async Task<Team?> GetByIdAsync(Guid id)
+    public async Task<Core.Models.Team?> GetByIdAsync(Guid id)
     {
-        TeamEntity? teamEntity = await _context
+        Core.Entities.Team? teamEntity = await _context
             .Teams.AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (teamEntity is null)
             return null;
 
-        return _mapper.Map<Team>(teamEntity);
+        return _mapper.Map<Core.Models.Team>(teamEntity);
     }
 
-    public async Task<IList<Team>> GetByIdsAsync(IList<Guid> ids)
+    public async Task<IList<Core.Models.Team>> GetByIdsAsync(IList<Guid> ids)
     {
-        IList<TeamEntity> teamEntities = await _context
+        IList<Core.Entities.Team> teamEntities = await _context
             .Teams.AsNoTracking()
             .Where(t => ids.Contains(t.Id) && t.IsPublic == true)
             .ToListAsync();
 
-        return _mapper.Map<Team[]>(teamEntities);
+        return _mapper.Map<Core.Models.Team[]>(teamEntities);
     }
 
-    public async Task<IList<Team>> GetAllNotPublicAsync()
+    public async Task<IList<Core.Models.Team>> GetAllNotPublicAsync()
     {
-        IList<TeamEntity> teamEntities = await _context
+        IList<Core.Entities.Team> teamEntities = await _context
             .Teams.AsNoTracking()
             .Where(t => t.IsPublic == false)
             .ToListAsync();
 
-        return _mapper.Map<Team[]>(teamEntities);
+        return _mapper.Map<Core.Models.Team[]>(teamEntities);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ites.Core.Entities
 {
-    public sealed class UserEntity : BaseEntity
+    public sealed class User : BaseEntity
     {
         public string LastName { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;

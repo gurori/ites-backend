@@ -1,6 +1,6 @@
 ﻿namespace ites.Core.Entities
 {
-    public sealed class TeamEntity : BaseEntity
+    public sealed class Team : BaseEntity
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

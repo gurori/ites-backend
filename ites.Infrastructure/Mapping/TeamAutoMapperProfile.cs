@@ -9,9 +9,9 @@ namespace ites.Infrastructure.Mapping
     {
         public TeamAutoMapperProfile()
         {
-            CreateMap<TeamEntity, Team>();
+            CreateMap<Team, Team>();
 
-            CreateMap<Team, TeamResponse>();
+            CreateMap<Core.Models.Team, TeamResponse>();
         }
     }
 }

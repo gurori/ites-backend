@@ -7,7 +7,7 @@ namespace ites.Infrastructure.Mapping
     {
         public ApplicationAutoMapperProfile()
         {
-            CreateMap<ApplicationEntity, Core.Models.Application>();
+            CreateMap<Application, Core.Models.Application>();
         }
     }
 }

@@ -11,14 +11,14 @@ namespace ites.DataAccess.Repositories
         private readonly ItesDbContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<bool> CreateAsync(User user)
+        public async Task<bool> CreateAsync(Core.Models.User user)
         {
             bool isUserExist = await _context.Users.AnyAsync(u => u.Email == user.Email);
 
             if (isUserExist)
                 return false;
 
-            var userEntity = new UserEntity()
+            var userEntity = new Core.Entities.User()
             {
                 Id = Guid.CreateVersion7(),
                 FirstName = user.FirstName,
@@ -32,29 +32,29 @@ namespace ites.DataAccess.Repositories
             return true;
         }
 
-        public async Task<User?> GetByEmailAsync(string email)
+        public async Task<Core.Models.User?> GetByEmailAsync(string email)
         {
             var userEntity = await GetUserEntityByEmailAsync(email);
 
-            return userEntity is null ? null : _mapper.Map<User>(userEntity);
+            return userEntity is null ? null : _mapper.Map<Core.Models.User>(userEntity);
         }
 
-        public async Task<User?> GetByIdAsync(Guid id)
+        public async Task<Core.Models.User?> GetByIdAsync(Guid id)
         {
             var userEntity = await GetUserEntityByIdAsync(id);
             if (userEntity is null)
                 return null;
-            return _mapper.Map<User>(userEntity);
+            return _mapper.Map<Core.Models.User>(userEntity);
         }
 
-        public async Task<IList<User>> GetManyByIdAsync(IList<Guid> ids)
+        public async Task<IList<Core.Models.User>> GetManyByIdAsync(IList<Guid> ids)
         {
             var userEntities = await _context
                 .Users.AsNoTracking()
                 .Where(u => ids.Contains(u.Id))
                 .ToListAsync();
 
-            return _mapper.Map<User[]>(userEntities);
+            return _mapper.Map<Core.Models.User[]>(userEntities);
         }
 
         public async Task UpdateAsync(
@@ -84,10 +84,10 @@ namespace ites.DataAccess.Repositories
             await _context.Users.Where(x => x.Id == id).ExecuteDeleteAsync();
         }
 
-        private async Task<UserEntity?> GetUserEntityByEmailAsync(string email) =>
+        private async Task<Core.Entities.User?> GetUserEntityByEmailAsync(string email) =>
             await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
 
-        private async Task<UserEntity?> GetUserEntityByIdAsync(Guid id) =>
+        private async Task<Core.Entities.User?> GetUserEntityByIdAsync(Guid id) =>
             await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
     }
 }

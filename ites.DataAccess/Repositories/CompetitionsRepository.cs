@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using ites.Core.Models;
 using ites.Core.Entities;
-using Microsoft.EntityFrameworkCore;
 using ites.Core.Interfaces.Repositories;
+using ites.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories
 {
@@ -12,16 +12,16 @@ namespace ites.DataAccess.Repositories
         private readonly ItesDbContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<bool> CreateAsync(Guid userId, Competition competition)
+        public async Task<bool> CreateAsync(Guid userId, Core.Models.Competition competition)
         {
-            UserEntity? user = await _context
+            Core.Entities.User? user = await _context
                 .Users.AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user is null)
                 return false;
 
-            CompetitionEntity competitionEntity = new()
+            Core.Entities.Competition competitionEntity = new()
             {
                 Id = Guid.CreateVersion7(),
                 ContentInHtml = competition.ContentInHtml,
@@ -40,32 +40,32 @@ namespace ites.DataAccess.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IList<Competition>> GetAllAsync()
+        public async Task<IList<Core.Models.Competition>> GetAllAsync()
         {
-            IList<CompetitionEntity> competitions = await _context
+            IList<Core.Entities.Competition> competitions = await _context
                 .Competitions.AsNoTracking()
                 .ToListAsync();
 
-            return _mapper.Map<Competition[]>(competitions);
+            return _mapper.Map<Core.Models.Competition[]>(competitions);
         }
 
-        public async Task<IList<Competition>> GetAllWithIdAsync(IList<Guid> ids)
+        public async Task<IList<Core.Models.Competition>> GetAllWithIdAsync(IList<Guid> ids)
         {
-            IList<CompetitionEntity> competitions = await _context
+            IList<Core.Entities.Competition> competitions = await _context
                 .Competitions.AsNoTracking()
                 .Where(c => ids.Contains(c.Id))
                 .ToListAsync();
 
-            return _mapper.Map<Competition[]>(competitions);
+            return _mapper.Map<Core.Models.Competition[]>(competitions);
         }
 
-        public async Task<Competition?> GetByIdAsync(Guid id)
+        public async Task<Core.Models.Competition?> GetByIdAsync(Guid id)
         {
-            CompetitionEntity? competition = await _context
+            Core.Entities.Competition? competition = await _context
                 .Competitions.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            return competition is null ? null : _mapper.Map<Competition>(competition);
+            return competition is null ? null : _mapper.Map<Core.Models.Competition>(competition);
         }
 
         public Task UpdateAsync(
