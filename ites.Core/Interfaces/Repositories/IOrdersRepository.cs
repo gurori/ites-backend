@@ -12,5 +12,5 @@ public interface IOrdersRepository : IRepository<Order>
         int take = 100,
         CancellationToken ct = default
     );
-    public Task SetIsPublicAsync(Guid id, bool isPublic);
+    public Task SetIsPublicAsync(Guid id, bool isPublic, CancellationToken ct = default);
 }

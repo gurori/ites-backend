@@ -2,5 +2,5 @@
 
 public interface IRoleRepository
 {
-    public Task<HashSet<int>> GetPermissionsIdsAsync(string roleName);
+    public Task<HashSet<int>> GetPermissionsIdsAsync(string roleName, CancellationToken ct = default);
 }
