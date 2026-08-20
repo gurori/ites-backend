@@ -2,7 +2,7 @@
 
 namespace ites.Application.Interfaces.Services
 {
-    public interface IApplicationsService
+    public interface IRequestEntityService
     {
         public Task CreateAsync(Guid from, Guid to);
         public Task<RequestEntity> GetAsync(Guid id);

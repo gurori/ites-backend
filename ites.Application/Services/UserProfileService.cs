@@ -13,7 +13,7 @@ namespace ites.Application.Services
 {
     public sealed class UserProfileService(
         ICompetitionsService competitionsService,
-        IApplicationsService applicationsService,
+        IRequestEntityService applicationsService,
         IUserService userService,
         IUserRepository userRepository,
         IOrdersService ordersService,
@@ -25,7 +25,7 @@ namespace ites.Application.Services
         private readonly IUserService _userService = userService;
         private readonly ICompetitionsService _competitionsService = competitionsService;
         private readonly IOrdersService _ordersService = ordersService;
-        private readonly IApplicationsService _applicationsService = applicationsService;
+        private readonly IRequestEntityService _applicationsService = applicationsService;
         private readonly ITeamService _teamService = teamService;
         private readonly IMapper _mapper = mapper;
 

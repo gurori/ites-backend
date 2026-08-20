@@ -5,7 +5,7 @@ using ites.Core.Interfaces.Repositories;
 namespace ites.Application.Services
 {
     public sealed class ApplicationsService(IRequestEntityRepository applicationsRepository)
-        : IApplicationsService
+        : IRequestEntityService
     {
         private readonly IRequestEntityRepository _applicationsRepository = applicationsRepository;
 
