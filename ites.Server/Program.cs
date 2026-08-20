@@ -1,6 +1,5 @@
 using ites.DataAccess;
 using ites.Infrastructure.Auth;
-using ites.Infrastructure.Mapping;
 using ites.Server.Extensions;
 using ites.Server.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -39,14 +38,6 @@ services.AddRouting(options =>
 services.AddRepositories();
 
 services.AddApplicationServices();
-
-services.AddAutoMapper(
-    typeof(UserAutoMapperProfile),
-    typeof(CompetitionAutoMapperProfile),
-    typeof(ApplicationAutoMapperProfile),
-    typeof(OrderAutoMapperProfile),
-    typeof(TeamAutoMapperProfile)
-);
 
 services.AddAuthentication(configuration);
 
