@@ -1,5 +1,5 @@
 using AutoMapper;
-using ites.Application.Contracts.Moders;
+using ites.Application.Contracts.Moderation;
 using ites.Application.Contracts.Orders;
 using ites.Application.Contracts.Teams;
 using ites.Application.Interfaces.Services;
@@ -17,12 +17,12 @@ namespace ites.Application.Services
         private readonly IOrdersRepository _orderRepository = orderRepository;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<ModerResponse> GetAllAsync()
+        public async Task<ModerationResponse> GetAllAsync()
         {
             var orders = await _orderRepository.GetAllNotPublicAsync();
             var teams = await _teamRepository.GetAllNotPublicAsync();
 
-            return new ModerResponse(
+            return new ModerationResponse(
                 _mapper.Map<TeamResponse[]>(teams),
                 _mapper.Map<OrderResponse[]>(orders)
             );

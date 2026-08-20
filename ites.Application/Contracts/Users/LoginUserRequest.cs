@@ -1,10 +1,3 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace ites.Application.Contracts.Users;
 
-namespace ites.Application.Contracts.Users
-{
-    public record LoginUserRequest(
-    [Required] string Email,
-    [Required] string Password
-        );
-}
-
+public sealed record LoginUserRequest(string Email, string Password);

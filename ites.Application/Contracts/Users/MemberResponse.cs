@@ -1,39 +1,24 @@
 ﻿using ites.Application.Contracts.Applications;
-using ites.Core.Models;
+using ites.Application.Contracts.Competitions;
+using ites.Application.Contracts.Orders;
+using ites.Application.Contracts.Teams;
 
-namespace ites.Application.Contracts.Users
-{
-    public class MemberResponse(
-        Guid id,
-        string lastName,
-        string firstName,
-        string middleName,
-        string email,
-        string role,
-        string description,
-        string jobTitle,
-        IList<Competition> competitions,
-        IList<Competition> applicationsForCompetitions,
-        IList<Order> orders,
-        IList<Order> applicationsForOrders,
-        IList<Team> applicationsForTeams,
-        Guid? teamId,
-        IList<TeamApplicationResponse> applications) //???
-    {
-        public Guid Id { get; private set; } = id;
-        public string LastName { get; private set; } = lastName;
-        public string FirstName { get; private set; } = firstName;
-        public string MiddleName { get; private set; } = middleName;
-        public string Email { get; private set; } = email;
-        public string Role { get; private set; } = role;
-        public string Description { get; private set; } = description;
-        public string JobTitle { get; private set; } = jobTitle;
-        public IList<Competition> Competitions { get; private set; } = competitions;
-        public IList<Competition> ApplicationsForCompetitions { get; private set; } = applicationsForCompetitions;
-        public IList<Order> Orders { get; private set; } = orders;
-        public IList<Order> ApplicationsForOrders { get; private set; } = applicationsForOrders;
-        public IList<Team> ApplicationsForTeams { get; private set; } = applicationsForTeams;
-        public Guid? TeamId { get; private set; } = teamId;
-        public IList<TeamApplicationResponse> Applications { get; private set; } = applications;
-    }
-}
+namespace ites.Application.Contracts.Users;
+
+public sealed record MemberResponse(
+    Guid Id,
+    string LastName,
+    string FirstName,
+    string MiddleName,
+    string Email,
+    string Role,
+    string Description,
+    string JobTitle,
+    Guid? TeamId,
+    IReadOnlyCollection<CompetitionSummaryResponse> Competitions,
+    IReadOnlyCollection<CompetitionSummaryResponse> ApplicationsForCompetitions,
+    IReadOnlyCollection<OrderSummaryResponse> Orders,
+    IReadOnlyCollection<OrderSummaryResponse> ApplicationsForOrders,
+    IReadOnlyCollection<TeamSummaryResponse> ApplicationsForTeams,
+    IReadOnlyCollection<TeamApplicationResponse> Applications
+);

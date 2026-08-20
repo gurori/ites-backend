@@ -1,9 +1,9 @@
-using ites.Application.Contracts.Moders;
+using ites.Application.Contracts.Moderation;
 
 namespace ites.Application.Interfaces.Services;
 
 public interface IModersService
-    {
-        Task<ModerResponse> GetAllAsync();
-        Task HandleAsync(string type, Guid id, bool accept);
-    }
+{
+    Task<ModerationResponse> GetAllAsync();
+    Task HandleAsync(string type, Guid id, bool accept);
+}

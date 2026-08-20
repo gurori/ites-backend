@@ -1,4 +1,3 @@
-﻿namespace ites.Application.Contracts.Teams
-{
-    public record TeamRequest(string Name, string Description);
-}
+﻿namespace ites.Application.Contracts.Teams;
+
+public sealed record TeamRequest(string Name, string Description);

@@ -1,28 +1,16 @@
-﻿using ites.Core.Models;
+﻿using ites.Application.Contracts.Competitions;
 
-namespace ites.Application.Contracts.Users
-{
-    public class OrganizerResponse(
-        Guid id,
-        string lastName,
-        string firstName,
-        string middleName,
-        string email,
-        string role,
-        string description,
-        string jobTitle,
-        IList<Competition> competitions,
-        IList<CompetitionApplicationResponse> applications)
-    {
-        public Guid Id { get; private set; } = id;
-        public string LastName { get; private set; } = lastName;
-        public string FirstName { get; private set; } = firstName;
-        public string MiddleName { get; private set; } = middleName;
-        public string Email { get; private set; } = email;
-        public string Role { get; private set; } = role;
-        public string Description { get; private set; } = description;
-        public string JobTitle { get; private set; } = jobTitle;
-        public IList<Competition> Competitions { get; private set; } = competitions;
-        public IList<CompetitionApplicationResponse> Applications { get; private set; } = applications;
-    }
-}
+namespace ites.Application.Contracts.Users;
+
+public sealed record OrganizerResponse(
+    Guid Id,
+    string LastName,
+    string FirstName,
+    string MiddleName,
+    string Email,
+    string Role,
+    string Description,
+    string JobTitle,
+    IReadOnlyCollection<CompetitionSummaryResponse> Competitions,
+    IReadOnlyCollection<CompetitionApplicationResponse> Applications
+);
