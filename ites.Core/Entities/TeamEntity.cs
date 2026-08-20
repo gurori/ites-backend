@@ -1,8 +1,7 @@
 ﻿namespace ites.Core.Entities
 {
-    public sealed class TeamEntity
+    public sealed class TeamEntity : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public IList<Guid> MembersIds { get; set; } = [];

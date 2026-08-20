@@ -1,8 +1,7 @@
 ﻿namespace ites.Core.Entities
 {
-    public sealed class UserEntity
+    public sealed class UserEntity : BaseEntity
     {
-        public Guid Id { get; set; }
         public string LastName { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string MiddleName { get; set; } = string.Empty;
