@@ -5,7 +5,7 @@ namespace ites.Core.Interfaces.Repositories;
 
 public interface IOrdersRepository : IRepository<Order>
 {
-    public Task<IReadOnlyCollection<Order>> GetAllAsync<T>(
+    public Task<IReadOnlyCollection<T>> GetByVisibilityAsync<T>(
         Expression<Func<Order, T>> selector,
         bool isPublic = true,
         int skip = 0,
