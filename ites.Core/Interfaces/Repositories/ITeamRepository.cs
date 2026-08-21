@@ -5,7 +5,7 @@ namespace ites.Core.Interfaces.Repositories;
 
 public interface ITeamRepository : IRepository<Team>
 {
-    public Task<IReadOnlyCollection<Team>> GetAllAsync<T>(
+    public Task<IReadOnlyCollection<Team>> GetByVisibilityAsync<T>(
         Expression<Func<Team, T>> selector,
         bool isPublic = true,
         int skip = 0,
