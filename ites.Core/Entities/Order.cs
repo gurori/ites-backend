@@ -6,8 +6,10 @@
         public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public DateTime DeadLine { get; set; }
+        public User Client { get; set; } = null!;
         public Guid ClientId { get; set; }
-        public Guid MemberId { get; set; }
+        public User? Member { get; set; } = null;
+        public Guid? MemberId { get; set; } = null;
         public bool IsPublic { get; set; }
         public string ContentInHtml { get; set; } = string.Empty;
     }

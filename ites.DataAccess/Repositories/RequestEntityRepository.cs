@@ -16,13 +16,12 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
         bool exists = await _context
             .Applications.AsNoTracking()
             .AnyAsync(a => a.From == requestEntity.From && a.For == requestEntity.For, ct);
+        if (exists)
+            return;
 
-        if (exists) return;
-
-        Competition? competition = await _context.Competitions.FirstOrDefaultAsync(
-            c => c.Id == requestEntity.For,
-            ct
-        );
+        Competition? competition = await _context
+            .Competitions.Include(c => c.Organizers)
+            .FirstOrDefaultAsync(c => c.Id == requestEntity.For, ct);
 
         User? fromMember = await _context.Users.FirstOrDefaultAsync(
             u => u.Id == requestEntity.From,
@@ -32,25 +31,14 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
         if (competition is null || fromMember is null)
             return;
 
-        User[] organizers = await _context
-            .Users.Where(u => competition.OrganizersIds.Contains(u.Id))
-            .ToArrayAsync(ct);
+        fromMember.ApplicationsForCompetitions.Add(requestEntity);
 
-        var newRequest = new RequestEntity
+        foreach (User organizer in competition.Organizers)
         {
-            Id = Guid.CreateVersion7(),
-            For = requestEntity.For,
-            From = requestEntity.From,
-        };
-
-        fromMember.ApplicationsForCompetitions.Add(newRequest.For);
-        foreach (User organizer in organizers)
-        {
-            organizer.ApplicationsIds.Add(newRequest.Id);
+            organizer.Applications.Add(requestEntity);
         }
 
-        _context.Applications.Add(newRequest);
-
+        _context.Applications.Add(requestEntity);
         await _context.SaveChangesAsync(ct);
     }
 
@@ -59,26 +47,24 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
         CancellationToken ct = default
     )
     {
-        Order? order = await _context
-            .Orders.AsNoTracking()
-            .FirstOrDefaultAsync(o => o.Id == requestEntity.For, ct);
-
-        if (order is null || !order.IsPublic)
-            return;
-
         bool exists = await _context
             .Applications.AsNoTracking()
             .AnyAsync(a => a.From == requestEntity.From && a.For == requestEntity.For, ct);
         if (exists)
             return;
 
-        User? client = await _context.Users.FirstOrDefaultAsync(u => u.Id == order.ClientId, ct);
+        Order? order = await _context
+            .Orders.Include(o => o.Client)
+            .FirstOrDefaultAsync(o => o.Id == requestEntity.For, ct);
+
+        if (order is null || !order.IsPublic)
+            return;
+
         User? fromMember = await _context.Users.FirstOrDefaultAsync(
             u => u.Id == requestEntity.From,
             ct
         );
-
-        if (client is null || fromMember is null)
+        if (fromMember is null)
             return;
 
         var newRequest = new RequestEntity
@@ -88,8 +74,8 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
             From = requestEntity.From,
         };
 
-        fromMember.ApplicationsForOrders.Add(newRequest.For);
-        client.ApplicationsIds.Add(newRequest.Id);
+        fromMember.ApplicationsForOrders.Add(newRequest);
+        order.Client.Applications.Add(newRequest);
 
         _context.Applications.Add(newRequest);
         await _context.SaveChangesAsync(ct);
@@ -100,26 +86,25 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
         CancellationToken ct = default
     )
     {
-        Team? team = await _context
-            .Teams.AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Id == requestEntity.For, ct);
-
-        if (team is null || team.MembersIds.Count >= 5 || !team.IsPublic)
-            return;
-
         bool exists = await _context
             .Applications.AsNoTracking()
             .AnyAsync(a => a.From == requestEntity.From && a.For == requestEntity.For, ct);
         if (exists)
             return;
 
-        User? admin = await _context.Users.FirstOrDefaultAsync(u => u.Id == team.AdminId, ct);
+        Team? team = await _context
+            .Teams.Include(t => t.Admin)
+            .Include(t => t.Members)
+            .FirstOrDefaultAsync(t => t.Id == requestEntity.For, ct);
+
+        if (team is null || team.Members.Count >= 5 || !team.IsPublic)
+            return;
+
         User? fromMember = await _context.Users.FirstOrDefaultAsync(
             u => u.Id == requestEntity.From,
             ct
         );
-
-        if (admin is null || fromMember is null)
+        if (fromMember is null)
             return;
 
         var newRequest = new RequestEntity
@@ -129,8 +114,8 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
             From = requestEntity.From,
         };
 
-        fromMember.ApplicationsForTeams.Add(newRequest.For);
-        admin.ApplicationsIds.Add(newRequest.Id);
+        fromMember.ApplicationsForTeams.Add(newRequest);
+        team.Admin.Applications.Add(newRequest);
 
         _context.Applications.Add(newRequest);
         await _context.SaveChangesAsync(ct);
@@ -145,32 +130,21 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
         if (requestEntity is null)
             return;
 
-        Competition? competition = await _context.Competitions.FirstOrDefaultAsync(
-            c => c.Id == requestEntity.For,
-            ct
-        );
-        User? member = await _context.Users.FirstOrDefaultAsync(
-            u => u.Id == requestEntity.From,
-            ct
-        );
-
-        if (competition is null || member is null)
-            return;
-
-        IList<User> organizers = await _context
-            .Users.Where(u => competition.OrganizersIds.Contains(u.Id))
-            .ToListAsync(ct);
-
-        member.ApplicationsForCompetitions.Remove(requestEntity.For);
-        foreach (User organizer in organizers)
-        {
-            organizer.ApplicationsIds.Remove(requestEntity.Id);
-        }
-
         if (isAccept)
         {
-            member.CompetitionsIds.Add(requestEntity.For);
-            competition.MembersIds.Add(requestEntity.From);
+            Competition? competition = await _context
+                .Competitions.Include(c => c.Members)
+                .FirstOrDefaultAsync(c => c.Id == requestEntity.For, ct);
+
+            User? member = await _context.Users.FirstOrDefaultAsync(
+                u => u.Id == requestEntity.From,
+                ct
+            );
+
+            if (competition != null && member != null)
+            {
+                competition.Members.Add(member);
+            }
         }
 
         _context.Applications.Remove(requestEntity);
@@ -186,30 +160,17 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
         if (requestEntity is null)
             return;
 
-        Order? order = await _context.Orders.FirstOrDefaultAsync(
-            o => o.Id == requestEntity.For,
-            ct
-        );
-        User? member = await _context.Users.FirstOrDefaultAsync(
-            u => u.Id == requestEntity.From,
-            ct
-        );
-
-        if (order is null || member is null)
-            return;
-
-        User? client = await _context.Users.FirstOrDefaultAsync(u => u.Id == order.ClientId, ct);
-        if (client is null)
-            return;
-
-        member.ApplicationsForOrders.Remove(requestEntity.For);
-        client.ApplicationsIds.Remove(requestEntity.Id);
-
         if (isAccept)
         {
-            member.OrdersIds.Add(requestEntity.For);
-            order.MemberId = requestEntity.From;
-            order.IsPublic = false;
+            Order? order = await _context.Orders.FirstOrDefaultAsync(
+                o => o.Id == requestEntity.For,
+                ct
+            );
+            if (order != null)
+            {
+                order.MemberId = requestEntity.From;
+                order.IsPublic = false;
+            }
         }
 
         _context.Applications.Remove(requestEntity);
@@ -225,29 +186,27 @@ public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEnt
         if (requestEntity is null)
             return;
 
-        Team? team = await _context.Teams.FirstOrDefaultAsync(t => t.Id == requestEntity.For, ct);
-        User? member = await _context.Users.FirstOrDefaultAsync(
-            u => u.Id == requestEntity.From,
-            ct
-        );
-
-        if (team is null || member is null || team.MembersIds.Count >= 5)
-            return;
-
-        User? admin = await _context.Users.FirstOrDefaultAsync(u => u.Id == team.AdminId, ct);
-        if (admin is null)
-            return;
-
-        member.ApplicationsForTeams.Remove(requestEntity.For);
-        admin.ApplicationsIds.Remove(requestEntity.Id);
-
         if (isAccept)
         {
-            member.TeamId = team.Id;
-            team.MembersIds.Add(member.Id);
+            Team? team = await _context
+                .Teams.Include(t => t.Members)
+                .FirstOrDefaultAsync(t => t.Id == requestEntity.For, ct);
 
-            if (team.MembersIds.Count >= 5)
-                team.IsPublic = false;
+            User? member = await _context.Users.FirstOrDefaultAsync(
+                u => u.Id == requestEntity.From,
+                ct
+            );
+
+            if (team != null && member != null && team.Members.Count < 5)
+            {
+                team.Members.Add(member);
+                member.TeamId = team.Id;
+
+                if (team.Members.Count >= 5)
+                {
+                    team.IsPublic = false;
+                }
+            }
         }
 
         _context.Applications.Remove(requestEntity);

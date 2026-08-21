@@ -4,9 +4,9 @@
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public ICollection<Guid> MembersIds { get; set; } = [];
-        public Guid? AdminId { get; set; } = null;
+        public ICollection<User> Members { get; set; } = [];
+        public Guid AdminId { get; set; }
+        public User Admin { get; set; } = null!;
         public bool IsPublic { get; set; }
-        public string ContentInHtml { get; set; } = string.Empty;
     }
 }
