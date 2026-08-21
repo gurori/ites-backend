@@ -1,8 +1,13 @@
-﻿using ites.Core.Entities;
+﻿using System.Linq.Expressions;
+using ites.Core.Entities;
 
 namespace ites.Core.Interfaces.Repositories;
 
 public interface IUserRepository : IRepository<User>
 {
-    public Task<User?> GetByEmailAsync(string email, CancellationToken ct = default);
+    public Task<T?> GetByEmailAsync<T>(
+        string email,
+        Expression<Func<User, T>> selector,
+        CancellationToken ct = default
+    );
 }
