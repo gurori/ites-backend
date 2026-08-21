@@ -8,13 +8,16 @@ namespace ites.DataAccess.Repositories
     {
         private readonly ItesDbContext _context = context;
 
-        public async Task<HashSet<int>> GetPermissionsIdsAsync(string roleName)
+        public async Task<HashSet<int>> GetPermissionsIdsAsync(
+            string roleName,
+            CancellationToken ct = default
+        )
         {
             var permissions = await _context
                 .Roles.Include(r => r.Permissions)
                 .Where(r => r.Name.ToLower() == roleName)
                 .Select(r => r.Permissions)
-                .ToArrayAsync();
+                .ToArrayAsync(ct);
 
             return permissions
                 .SelectMany(p => p)
