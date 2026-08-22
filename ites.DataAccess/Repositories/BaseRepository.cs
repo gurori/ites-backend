@@ -11,10 +11,10 @@ public abstract class BaseRepository<TEntity>(ItesDbContext dbContext) : IReposi
     protected readonly ItesDbContext DbContext = dbContext;
     protected readonly DbSet<TEntity> DbSet = dbContext.Set<TEntity>();
 
-    public virtual Task<bool> CreateAsync(TEntity entity, CancellationToken ct = default)
+    public virtual Task CreateAsync(TEntity entity, CancellationToken ct = default)
     {
         DbSet.Add(entity);
-        return Task.FromResult(true);
+        return Task.CompletedTask;
     }
 
     public virtual async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)

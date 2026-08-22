@@ -6,7 +6,7 @@ namespace ites.Core.Interfaces.Repositories;
 public interface IRepository<TEntity>
     where TEntity : BaseEntity
 {
-    Task<bool> CreateAsync(TEntity entity, CancellationToken ct = default);
+    Task CreateAsync(TEntity entity, CancellationToken ct = default);
 
     Task<T?> GetByIdAsync<T>(
         Guid id,
