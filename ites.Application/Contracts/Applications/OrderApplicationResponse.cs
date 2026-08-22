@@ -5,6 +5,6 @@ namespace ites.Application.Contracts.Applications;
 
 public sealed record OrderApplicationResponse(
     Guid Id,
-    UserProfileResponse FromMember,
+    MemberSummaryResponse FromMember,
     OrderResponse ForOrder
 );

@@ -6,6 +6,6 @@ public sealed record TeamSummaryResponse(
     Guid Id,
     string Name,
     string Description,
-    IList<UserProfileResponse> Members,
+    IReadOnlyCollection<MemberSummaryResponse> Members,
     Guid AdminId
 );

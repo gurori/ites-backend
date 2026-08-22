@@ -5,6 +5,6 @@ namespace ites.Application.Contracts;
 
 public sealed record CompetitionApplicationResponse(
     Guid Id,
-    UserProfileResponse FromMember,
+    MemberSummaryResponse FromMember,
     CompetitionResponse ForCompetition
 );
