@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using System.Text;
 using ites.Application.Interfaces.Auth;
-using ites.Core.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,13 +14,15 @@ namespace ites.Infrastructure.Auth
         private readonly JwtSecurityTokenHandler _tokenHandler = new();
         private readonly JwtOptions _options = options.Value;
 
-        public async Task<string> GenerateTokenAsync(User user)
+        public async Task<string> GenerateTokenAsync(
+            Guid userId,
+            string role,
+            CancellationToken ct = default
+        )
         {
-            List<Claim> claims = [new(ClaimNames.UserId, user.Id.ToString())];
+            List<Claim> claims = [new(ClaimNames.UserId, userId.ToString())];
 
-            HashSet<int> permissionsIds = await _permissionService.GetPermissionsIdsAsync(
-                user.Role
-            );
+            HashSet<int> permissionsIds = await _permissionService.GetPermissionsIdsAsync(role, ct);
 
             claims.Add(new(ClaimNames.Permissions, string.Join(';', permissionsIds)));
 
