@@ -2,7 +2,7 @@
 
 namespace ites.Core.Interfaces.Repositories;
 
-public interface IRequestEntityRepository
+public interface IRequestEntityRepository : IBaseRepository<RequestEntity>
 {
     public Task CreateForCompetitionAsync(
         RequestEntity requestEntity,

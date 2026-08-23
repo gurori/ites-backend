@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories;
 
-public sealed class RequestEntityRepository(ItesDbContext context) : IRequestEntityRepository
+public sealed class RequestEntityRepository(ItesDbContext context)
+    : BaseRepository<RequestEntity>(context),
+        IRequestEntityRepository
 {
     private readonly ItesDbContext _context = context;
 
