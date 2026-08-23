@@ -3,7 +3,7 @@ using ites.Core.Entities;
 
 namespace ites.Core.Interfaces.Repositories;
 
-public interface ITeamRepository : IRepository<Team>
+public interface ITeamRepository : ICrudRepository<Team>
 {
     public Task<IReadOnlyCollection<T>> GetByVisibilityAsync<T>(
         Expression<Func<Team, T>> selector,

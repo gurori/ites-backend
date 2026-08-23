@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ites.DataAccess.Repositories;
 
 public sealed class TeamRepository(ItesDbContext context)
-    : BaseRepository<Team>(context),
+    : CrudRepository<Team>(context),
         ITeamRepository
 {
     public Task SetIsPublicAsync(Guid id, bool isPublic, CancellationToken ct = default)
