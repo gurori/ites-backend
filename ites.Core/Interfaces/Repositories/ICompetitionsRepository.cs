@@ -1,6 +1,5 @@
-﻿using System.Linq.Expressions;
-using ites.Core.Entities;
+﻿using ites.Core.Entities;
 
 namespace ites.Core.Interfaces.Repositories;
 
-public interface ICompetitionsRepository : IRepository<Competition> { }
+public interface ICompetitionsRepository : ICrudRepository<Competition> { }
