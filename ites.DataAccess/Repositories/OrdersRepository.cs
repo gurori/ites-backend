@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ites.DataAccess.Repositories;
 
 public sealed class OrdersRepository(ItesDbContext context)
-    : BaseRepository<Order>(context),
+    : CrudRepository<Order>(context),
         IOrdersRepository
 {
     public Task SetIsPublicAsync(Guid id, bool isPublic, CancellationToken ct = default)
