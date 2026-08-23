@@ -6,7 +6,7 @@ namespace ites.Infrastructure.Auth
     {
         public string Generate(string password) => BCrypt.Net.BCrypt.EnhancedHashPassword(password);
 
-        public bool IsVerify(string password, string hashedPassword) =>
+        public bool Verify(string password, string hashedPassword) =>
             BCrypt.Net.BCrypt.EnhancedVerify(password, hashedPassword);
     }
 }
