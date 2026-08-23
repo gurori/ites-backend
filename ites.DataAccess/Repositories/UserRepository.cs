@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ites.DataAccess.Repositories
 {
     public class UserRepository(ItesDbContext context)
-        : BaseRepository<User>(context),
+        : CrudRepository<User>(context),
             IUserRepository
     {
         public Task<T?> GetByEmailAsync<T>(
@@ -15,10 +15,7 @@ namespace ites.DataAccess.Repositories
             CancellationToken ct = default
         )
         {
-            return DbSet
-                .Where(u => u.Email == email)
-                .Select(selector)
-                .FirstOrDefaultAsync(ct);
+            return DbSet.Where(u => u.Email == email).Select(selector).FirstOrDefaultAsync(ct);
         }
     }
 }
