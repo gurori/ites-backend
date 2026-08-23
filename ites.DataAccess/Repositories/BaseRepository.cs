@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ites.DataAccess.Repositories;
 
-public abstract class BaseRepository<TEntity>(ItesDbContext dbContext) : IRepository<TEntity>
+public abstract class BaseRepository<TEntity>(ItesDbContext dbContext) : IBaseRepository<TEntity>
     where TEntity : BaseEntity
 {
     protected readonly ItesDbContext DbContext = dbContext;
@@ -17,49 +17,29 @@ public abstract class BaseRepository<TEntity>(ItesDbContext dbContext) : IReposi
         return Task.CompletedTask;
     }
 
-    public virtual async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
+    public Task<int> CountAsync(CancellationToken ct = default)
     {
-        int affected = await DbSet.Where(e => e.Id == id).ExecuteDeleteAsync(ct);
-
-        return affected > 0;
+        return DbSet.CountAsync(ct);
     }
 
-    public virtual async Task<IReadOnlyCollection<T>> GetAllAsync<T>(
-        Expression<Func<TEntity, T>> selector,
-        int skip = 0,
-        int take = 100,
+    public Task<int> CountAsync(
+        Expression<Func<TEntity, bool>> predicate,
         CancellationToken ct = default
     )
     {
-        return await DbSet.Select(selector).Skip(skip).Take(take).ToListAsync(ct);
-    }
-
-    public virtual async Task<IReadOnlyCollection<T>> GetAllByIdsAsync<T>(
-        IEnumerable<Guid> ids,
-        Expression<Func<TEntity, T>> selector,
-        CancellationToken ct = default
-    )
-    {
-        return await DbSet.Where(e => ids.Contains(e.Id)).Select(selector).ToListAsync(ct);
-    }
-
-    public virtual async Task<T?> GetByIdAsync<T>(
-        Guid id,
-        Expression<Func<TEntity, T>> selector,
-        CancellationToken ct = default
-    )
-    {
-        return await DbSet.Where(e => e.Id == id).Select(selector).FirstOrDefaultAsync(ct);
-    }
-
-    public virtual Task UpdateAsync(TEntity entity, CancellationToken ct = default)
-    {
-        DbSet.Update(entity);
-        return Task.CompletedTask;
+        return DbSet.CountAsync(predicate, ct);
     }
 
     public Task SaveChangesAsync(CancellationToken ct = default)
     {
         return DbContext.SaveChangesAsync(ct);
+    }
+
+    public Task<bool> AnyAsync(
+        Expression<Func<TEntity, bool>> predicate,
+        CancellationToken ct = default
+    )
+    {
+        return DbSet.AnyAsync(predicate, ct);
     }
 }
