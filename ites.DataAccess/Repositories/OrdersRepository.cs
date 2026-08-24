@@ -33,4 +33,10 @@ public sealed class OrdersRepository(ItesDbContext context)
 
         return orders;
     }
+
+    public Task AddOrderBidAsync(OrderBid orderBid, CancellationToken ct = default)
+    {
+        DbContext.OrderBids.Add(orderBid);
+        return Task.CompletedTask;
+    }
 }

@@ -31,4 +31,13 @@ public sealed class TeamRepository(ItesDbContext context)
             .Select(selector)
             .ToListAsync(ct);
     }
+
+    public Task AddTeamJoinRequestAsync(
+        TeamJoinRequest teamJoinRequest,
+        CancellationToken ct = default
+    )
+    {
+        DbContext.TeamJoinRequests.Add(teamJoinRequest);
+        return Task.CompletedTask;
+    }
 }
