@@ -1,86 +1,88 @@
-﻿using AutoMapper;
-using ites.Application.Contracts.Users;
+﻿using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Auth;
 using ites.Application.Interfaces.Services;
+using ites.Core.Entities;
 using ites.Core.Exeptions;
 using ites.Core.Interfaces.Repositories;
-using ites.Core.Models;
-using Microsoft.Extensions.Options;
 
-namespace ites.Application.Services
+namespace ites.Application.Services;
+
+public sealed class UserService(
+    IPasswordHasher passwordHasher,
+    IUserRepository userRepository,
+    IJwtProvider jwtProvider
+) : IUserService
 {
-    public class UserService(
-        IPasswordHasher passwordHasher,
-        IUserRepository userRepository,
-        IJwtProvider jwtProvider,
-        IMapper mapper
-    ) : IUserService
+    public async Task RegisterAsync(RegisterUserRequest request, CancellationToken ct = default)
     {
-        private readonly IPasswordHasher _passwordHasher = passwordHasher;
-        private readonly IUserRepository _userRepository = userRepository;
-        private readonly IJwtProvider _jwtProvider = jwtProvider;
-        private readonly IMapper _mapper = mapper;
+        bool userExist = await userRepository.AnyAsync(u => u.Email == request.Email, ct);
 
-        public async Task RegisterAsync(string name, string email, string password, string role)
+        if (userExist)
+            throw new ConflictException("Пользователь с данной почтой уже зарегистрирован");
+
+        string hashedPassword = passwordHasher.Generate(request.Password);
+
+        User user = new()
         {
-            string hashedPassword = _passwordHasher.Generate(password);
+            Id = Guid.CreateVersion7(),
+            Email = request.Email,
+            FirstName = request.FirstName,
+            PasswordHash = hashedPassword,
+            Role = request.Role,
+        };
 
-            User user = new(Guid.NewGuid(), name, email, hashedPassword, role);
-            bool isUserExist = !await _userRepository.CreateAsync(user);
+        await userRepository.CreateAsync(user, ct);
+        await userRepository.SaveChangesAsync(ct);
+    }
 
-            if (isUserExist)
-                throw new ConflictException("Данный пользователь уже существует");
+    public async Task<LoginUserResponse> LoginAsync(
+        LoginUserRequest request,
+        CancellationToken ct = default
+    )
+    {
+        var userEntity = await userRepository.GetByEmailAsync(
+            request.Email,
+            u => new
+            {
+                u.Id,
+                u.PasswordHash,
+                u.Role,
+            },
+            ct
+        );
+
+        if (userEntity == null || !passwordHasher.Verify(request.Password, userEntity.PasswordHash))
+        {
+            throw new UnauthorizedException("Неверный email или пароль");
         }
 
-        public async Task<LoginUserResponse> LoginAsync(string email, string password)
-        {
-            var userEntity =
-                await _userRepository.GetByEmailAsync(email)
-                ?? throw new NotFoundException("Пользователь с данной почтой не зарегистрирован");
+        var token = await jwtProvider.GenerateTokenAsync(userEntity.Id, userEntity.Role, ct);
 
-            if (!_passwordHasher.IsVerify(password, userEntity.PasswordHash))
-                throw new ConflictException("Неверный пароль");
+        return new LoginUserResponse(token, userEntity.Role);
+    }
 
-            var user = _mapper.Map<User>(userEntity);
-            var token = await _jwtProvider.GenerateTokenAsync(user);
+    public async Task UpdateAsync(
+        Guid id,
+        UpdateUserRequest request,
+        CancellationToken ct = default
+    )
+    {
+        var user =
+            await userRepository.GetByIdAsync(id, ct)
+            ?? throw new NotFoundException("Пользователь не найден");
 
-            return new LoginUserResponse(token, user.Role);
-        }
+        user.LastName = request.LastName;
+        user.FirstName = request.FirstName;
+        user.MiddleName = request.MiddleName;
+        user.Description = request.Description;
+        user.JobTitle = request.JobTitle ?? "";
 
-        public async Task<UserProfileResponse> GetAsync(Guid id)
-        {
-            User? user = await _userRepository.GetByIdAsync(id);
-            return _mapper.Map<UserProfileResponse>(user);
-        }
+        await userRepository.UpdateAsync(user, ct);
+        await userRepository.SaveChangesAsync(ct);
+    }
 
-        public async Task UpdateAsync(
-            Guid id,
-            string lastName,
-            string firstName,
-            string middleName,
-            string description,
-            string? jobTitle
-        )
-        {
-            await _userRepository.UpdateAsync(
-                id,
-                lastName,
-                firstName,
-                middleName,
-                description,
-                jobTitle ?? string.Empty
-            );
-        }
-
-        public async Task<IList<UserProfileResponse>> GetManyAsync(ICollection<Guid> ids)
-        {
-            IList<User> users = await _userRepository.GetManyByIdAsync(ids);
-            return _mapper.Map<UserProfileResponse[]>(users);
-        }
-
-        public async Task DeleteAsync(Guid userId)
-        {
-            await _userRepository.DeleteByIdAsync(userId);
-        }
+    public async Task DeleteAsync(Guid userId, CancellationToken ct = default)
+    {
+        await userRepository.DeleteAsync(userId, ct);
     }
 }

@@ -4,18 +4,12 @@ namespace ites.Application.Interfaces.Services
 {
     public interface IUserService
     {
-        Task<LoginUserResponse> LoginAsync(string email, string password);
-        Task RegisterAsync(string name, string email, string password, string role);
-        Task<UserProfileResponse> GetAsync(Guid id);
-        Task UpdateAsync(
-            Guid id,
-            string lastName,
-            string firstName,
-            string middleName,
-            string description,
-            string? jobTitle
+        Task<LoginUserResponse> LoginAsync(
+            LoginUserRequest request,
+            CancellationToken ct = default
         );
-        Task<IList<UserProfileResponse>> GetManyAsync(ICollection<Guid> ids);
-        Task DeleteAsync(Guid userId);
+        Task RegisterAsync(RegisterUserRequest request, CancellationToken ct = default);
+        Task UpdateAsync(Guid id, UpdateUserRequest request, CancellationToken ct = default);
+        Task DeleteAsync(Guid userId, CancellationToken ct = default);
     }
 }

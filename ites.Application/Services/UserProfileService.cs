@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ites.Application.Contracts;
+﻿using ites.Application.Contracts;
 using ites.Application.Contracts.Applications;
 using ites.Application.Contracts.Competitions;
 using ites.Application.Contracts.Orders;
@@ -7,53 +6,42 @@ using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Services;
 using ites.Core.Exeptions;
 using ites.Core.Interfaces.Repositories;
-using ites.Core.Models;
 
 namespace ites.Application.Services
 {
     public sealed class UserProfileService(
         ICompetitionsService competitionsService,
-        IRequestEntityService applicationsService,
         IUserService userService,
         IUserRepository userRepository,
         IOrdersService ordersService,
-        ITeamService teamService,
-        IMapper mapper
+        ITeamService teamService
     ) : IUserProfileService
     {
-        private readonly IUserRepository _userRepository = userRepository;
-        private readonly IUserService _userService = userService;
-        private readonly ICompetitionsService _competitionsService = competitionsService;
-        private readonly IOrdersService _ordersService = ordersService;
-        private readonly IRequestEntityService _applicationsService = applicationsService;
-        private readonly ITeamService _teamService = teamService;
-        private readonly IMapper _mapper = mapper;
-
         public async Task<MemberResponse> GetMemberAsync(Guid id)
         {
             User user =
-                await _userRepository.GetByIdAsync(id)
+                await userRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException("Пользователь не найден");
 
-            IList<Competition> competitions = await _competitionsService.GetAsync(
+            IList<Competition> competitions = await competitionsService.GetAsync(
                 user.CompetitionsIds
             );
-            IList<Competition> competitionsApplications = await _competitionsService.GetAsync(
+            IList<Competition> competitionsApplications = await competitionsService.GetAsync(
                 user.ApplicationsForCompetitions
             );
 
-            IList<Order> orders = await _ordersService.GetAsync(user.OrdersIds);
-            IList<Order> ordersApplications = await _ordersService.GetAsync(
+            IList<Order> orders = await ordersService.GetAsync(user.OrdersIds);
+            IList<Order> ordersApplications = await ordersService.GetAsync(
                 user.ApplicationsForOrders
             );
 
-            IList<Team> teamsApplications = await _teamService.GetAsync(user.ApplicationsForTeams);
+            IList<Team> teamsApplications = await teamService.GetAsync(user.ApplicationsForTeams);
             var applicationsIds = await _applicationsService.GetAsync(user.ApplicationsIds);
             IList<TeamApplicationResponse> applications = [];
 
             foreach (var application in applicationsIds)
             {
-                UserProfileResponse fromMember = await _userService.GetAsync(application.From);
+                UserProfileResponse fromMember = await userService.GetAsync(application.From);
                 applications.Add(new(application.Id, fromMember));
             }
 
@@ -80,10 +68,10 @@ namespace ites.Application.Services
         public async Task<OrganizerResponse> GetOrganizerAsync(Guid id)
         {
             User user =
-                await _userRepository.GetByIdAsync(id)
+                await userRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException("Пользователь не найден");
 
-            IList<Competition> competitions = await _competitionsService.GetAsync(
+            IList<Competition> competitions = await competitionsService.GetAsync(
                 user.CompetitionsIds
             );
             IList<RequestEntity> applicationsIds = await _applicationsService.GetAsync(
@@ -93,8 +81,8 @@ namespace ites.Application.Services
 
             foreach (RequestEntity a in applicationsIds)
             {
-                UserProfileResponse fromMember = await _userService.GetAsync(a.From);
-                Competition competition = await _competitionsService.GetAsync(a.For);
+                UserProfileResponse fromMember = await userService.GetAsync(a.From);
+                Competition competition = await competitionsService.GetAsync(a.For);
                 CompetitionResponse forCompetition = _mapper.Map<CompetitionResponse>(competition);
 
                 applications.Add(new(a.Id, fromMember, forCompetition));
@@ -119,10 +107,10 @@ namespace ites.Application.Services
         public async Task<ClientResponse> GetClientAsync(Guid id)
         {
             User user =
-                await _userRepository.GetByIdAsync(id)
+                await userRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException("Пользователь не найден");
 
-            IList<Order> orders = await _ordersService.GetAsync(user.OrdersIds);
+            IList<Order> orders = await ordersService.GetAsync(user.OrdersIds);
             IList<RequestEntity> applicationsIds = await _applicationsService.GetAsync(
                 user.ApplicationsIds
             );
@@ -130,8 +118,8 @@ namespace ites.Application.Services
 
             foreach (RequestEntity a in applicationsIds)
             {
-                UserProfileResponse fromMember = await _userService.GetAsync(a.From);
-                Order order = await _ordersService.GetAsync(a.For);
+                UserProfileResponse fromMember = await userService.GetAsync(a.From);
+                Order order = await ordersService.GetAsync(a.For);
                 OrderResponse forOrder = _mapper.Map<OrderResponse>(order);
 
                 applications.Add(new(a.Id, fromMember, forOrder));
