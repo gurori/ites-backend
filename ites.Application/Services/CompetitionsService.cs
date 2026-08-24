@@ -1,72 +1,109 @@
-﻿using ites.Application.Interfaces.Services;
+﻿using ites.Application.Contracts.Competitions;
+using ites.Application.Interfaces.Services;
 using ites.Core.Entities;
 using ites.Core.Exeptions;
 using ites.Core.Interfaces.Repositories;
 
-namespace ites.Application.Services
+namespace ites.Application.Services;
+
+public sealed class CompetitionsService(
+    ICompetitionsRepository competitionsRepository,
+    IRequestEntityRepository applicationsRepository,
+    IUserRepository userRepository
+) : ICompetitionsService
 {
-    public sealed class CompetitionsService(
-        ICompetitionsRepository competitionsRepository,
-        IRequestEntityRepository applicationsRepository
-    ) : ICompetitionsService
+    public async Task AddApplicationAsync(
+        Guid userId,
+        Guid competitionId,
+        CancellationToken ct = default
+    )
     {
-        private readonly ICompetitionsRepository _competitionsRepository = competitionsRepository;
-        private readonly IRequestEntityRepository _applicationsRepository = applicationsRepository;
-
-        public async Task AddApplicationAsync(Guid userId, Guid forId)
+        RequestEntity application = new()
         {
-            RequestEntity application = new(Guid.Empty, userId, forId);
-            await _applicationsRepository.CreateForCompetitionAsync(application);
-        }
+            Id = Guid.CreateVersion7(),
+            For = competitionId,
+            From = userId,
+        };
 
-        public async Task CreateAsync(Guid userId, string contentInHtml)
+        await applicationsRepository.CreateForCompetitionAsync(application, ct);
+        await competitionsRepository.SaveChangesAsync(ct);
+    }
+
+    public async Task<Guid> CreateAsync(
+        Guid userId,
+        CompetitionRequest request,
+        CancellationToken ct = default
+    )
+    {
+        User? organizer =
+            await userRepository.GetByIdAsync(userId, ct)
+            ?? throw new NotFoundException("Пользователь не найден");
+
+        Competition competition = new()
         {
-            Competition competition = new(Guid.NewGuid(), contentInHtml);
+            Id = Guid.CreateVersion7(),
+            ContentInHtml = request.ContentInHtml,
+            Organizers = [organizer],
+        };
 
-            bool isCreated = await _competitionsRepository.CreateAsync(userId, competition);
+        await competitionsRepository.CreateAsync(competition, ct);
+        await competitionsRepository.SaveChangesAsync(ct);
 
-            if (!isCreated)
-                throw new NotFoundException("Пользователь не найден");
-        }
+        return competition.Id;
+    }
 
-        public Task DeleteAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+    public Task DeleteAsync(Guid userId, Guid id, CancellationToken ct = default)
+    {
+        // TODO: Implement delete competition logic
+        throw new NotImplementedException();
+    }
 
-        public async Task<Competition> GetAsync(Guid id)
-        {
-            Competition competition =
-                await _competitionsRepository.GetByIdAsync(id)
-                ?? throw new NotFoundException("Конкурс не найден");
+    public async Task<CompetitionResponse> GetAsync(Guid id, CancellationToken ct = default)
+    {
+        var competition =
+            await competitionsRepository.GetByIdAsync(
+                id,
+                c => new CompetitionResponse(c.Id, c.ContentInHtml),
+                ct
+            ) ?? throw new NotFoundException("Конкурс не найден");
 
-            return competition;
-        }
+        return competition;
+    }
 
-        public async Task<IList<Competition>> GetAsync()
-        {
-            return await _competitionsRepository.GetAllAsync();
-        }
+    public async Task<CompetitionListResponse> GetAllAsync(
+        int page = 1,
+        int pageSize = 100,
+        CancellationToken ct = default
+    )
+    {
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
 
-        public async Task<IList<Competition>> GetAsync(ICollection<Guid> ids)
-        {
-            return await _competitionsRepository.GetAllWithIdAsync(ids);
-        }
+        var competitions = await competitionsRepository.GetAllAsync(
+            c => new CompetitionSummaryResponse(c.Id, c.ContentInHtml),
+            (page - 1) * pageSize,
+            pageSize,
+            ct
+        );
 
-        public async Task HandleApplicationAsync(Guid id, bool isAccept)
-        {
-            await _applicationsRepository.HandleCompetitionAsync(id, isAccept);
-        }
+        var totalCount = await competitionsRepository.CountAsync(ct);
 
-        public Task UpdateAsync(
-            Guid id,
-            string title,
-            string description,
-            DateTime startDate,
-            DateTime endDate
-        )
-        {
-            throw new NotImplementedException();
-        }
+        return new CompetitionListResponse(competitions, totalCount, page, pageSize);
+    }
+
+    public async Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default)
+    {
+        await applicationsRepository.HandleCompetitionAsync(id, isAccept, ct);
+    }
+
+    public Task UpdateAsync(
+        Guid userId,
+        Guid competitionId,
+        UpdateCompetitionRequest request,
+        CancellationToken ct = default
+    )
+    {
+        // TODO: Implement update competition logic
+        throw new NotImplementedException();
     }
 }

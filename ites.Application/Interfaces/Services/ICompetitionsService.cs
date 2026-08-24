@@ -1,22 +1,23 @@
-﻿using ites.Core.Entities;
+﻿using ites.Application.Contracts.Competitions;
 
-namespace ites.Application.Interfaces.Services
+namespace ites.Application.Interfaces.Services;
+
+public interface ICompetitionsService
 {
-    public interface ICompetitionsService
-    {
-        public Task CreateAsync(Guid userId, string contentInHtml);
-        public Task<Competition> GetAsync(Guid id);
-        public Task<IList<Competition>> GetAsync();
-        public Task<IList<Competition>> GetAsync(ICollection<Guid> ids);
-        public Task AddApplicationAsync(Guid userId, Guid forId);
-        public Task HandleApplicationAsync(Guid id, bool isAccept);
-        public Task UpdateAsync(
-            Guid id,
-            string title,
-            string description,
-            DateTime startDate,
-            DateTime endDate
-        );
-        public Task DeleteAsync(Guid id);
-    }
+    Task<Guid> CreateAsync(Guid userId, CompetitionRequest request, CancellationToken ct = default);
+    Task<CompetitionResponse> GetAsync(Guid id, CancellationToken ct = default);
+    Task<CompetitionListResponse> GetAllAsync(
+        int page = 1,
+        int pageSize = 100,
+        CancellationToken ct = default
+    );
+    Task AddApplicationAsync(Guid userId, Guid competitionId, CancellationToken ct = default);
+    Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default);
+    Task UpdateAsync(
+        Guid userId,
+        Guid competitionId,
+        UpdateCompetitionRequest request,
+        CancellationToken ct = default
+    );
+    Task DeleteAsync(Guid userId, Guid id, CancellationToken ct = default);
 }
