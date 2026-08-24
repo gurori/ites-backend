@@ -5,11 +5,12 @@ namespace ites.Infrastructure.Auth
 {
     public sealed class PermissionService(IRoleRepository roleRepository) : IPermissionService
     {
-        private readonly IRoleRepository _roleRepository = roleRepository;
-
-        public async Task<HashSet<int>> GetPermissionsIdsAsync(string roleName)
+        public Task<HashSet<int>> GetPermissionsIdsAsync(
+            string roleName,
+            CancellationToken ct = default
+        )
         {
-            return await _roleRepository.GetPermissionsIdsAsync(roleName);
+            return roleRepository.GetPermissionsIdsAsync(roleName, ct);
         }
     }
 }
