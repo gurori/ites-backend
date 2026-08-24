@@ -1,7 +1,8 @@
-﻿using ites.Application.Interfaces.Services;
+﻿using ites.Application.Contracts.Orders;
+using ites.Application.Interfaces.Services;
+using ites.Core.Entities;
 using ites.Core.Exeptions;
 using ites.Core.Interfaces.Repositories;
-using ites.Core.Models;
 
 namespace ites.Application.Services;
 
@@ -10,64 +11,89 @@ public sealed class OrdersService(
     IRequestEntityRepository applicationsRepository
 ) : IOrdersService
 {
-    private readonly IOrdersRepository _ordersRepository = ordersRepository;
-    private readonly IRequestEntityRepository _applicationsRepository = applicationsRepository;
-
-    public async Task AddApplicationAsync(Guid userId, Guid forId)
+    public async Task AddApplicationAsync(Guid userId, Guid orderId, CancellationToken ct = default)
     {
-        RequestEntity application = new(Guid.Empty, userId, forId);
-        await _applicationsRepository.CreateForOrderAsync(application);
+        RequestEntity application = new()
+        {
+            Id = Guid.CreateVersion7(),
+            For = orderId,
+            From = userId,
+        };
+
+        await applicationsRepository.CreateForOrderAsync(application, ct);
+        await ordersRepository.SaveChangesAsync(ct);
     }
 
-    public async Task CreateAsync(
+    public async Task<Guid> CreateAsync(
         Guid userId,
-        string title,
-        string description,
-        decimal price,
-        DateTime deadLine
+        OrderRequest request,
+        CancellationToken ct = default
     )
     {
-        Order order = new(Guid.Empty, title, description, price, deadLine);
-        await _ordersRepository.CreateAsync(userId, order);
+        Order order = new()
+        {
+            Id = Guid.CreateVersion7(),
+            Title = request.Title,
+            Description = request.Description,
+            Price = request.Price,
+            DeadLine = request.DeadLine,
+            ClientId = userId,
+        };
+
+        await ordersRepository.CreateAsync(order, ct);
+        await ordersRepository.SaveChangesAsync(ct);
+        return order.Id;
     }
 
-    public Task DeleteAsync(Guid id)
+    public Task DeleteAsync(Guid id, Guid clientId, CancellationToken ct = default)
     {
+        // TODO: Implement the logic to delete an order by its ID
         throw new NotImplementedException();
     }
 
-    public async Task<Order> GetAsync(Guid id)
+    public async Task<OrderListResponse> GetAllAsync(
+        int page = 1,
+        int pageSize = 100,
+        CancellationToken ct = default
+    )
     {
-        Order order =
-            await _ordersRepository.GetByIdAsync(id)
-            ?? throw new NotFoundException("Заказ не найден");
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
+        var orders = await ordersRepository.GetAllAsync(
+            o => new OrderSummaryResponse(o.Id, o.Title, o.Description, o.Price, o.DeadLine),
+            (page - 1) * pageSize,
+            pageSize,
+            ct
+        );
+        return new OrderListResponse(orders, await ordersRepository.CountAsync(ct), page, pageSize);
+    }
+
+    public async Task<OrderResponse> GetAsync(Guid id, CancellationToken ct = default)
+    {
+        var order =
+            await ordersRepository.GetByIdAsync(
+                id,
+                o => new OrderResponse(o.Id, o.Title, o.Description, o.Price, o.DeadLine),
+                ct
+            ) ?? throw new NotFoundException("Заказ не найден");
+
         return order;
     }
 
-    public async Task<IList<Order>> GetAsync()
+    public Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default)
     {
-        return await _ordersRepository.GetAllPublicAsync();
-    }
-
-    public async Task<IList<Order>> GetAsync(ICollection<Guid> ids)
-    {
-        return await _ordersRepository.GetWithIdsAsync(ids);
-    }
-
-    public async Task HandleApplicationAsync(Guid id, bool isAccept)
-    {
-        await _applicationsRepository.HandleOrderAsync(id, isAccept);
+        return applicationsRepository.HandleOrderAsync(id, isAccept, ct);
     }
 
     public Task UpdateAsync(
         Guid userId,
-        Guid id,
-        string title,
-        string description,
-        decimal price,
-        DateTime deadLine
+        Guid orderId,
+        UpdateOrderRequest request,
+        CancellationToken ct = default
     )
     {
+        // TODO: Implement the logic to update an order by its ID and user ID
         throw new NotImplementedException();
     }
 }
