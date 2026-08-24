@@ -1,11 +1,10 @@
 ﻿using ites.Application.Contracts.Users;
 
-namespace ites.Application.Interfaces.Services
+namespace ites.Application.Interfaces.Services;
+
+public interface IUserProfileService
 {
-    public interface IUserProfileService
-    {
-        Task<MemberResponse> GetMemberAsync(Guid id);
-        Task<OrganizerResponse> GetOrganizerAsync(Guid id);
-        Task<ClientResponse> GetClientAsync(Guid id);
-    }
+    Task<MemberResponse> GetMemberAsync(Guid id, CancellationToken ct = default);
+    Task<OrganizerResponse> GetOrganizerAsync(Guid id, CancellationToken ct = default);
+    Task<ClientResponse> GetClientAsync(Guid id, CancellationToken ct = default);
 }

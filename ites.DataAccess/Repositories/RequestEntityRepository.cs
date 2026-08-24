@@ -33,7 +33,7 @@ public sealed class RequestEntityRepository(ItesDbContext context)
         if (competition is null || fromMember is null)
             return;
 
-        fromMember.ApplicationsForCompetitions.Add(requestEntity);
+        fromMember.CompetitionEntries.Add(requestEntity);
 
         foreach (User organizer in competition.Organizers)
         {
@@ -76,7 +76,7 @@ public sealed class RequestEntityRepository(ItesDbContext context)
             From = requestEntity.From,
         };
 
-        fromMember.ApplicationsForOrders.Add(newRequest);
+        fromMember.OrderBids.Add(newRequest);
         order.Client.Applications.Add(newRequest);
 
         _context.Applications.Add(newRequest);
@@ -116,7 +116,7 @@ public sealed class RequestEntityRepository(ItesDbContext context)
             From = requestEntity.From,
         };
 
-        fromMember.ApplicationsForTeams.Add(newRequest);
+        fromMember.TeamJoinRequests.Add(newRequest);
         team.Admin.Applications.Add(newRequest);
 
         _context.Applications.Add(newRequest);
