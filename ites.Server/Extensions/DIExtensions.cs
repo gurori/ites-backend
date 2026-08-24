@@ -24,14 +24,13 @@ public static class DIExtensions
 
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IRequestEntityService, RequestEntityService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<ICompetitionsService, CompetitionsService>();
         services.AddScoped<IOrdersService, OrdersService>();
         services.AddScoped<ITeamService, TeamService>();
         services.AddScoped<IUserProfileService, UserProfileService>();
-        services.AddScoped<IModersService, ModersService>();
+        services.AddScoped<IModerationService, ModerationService>();
 
         services.AddScoped<IFileService, FileService>();
 
