@@ -1,4 +1,5 @@
 ﻿using ites.Core.Entities;
+using ites.Core.Enums;
 using ites.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,5 +49,17 @@ public sealed class CompetitionsRepository(ItesDbContext context)
         DbContext.Users.Attach(userStub);
 
         competition.Members.Add(userStub);
+    }
+
+    public async Task<bool> IsOrganizerAsync(
+        Guid userId,
+        Guid competitionId,
+        CancellationToken ct = default
+    )
+    {
+        return await DbContext.Competitions.AnyAsync(
+            c => c.Id == competitionId && c.Organizers.Any(o => o.Id == userId),
+            ct
+        );
     }
 }
