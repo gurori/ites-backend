@@ -1,27 +1,41 @@
 ﻿using ites.Application.Contracts.Orders;
 using ites.Application.Interfaces.Services;
 using ites.Core.Entities;
-using ites.Core.Exeptions;
+using ites.Core.Enums;
+using ites.Core.Exceptions;
 using ites.Core.Interfaces.Repositories;
 
 namespace ites.Application.Services;
 
-public sealed class OrdersService(
-    IOrdersRepository ordersRepository,
-    IRequestEntityRepository applicationsRepository
-) : IOrdersService
+public sealed class OrdersService(IOrdersRepository ordersRepository) : IOrdersService
 {
-    public async Task AddApplicationAsync(Guid userId, Guid orderId, CancellationToken ct = default)
+    public async Task<Guid> AddBidAsync(
+        Guid userId,
+        Guid orderId,
+        OrderBidRequest request,
+        CancellationToken ct = default
+    )
     {
-        RequestEntity application = new()
+        var order =
+            await ordersRepository.GetByIdAsync(orderId, o => new { o.IsPublic }, ct)
+            ?? throw new NotFoundException("Заказ не найден.");
+
+        if (!order.IsPublic)
+            throw new BadRequestException("Этот заказ больше не принимает отклики.");
+
+        var bid = new OrderBid
         {
             Id = Guid.CreateVersion7(),
-            For = orderId,
-            From = userId,
+            UserId = userId,
+            OrderId = orderId,
+            CoverLetter = request.CoverLetter ?? string.Empty,
+            ProposedPrice = request.ProposedPrice,
+            Status = RequsetStatus.Pending,
         };
 
-        await applicationsRepository.CreateForOrderAsync(application, ct);
+        await ordersRepository.AddOrderBidAsync(bid, ct);
         await ordersRepository.SaveChangesAsync(ct);
+        return bid.Id;
     }
 
     public async Task<Guid> CreateAsync(
@@ -81,9 +95,43 @@ public sealed class OrdersService(
         return order;
     }
 
-    public Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default)
+    public async Task HandleBidAsync(
+        Guid userId,
+        Guid bidId,
+        HandleOrderBidRequest request,
+        CancellationToken ct = default
+    )
     {
-        return applicationsRepository.HandleOrderAsync(id, isAccept, ct);
+        var bid =
+            await ordersRepository.GetBidByIdAsync(bidId, ct)
+            ?? throw new NotFoundException("Отклик не найден.");
+
+        if (bid.Status != RequsetStatus.Pending)
+            throw new BadRequestException("Эта заявка уже обработана.");
+
+        var order =
+            await ordersRepository.GetByIdAsync(bid.OrderId, ct)
+            ?? throw new NotFoundException("Заказ не найден.");
+
+        if (order.ClientId != userId)
+            throw new ForbiddenException("У вас нет прав для обработки заявок этого заказа.");
+
+        if (request.Accept)
+        {
+            bid.Status = RequsetStatus.Accepted;
+
+            order.MemberId = bid.UserId;
+            order.IsPublic = false;
+
+            await ordersRepository.UpdateAsync(order, ct);
+        }
+        else
+        {
+            bid.Status = RequsetStatus.Rejected;
+        }
+
+        await ordersRepository.UpdateBidAsync(bid, ct);
+        await ordersRepository.SaveChangesAsync(ct);
     }
 
     public Task UpdateAsync(

@@ -14,4 +14,7 @@ public interface IOrdersRepository : ICrudRepository<Order>
     );
     Task SetIsPublicAsync(Guid id, bool isPublic, CancellationToken ct = default);
     Task AddOrderBidAsync(OrderBid orderBid, CancellationToken ct = default);
+
+    Task<OrderBid?> GetBidByIdAsync(Guid id, CancellationToken ct = default);
+    Task UpdateBidAsync(OrderBid orderBid, CancellationToken ct = default);
 }

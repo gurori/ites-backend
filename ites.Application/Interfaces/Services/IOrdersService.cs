@@ -11,8 +11,18 @@ public interface IOrdersService
         int pageSize = 100,
         CancellationToken ct = default
     );
-    Task AddApplicationAsync(Guid userId, Guid orderId, CancellationToken ct = default);
-    Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default);
+    Task<Guid> AddBidAsync(
+        Guid userId,
+        Guid orderId,
+        OrderBidRequest request,
+        CancellationToken ct = default
+    );
+    Task HandleBidAsync(
+        Guid userId,
+        Guid bidId,
+        HandleOrderBidRequest request,
+        CancellationToken ct = default
+    );
     Task UpdateAsync(
         Guid userId,
         Guid orderId,

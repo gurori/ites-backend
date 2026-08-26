@@ -4,62 +4,62 @@ using ites.Core.Enums;
 using ites.Infrastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ites.Server.Controllers
+namespace ites.Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public sealed class OrdersController(IOrdersService ordersService) : BaseController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public sealed class OrdersController(IOrdersService ordersService) : BaseController
+    [HttpPost]
+    [HasPermission(Permission.CreateOrder)]
+    public async Task<IActionResult> Create(
+        [FromBody] OrderRequest request,
+        CancellationToken ct = default
+    )
     {
-        private readonly IOrdersService _ordersService = ordersService;
+        var id = await ordersService.CreateAsync(GetUserId(), request, ct);
+        return CreatedAtAction(nameof(Get), new { id }, new { id });
+    }
 
-        [HttpPost]
-        [HasPermission(Permission.CreateOrder)]
-        public async Task<IActionResult> Create(OrderRequest request)
-        {
-            Guid userId = GetUserId();
-            await _ordersService.CreateAsync(
-                userId,
-                request.Title,
-                request.Description,
-                request.Price,
-                request.DeadLine
-            );
-            return Ok();
-        }
+    [HttpGet]
+    public async Task<IActionResult> Get(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 100,
+        CancellationToken ct = default
+    )
+    {
+        var orders = await ordersService.GetAllAsync(page, pageSize, ct);
+        return Ok(orders);
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(await _ordersService.GetAsync());
-        }
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> Get(Guid id, CancellationToken ct = default)
+    {
+        var order = await ordersService.GetAsync(id, ct);
+        return Ok(order);
+    }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> Get(Guid id)
-        {
-            return Ok(await _ordersService.GetAsync(id));
-        }
+    [HttpPost("{orderId:guid}/bids")]
+    [HasPermission(Permission.AddOrderApplication)]
+    public async Task<IActionResult> AddBid(
+        Guid orderId,
+        [FromBody] OrderBidRequest request,
+        CancellationToken ct = default
+    )
+    {
+        var id = await ordersService.AddBidAsync(GetUserId(), orderId, request, ct);
+        return Ok(id);
+    }
 
-        [HttpGet("many")]
-        public async Task<IActionResult> Get([FromQuery] ICollection<Guid> ids)
-        {
-            return Ok(await _ordersService.GetAsync(ids));
-        }
-
-        [HttpPut("application/{id:guid}")]
-        [HasPermission(Permission.AddOrderApplication)]
-        public async Task<IActionResult> AddApplication(Guid id)
-        {
-            Guid userId = GetUserId();
-            await _ordersService.AddApplicationAsync(userId, id);
-            return Ok();
-        }
-
-        [HttpPut("application/{id:guid}/{accept:bool}")]
-        [HasPermission(Permission.HandleOrderApplication)]
-        public async Task<IActionResult> HandleApplication(Guid id, bool accept)
-        {
-            await _ordersService.HandleApplicationAsync(id, accept);
-            return Ok();
-        }
+    [HttpPatch("bids/{bidId:guid}/handle")]
+    [HasPermission(Permission.HandleOrderApplication)]
+    public async Task<IActionResult> HandleBid(
+        Guid bidId,
+        [FromBody] HandleOrderBidRequest request,
+        CancellationToken ct = default
+    )
+    {
+        await ordersService.HandleBidAsync(GetUserId(), bidId, request, ct);
+        return NoContent();
     }
 }

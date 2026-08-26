@@ -39,4 +39,15 @@ public sealed class OrdersRepository(ItesDbContext context)
         DbContext.OrderBids.Add(orderBid);
         return Task.CompletedTask;
     }
+
+    public async Task<OrderBid?> GetBidByIdAsync(Guid id, CancellationToken ct = default)
+    {
+        return await DbContext.OrderBids.FindAsync([id], ct);
+    }
+
+    public Task UpdateBidAsync(OrderBid orderBid, CancellationToken ct = default)
+    {
+        DbContext.OrderBids.Update(orderBid);
+        return Task.CompletedTask;
+    }
 }
