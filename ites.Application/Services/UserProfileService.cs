@@ -4,7 +4,7 @@ using ites.Application.Contracts.Competitions;
 using ites.Application.Contracts.Orders;
 using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Services;
-using ites.Core.Exeptions;
+using ites.Core.Exceptions;
 using ites.Core.Interfaces.Repositories;
 
 namespace ites.Application.Services;
