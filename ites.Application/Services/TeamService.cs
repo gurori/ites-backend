@@ -2,28 +2,47 @@
 using ites.Application.Contracts.Users;
 using ites.Application.Interfaces.Services;
 using ites.Core.Entities;
-using ites.Core.Exeptions;
+using ites.Core.Enums;
+using ites.Core.Exceptions;
 using ites.Core.Interfaces.Repositories;
 
 namespace ites.Application.Services;
 
-public sealed class TeamService(
-    ITeamRepository teamRepository,
-    IRequestEntityRepository requestEntityRepository,
-    IUserRepository userRepository
-) : ITeamService
+public sealed class TeamService(ITeamRepository teamRepository, IUserRepository userRepository)
+    : ITeamService
 {
-    public async Task AddApplicationAsync(Guid userId, Guid teamId, CancellationToken ct = default)
+    public async Task<Guid> AddJoinRequestAsync(
+        Guid userId,
+        Guid teamId,
+        AddTeamJoinRequestDto request,
+        CancellationToken ct = default
+    )
     {
-        RequestEntity application = new()
+        var team =
+            await teamRepository.GetByIdAsync(
+                teamId,
+                t => new { t.IsPublic, MembersCount = t.Members.Count },
+                ct
+            ) ?? throw new NotFoundException("Команда не найдена.");
+
+        if (!team.IsPublic)
+            throw new BadRequestException("Команда закрыта для вступления.");
+
+        if (team.MembersCount >= 5)
+            throw new BadRequestException("В команде уже максимальное количество участников.");
+
+        var joinRequest = new TeamJoinRequest
         {
             Id = Guid.CreateVersion7(),
-            For = teamId,
-            From = userId,
+            UserId = userId,
+            TeamId = teamId,
+            CoverLetter = request.CoverLetter ?? string.Empty,
+            Status = RequsetStatus.Pending,
         };
 
-        await requestEntityRepository.CreateForTeamAsync(application, ct);
-        await requestEntityRepository.SaveChangesAsync(ct);
+        await teamRepository.AddTeamJoinRequestAsync(joinRequest, ct);
+        await teamRepository.SaveChangesAsync(ct);
+        return joinRequest.Id;
     }
 
     public async Task<Guid> CreateAsync(
@@ -98,9 +117,51 @@ public sealed class TeamService(
         return new TeamListResponse(teams, totalCount, page, pageSize);
     }
 
-    public async Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default)
+    public async Task HandleJoinRequestAsync(
+        Guid userId,
+        Guid joinRequestId,
+        HandleTeamJoinRequestDto request,
+        CancellationToken ct = default
+    )
     {
-        await requestEntityRepository.HandleTeamAsync(id, isAccept, ct);
+        var joinRequest =
+            await teamRepository.GetJoinRequestByIdAsync(joinRequestId, ct)
+            ?? throw new NotFoundException("Заявка не найдена.");
+
+        if (joinRequest.Status != RequsetStatus.Pending)
+            throw new BadRequestException("Эта заявка уже обработана.");
+
+        var adminId = await teamRepository.GetByIdAsync(joinRequest.TeamId, t => t.AdminId, ct);
+
+        if (adminId != userId)
+            throw new ForbiddenException("У вас нет прав для обработки заявок этой команды.");
+
+        if (request.Accept)
+        {
+            var team =
+                await teamRepository.GetByIdAsync(joinRequest.TeamId, ct)
+                ?? throw new NotFoundException("Команда не найдена.");
+
+            if (team.Members.Count >= 5)
+                throw new BadRequestException("Команда уже заполнена.");
+
+            joinRequest.Status = RequsetStatus.Accepted;
+
+            await teamRepository.AddMemberToTeamAsync(team.Id, joinRequest.UserId, ct);
+
+            if (team.Members.Count + 1 >= 5)
+            {
+                team.IsPublic = false;
+                await teamRepository.UpdateAsync(team, ct);
+            }
+        }
+        else
+        {
+            joinRequest.Status = RequsetStatus.Rejected;
+        }
+
+        await teamRepository.UpdateJoinRequestAsync(joinRequest, ct);
+        await teamRepository.SaveChangesAsync(ct);
     }
 
     public Task DeleteAsync(Guid id, CancellationToken ct = default)

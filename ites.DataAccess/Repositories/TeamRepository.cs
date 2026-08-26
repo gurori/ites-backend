@@ -40,4 +40,32 @@ public sealed class TeamRepository(ItesDbContext context)
         DbContext.TeamJoinRequests.Add(teamJoinRequest);
         return Task.CompletedTask;
     }
+
+    public async Task<Team?> GetWithMembersByIdAsync(Guid id, CancellationToken ct = default)
+    {
+        return await DbContext
+            .Teams.Include(t => t.Members)
+            .FirstOrDefaultAsync(t => t.Id == id, ct);
+    }
+
+    public async Task AddMemberToTeamAsync(Guid teamId, Guid userId, CancellationToken ct = default)
+    {
+        await DbContext
+            .Users.Where(u => u.Id == userId)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(u => u.TeamId, teamId), ct);
+    }
+
+    public async Task<TeamJoinRequest?> GetJoinRequestByIdAsync(
+        Guid id,
+        CancellationToken ct = default
+    )
+    {
+        return await DbContext.TeamJoinRequests.FirstOrDefaultAsync(r => r.Id == id, ct);
+    }
+
+    public Task UpdateJoinRequestAsync(TeamJoinRequest joinRequest, CancellationToken ct = default)
+    {
+        DbContext.TeamJoinRequests.Update(joinRequest);
+        return Task.CompletedTask;
+    }
 }

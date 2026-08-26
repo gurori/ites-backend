@@ -11,7 +11,17 @@ public interface ITeamService
         int pageSize = 100,
         CancellationToken ct = default
     );
-    Task AddApplicationAsync(Guid userId, Guid teamId, CancellationToken ct = default);
-    Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default);
+    Task<Guid> AddJoinRequestAsync(
+        Guid userId,
+        Guid teamId,
+        AddTeamJoinRequestDto request,
+        CancellationToken ct = default
+    );
+    Task HandleJoinRequestAsync(
+        Guid userId,
+        Guid joinRequestId,
+        HandleTeamJoinRequestDto request,
+        CancellationToken ct = default
+    );
     Task DeleteAsync(Guid id, CancellationToken ct = default);
 }
