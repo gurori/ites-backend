@@ -1,4 +1,4 @@
-﻿using ites.Core.Exeptions;
+﻿using ites.Core.Exceptions;
 using ites.Infrastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
 

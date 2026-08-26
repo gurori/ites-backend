@@ -1,4 +1,4 @@
-using ites.Core.Exeptions;
+using ites.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

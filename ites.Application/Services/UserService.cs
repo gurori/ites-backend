@@ -2,7 +2,7 @@
 using ites.Application.Interfaces.Auth;
 using ites.Application.Interfaces.Services;
 using ites.Core.Entities;
-using ites.Core.Exeptions;
+using ites.Core.Exceptions;
 using ites.Core.Interfaces.Repositories;
 
 namespace ites.Application.Services;
