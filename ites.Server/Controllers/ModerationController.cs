@@ -1,4 +1,5 @@
 using ites.Application.Constants;
+using ites.Application.Contracts.Moderation;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
 using ites.Infrastructure.Auth;
@@ -12,20 +13,30 @@ namespace ites.Server.Controllers;
 public sealed class ModerationController(IModerationService moderationService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get(CancellationToken ct = default)
     {
-        return Ok(await moderationService.GetAllAsync());
+        return Ok(await moderationService.GetAllAsync(ct));
     }
 
-    [HttpPost("{type}/{id:guid}/{accept:bool}")]
-    public async Task<IActionResult> Handle(string type, Guid id, bool accept)
+    [HttpPatch("orders/{id:guid}")]
+    public async Task<IActionResult> HandleOrder(
+        Guid id,
+        ModerationRequest request,
+        CancellationToken ct = default
+    )
     {
-        type = type.ToLower();
-        if (type != ModerationTarget.Order || type != ModerationTarget.Team)
-        {
-            return BadRequest();
-        }
-        await moderationService.HandleAsync(type, id, accept);
-        return Ok();
+        await moderationService.HandleAsync("order", id, request.Accept, ct);
+        return NoContent();
+    }
+
+    [HttpPatch("teams/{id:guid}")]
+    public async Task<IActionResult> Handle(
+        Guid id,
+        ModerationRequest request,
+        CancellationToken ct = default
+    )
+    {
+        await moderationService.HandleAsync("team", id, request.Accept, ct);
+        return NoContent();
     }
 }

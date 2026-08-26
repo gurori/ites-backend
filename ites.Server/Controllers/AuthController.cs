@@ -11,44 +11,40 @@ namespace ites.Server.Controllers;
 public sealed class AuthController(IUserService userService, IOptions<JwtOptions> jwtOptions)
     : BaseController
 {
-    private readonly IUserService _userService = userService;
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterUserRequest request)
+    public async Task<IActionResult> Register(
+        [FromBody] RegisterUserRequest request,
+        CancellationToken ct = default
+    )
     {
-        await _userService.RegisterAsync(
-            request.FirstName,
-            request.Email,
-            request.Password,
-            request.Role
-        );
-
-        return Ok();
+        await userService.RegisterAsync(request, ct);
+        return NoContent();
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginUserRequest request)
+    public async Task<IActionResult> Login(
+        [FromBody] LoginUserRequest request,
+        CancellationToken ct = default
+    )
     {
-        LoginUserResponse loginResponse = await _userService.LoginAsync(
-            request.Email,
-            request.Password
-        );
+        var loginResponse = await userService.LoginAsync(request, ct);
 
-        SetCookie("auth", loginResponse.Token, _jwtOptions.Expires);
-        SetCookie("role", loginResponse.Role, _jwtOptions.Expires);
+        SetAuthCookie("auth", loginResponse.Token);
+        SetAuthCookie("role", loginResponse.Role);
 
         return Ok(new { role = loginResponse.Role });
     }
 
-    private void SetCookie(string name, string value, int expiresDays)
+    private void SetAuthCookie(string name, string value)
     {
-        var cookieOptions = new CookieOptions()
+        var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Lax,
-            Expires = DateTime.UtcNow.AddDays(expiresDays),
+            Expires = DateTime.UtcNow.AddDays(_jwtOptions.Expires),
         };
 
         cookieOptions.Extensions.Add("Partitioned");
