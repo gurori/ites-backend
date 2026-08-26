@@ -1,30 +1,28 @@
-﻿using ites.Core.Enums;
-using ites.Core.Entities;
+﻿using ites.Core.Entities;
+using ites.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ites.DataAccess.Configurations
+namespace ites.DataAccess.Configurations;
+
+public sealed class RolePermissionConfiguration(AuthorizationOptions authorizationOptions)
+    : IEntityTypeConfiguration<RolePermissionEntity>
 {
-    public partial class RolePermissionConfiguration(AuthorizationOptions authorizationOptions) 
-        : IEntityTypeConfiguration<RolePermissionEntity>
+    public void Configure(EntityTypeBuilder<RolePermissionEntity> builder)
     {
-        private readonly AuthorizationOptions _authorizationOptions = authorizationOptions;
+        builder.HasKey(r => new { r.RoleId, r.PermissionId });
 
-        public void Configure(EntityTypeBuilder<RolePermissionEntity> builder)
-        {
-            builder.HasKey(r => new { r.RoleId, r.PermissionId });
-
-            builder.HasData(ParseRolePermissions());
-        }
-
-        private RolePermissionEntity[] ParseRolePermissions() =>
-            _authorizationOptions.RolePermissions
-                .SelectMany(rp => rp.Permissions
-                    .Select(p => new RolePermissionEntity
-                    {
-                        RoleId = (int)Enum.Parse<Role>(rp.Role),
-                        PermissionId = (int)Enum.Parse<Permission>(p)
-                    }))
-                    .ToArray();
+        builder.HasData(ParseRolePermissions());
     }
+
+    private RolePermissionEntity[] ParseRolePermissions() =>
+        authorizationOptions
+            .RolePermissions.SelectMany(rp =>
+                rp.Permissions.Select(p => new RolePermissionEntity
+                {
+                    RoleId = (int)Enum.Parse<Role>(rp.Role),
+                    PermissionId = (int)Enum.Parse<Permission>(p),
+                })
+            )
+            .ToArray();
 }
