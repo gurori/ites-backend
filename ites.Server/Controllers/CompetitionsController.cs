@@ -1,63 +1,71 @@
 ﻿using ites.Application.Contracts.Competitions;
 using ites.Application.Interfaces.Services;
 using ites.Core.Enums;
-using ites.Core.Models;
 using ites.Infrastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ites.Server.Controllers
+namespace ites.Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public sealed class CompetitionsController(ICompetitionsService competitionsService)
+    : BaseController
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public sealed class CompetitionsController(ICompetitionsService competitionsService)
-        : BaseController
+    [HttpPost]
+    [HasPermission(Permission.CreateCompetition)]
+    public async Task<IActionResult> Create(
+        [FromBody] CompetitionRequest request,
+        CancellationToken ct = default
+    )
     {
-        private readonly ICompetitionsService _competitionsService = competitionsService;
+        var id = await competitionsService.CreateAsync(GetUserId(), request, ct);
+        return CreatedAtAction(nameof(Get), new { id }, new { id });
+    }
 
-        [HttpPost("create")]
-        [HasPermission(Permission.CreateCompetition)]
-        public async Task<IActionResult> Create(CompetitionRequest request)
-        {
-            Guid userId = GetUserId();
-            await _competitionsService.CreateAsync(userId, request.ContentInHtml);
-            return Ok();
-        }
+    [HttpGet]
+    public async Task<IActionResult> Get(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 100,
+        CancellationToken ct = default
+    )
+    {
+        var competitions = await competitionsService.GetAllAsync(page, pageSize, ct);
+        return Ok(competitions);
+    }
 
-        [HttpGet("get")]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(await _competitionsService.GetAsync());
-        }
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> Get(Guid id, CancellationToken ct = default)
+    {
+        var competition = await competitionsService.GetAsync(id, ct);
+        return Ok(competition);
+    }
 
-        [HttpGet("get/{id:guid}")]
-        public async Task<IActionResult> Get(Guid id)
-        {
-            Competition competition = await _competitionsService.GetAsync(id);
-            return Ok(competition);
-        }
+    [HttpPost("{competitionId:guid}/entries")]
+    [HasPermission(Permission.AddCompetitionApplication)]
+    public async Task<IActionResult> AddEntry(
+        Guid competitionId,
+        [FromBody] CompetitionEntryRequest request,
+        CancellationToken ct = default
+    )
+    {
+        var entryId = await competitionsService.AddEntryAsync(
+            GetUserId(),
+            competitionId,
+            request,
+            ct
+        );
+        return Ok(entryId);
+    }
 
-        [HttpGet("get/many")]
-        public async Task<IActionResult> Get([FromQuery] ICollection<Guid> ids)
-        {
-            IList<Competition> competitions = await _competitionsService.GetAsync(ids);
-            return Ok(competitions);
-        }
-
-        [HttpPut("application/{id:guid}")]
-        [HasPermission(Permission.AddCompetitionApplication)]
-        public async Task<IActionResult> AddAppication(Guid id)
-        {
-            Guid userId = GetUserId();
-            await _competitionsService.AddApplicationAsync(userId, id);
-            return Ok();
-        }
-
-        [HttpPut("application/{id:guid}/{accept:bool}")]
-        [HasPermission(Permission.HandleCompetitionApplication)]
-        public async Task<IActionResult> HandleApplication(Guid id, bool accept)
-        {
-            await _competitionsService.HandleApplicationAsync(id, accept);
-            return Ok();
-        }
+    [HttpPatch("entries/{entryId:guid}/handle")]
+    [HasPermission(Permission.HandleCompetitionApplication)]
+    public async Task<IActionResult> HandleEntry(
+        Guid entryId,
+        [FromBody] HandleCompetitionEntryRequest request,
+        CancellationToken ct = default
+    )
+    {
+        await competitionsService.HandleEntryAsync(GetUserId(), entryId, request, ct);
+        return NoContent();
     }
 }

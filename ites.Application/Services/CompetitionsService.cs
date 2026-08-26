@@ -1,32 +1,46 @@
 ﻿using ites.Application.Contracts.Competitions;
 using ites.Application.Interfaces.Services;
 using ites.Core.Entities;
-using ites.Core.Exeptions;
+using ites.Core.Enums;
+using ites.Core.Exceptions;
 using ites.Core.Interfaces.Repositories;
 
 namespace ites.Application.Services;
 
 public sealed class CompetitionsService(
     ICompetitionsRepository competitionsRepository,
-    IRequestEntityRepository applicationsRepository,
     IUserRepository userRepository
 ) : ICompetitionsService
 {
-    public async Task AddApplicationAsync(
+    public async Task<Guid> AddEntryAsync(
         Guid userId,
         Guid competitionId,
+        CompetitionEntryRequest request,
         CancellationToken ct = default
     )
     {
-        RequestEntity application = new()
+        bool competitionExist = await competitionsRepository.AnyAsync(
+            c => c.Id == competitionId,
+            ct
+        );
+
+        if (!competitionExist)
+            throw new NotFoundException("Конкурс не найден.");
+
+        var entry = new CompetitionEntry
         {
             Id = Guid.CreateVersion7(),
-            For = competitionId,
-            From = userId,
+            UserId = userId,
+            CompetitionId = competitionId,
+            CoverLetter = request.CoverLetter ?? string.Empty,
+            Status = RequsetStatus.Pending,
+            CreatedAt = DateTime.UtcNow,
         };
 
-        await applicationsRepository.CreateForCompetitionAsync(application, ct);
+        await competitionsRepository.AddCompetitionEntryAsync(entry, ct);
         await competitionsRepository.SaveChangesAsync(ct);
+
+        return entry.Id;
     }
 
     public async Task<Guid> CreateAsync(
@@ -91,9 +105,42 @@ public sealed class CompetitionsService(
         return new CompetitionListResponse(competitions, totalCount, page, pageSize);
     }
 
-    public async Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default)
+    public async Task HandleEntryAsync(
+        Guid userId,
+        Guid entryId,
+        HandleCompetitionEntryRequest request,
+        CancellationToken ct = default
+    )
     {
-        await applicationsRepository.HandleCompetitionAsync(id, isAccept, ct);
+        var entry =
+            await competitionsRepository.GetEntryByIdAsync(entryId, ct)
+            ?? throw new NotFoundException("Заявка на конкурс не найдена.");
+
+        if (entry.Status != RequsetStatus.Pending)
+            throw new BadRequestException("Эта заявка уже обработана.");
+
+        bool isOrganizer = await competitionsRepository.IsOrganizerAsync(
+            entry.CompetitionId,
+            userId,
+            ct
+        );
+
+        if (!isOrganizer)
+            throw new ForbiddenException("У вас нет прав для обработки заявок этого конкурса.");
+
+        if (request.Accept)
+        {
+            entry.Status = RequsetStatus.Accepted;
+
+            await competitionsRepository.AddMemberAsync(entry.CompetitionId, entry.UserId, ct);
+        }
+        else
+        {
+            entry.Status = RequsetStatus.Rejected;
+        }
+
+        await competitionsRepository.UpdateEntryAsync(entry, ct);
+        await competitionsRepository.SaveChangesAsync(ct);
     }
 
     public Task UpdateAsync(

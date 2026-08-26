@@ -11,8 +11,18 @@ public interface ICompetitionsService
         int pageSize = 100,
         CancellationToken ct = default
     );
-    Task AddApplicationAsync(Guid userId, Guid competitionId, CancellationToken ct = default);
-    Task HandleApplicationAsync(Guid id, bool isAccept, CancellationToken ct = default);
+    Task<Guid> AddEntryAsync(
+        Guid userId,
+        Guid competitionId,
+        CompetitionEntryRequest request,
+        CancellationToken ct = default
+    );
+    Task HandleEntryAsync(
+        Guid userId,
+        Guid entryId,
+        HandleCompetitionEntryRequest request,
+        CancellationToken ct = default
+    );
     Task UpdateAsync(
         Guid userId,
         Guid competitionId,
