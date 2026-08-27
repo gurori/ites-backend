@@ -2,4 +2,4 @@
 
 namespace ites.Application.Contracts.Applications;
 
-public sealed record TeamApplicationResponse(Guid Id, MemberSummaryResponse FromMember);
+public sealed record TeamJoinRequestDto(Guid Id, MemberSummaryResponse FromMember);

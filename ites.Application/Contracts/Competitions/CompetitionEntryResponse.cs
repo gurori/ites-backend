@@ -3,8 +3,8 @@ using ites.Application.Contracts.Users;
 
 namespace ites.Application.Contracts;
 
-public sealed record CompetitionApplicationResponse(
+public sealed record CompetitionEntryResponse(
     Guid Id,
     MemberSummaryResponse FromMember,
-    CompetitionResponse ForCompetition
+    CompetitionSummaryResponse ForCompetition
 );

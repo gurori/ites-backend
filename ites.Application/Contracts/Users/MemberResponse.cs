@@ -20,5 +20,5 @@ public sealed record MemberResponse(
     IReadOnlyCollection<OrderSummaryResponse> Orders,
     IReadOnlyCollection<OrderSummaryResponse> ApplicationsForOrders,
     IReadOnlyCollection<TeamSummaryResponse> ApplicationsForTeams,
-    IReadOnlyCollection<TeamApplicationResponse> Applications
+    IReadOnlyCollection<TeamJoinRequestDto> Applications
 );

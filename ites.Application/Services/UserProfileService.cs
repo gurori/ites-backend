@@ -51,7 +51,7 @@ public sealed class UserProfileService(
 
         IList<Team> teamsApplications = await teamService.GetAsync(user.ApplicationsForTeams);
         var applicationsIds = await _applicationsService.GetAsync(user.ApplicationsIds);
-        IList<TeamApplicationResponse> applications = [];
+        IList<TeamJoinRequestDto> applications = [];
 
         foreach (var application in applicationsIds)
         {
@@ -89,7 +89,7 @@ public sealed class UserProfileService(
         IList<RequestEntity> applicationsIds = await _applicationsService.GetAsync(
             user.ApplicationsIds
         );
-        IList<CompetitionApplicationResponse> applications = [];
+        IList<CompetitionEntryResponse> applications = [];
 
         foreach (RequestEntity a in applicationsIds)
         {
@@ -125,7 +125,7 @@ public sealed class UserProfileService(
         IList<RequestEntity> applicationsIds = await _applicationsService.GetAsync(
             user.ApplicationsIds
         );
-        IList<OrderApplicationResponse> applications = [];
+        IList<OrderBidResponse> applications = [];
 
         foreach (RequestEntity a in applicationsIds)
         {
