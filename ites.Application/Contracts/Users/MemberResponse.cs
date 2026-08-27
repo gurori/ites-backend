@@ -1,5 +1,4 @@
-﻿using ites.Application.Contracts.Applications;
-using ites.Application.Contracts.Competitions;
+﻿using ites.Application.Contracts.Competitions;
 using ites.Application.Contracts.Orders;
 using ites.Application.Contracts.Teams;
 
@@ -16,9 +15,8 @@ public sealed record MemberResponse(
     string JobTitle,
     Guid? TeamId,
     IReadOnlyCollection<CompetitionSummaryResponse> Competitions,
-    IReadOnlyCollection<CompetitionSummaryResponse> ApplicationsForCompetitions,
+    IReadOnlyCollection<CompetitionSummaryResponse> CompetitionEntries,
     IReadOnlyCollection<OrderSummaryResponse> Orders,
-    IReadOnlyCollection<OrderSummaryResponse> ApplicationsForOrders,
-    IReadOnlyCollection<TeamSummaryResponse> ApplicationsForTeams,
-    IReadOnlyCollection<TeamJoinRequestDto> Applications
+    IReadOnlyCollection<OrderSummaryResponse> OrderBids,
+    IReadOnlyCollection<TeamSummaryResponse> TeamJoinRequests
 );

@@ -1,7 +1,6 @@
-﻿using ites.Application.Contracts.Competitions;
-using ites.Application.Contracts.Users;
+﻿using ites.Application.Contracts.Users;
 
-namespace ites.Application.Contracts;
+namespace ites.Application.Contracts.Competitions;
 
 public sealed record CompetitionEntryResponse(
     Guid Id,

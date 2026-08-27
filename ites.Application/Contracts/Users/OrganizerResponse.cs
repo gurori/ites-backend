@@ -12,5 +12,5 @@ public sealed record OrganizerResponse(
     string Description,
     string JobTitle,
     IReadOnlyCollection<CompetitionSummaryResponse> Competitions,
-    IReadOnlyCollection<CompetitionEntryResponse> Applications
+    IReadOnlyCollection<CompetitionEntryResponse> Entries
 );
