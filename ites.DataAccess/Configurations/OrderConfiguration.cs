@@ -15,13 +15,13 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder
             .HasOne(o => o.Client)
-            .WithMany(u => u.Orders)
+            .WithMany(u => u.CreatedOrders)
             .HasForeignKey(o => o.ClientId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasOne(o => o.Member)
-            .WithMany()
+            .WithMany(u => u.ExecutedOrders)
             .HasForeignKey(o => o.MemberId)
             .OnDelete(DeleteBehavior.SetNull);
     }

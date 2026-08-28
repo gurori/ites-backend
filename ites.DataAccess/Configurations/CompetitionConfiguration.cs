@@ -12,12 +12,12 @@ public sealed class CompetitionConfiguration : IEntityTypeConfiguration<Competit
 
         builder
             .HasMany(c => c.Members)
-            .WithMany(u => u.Competitions)
+            .WithMany(u => u.ParticipatedCompetitions)
             .UsingEntity(j => j.ToTable("CompetitionMembers"));
 
         builder
             .HasMany(c => c.Organizers)
-            .WithMany()
+            .WithMany(u => u.OrganizedCompetitions)
             .UsingEntity(j => j.ToTable("CompetitionOrganizers"));
     }
 }

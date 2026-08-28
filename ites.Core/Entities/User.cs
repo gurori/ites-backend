@@ -12,8 +12,10 @@
         public string JobTitle { get; set; } = string.Empty;
         public int Coins { get; set; } = 0;
 
-        public ICollection<Competition> Competitions { get; set; } = [];
-        public ICollection<Order> Orders { get; set; } = [];
+        public ICollection<Competition> ParticipatedCompetitions { get; set; } = [];
+        public ICollection<Competition> OrganizedCompetitions { get; set; } = [];
+        public ICollection<Order> CreatedOrders { get; set; } = [];
+        public ICollection<Order> ExecutedOrders { get; set; } = [];
         public Team? Team { get; set; } = null;
         public Guid? TeamId { get; set; } = null;
 

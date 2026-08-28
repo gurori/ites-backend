@@ -19,13 +19,17 @@ public static class UserMapping
         u.Description,
         u.JobTitle,
         u.TeamId,
-        u.Competitions.Select(c => new CompetitionSummaryResponse(c.Id, c.ContentInHtml)).ToArray(),
+        u.ParticipatedCompetitions.Select(c => new CompetitionSummaryResponse(
+                c.Id,
+                c.ContentInHtml
+            ))
+            .ToArray(),
         u.CompetitionEntries.Select(e => new CompetitionSummaryResponse(
                 e.CompetitionId,
                 e.Competition.ContentInHtml
             ))
             .ToArray(),
-        u.Orders.Select(o => new OrderSummaryResponse(
+        u.ExecutedOrders.Select(o => new OrderSummaryResponse(
                 o.Id,
                 o.Title,
                 o.Description,
@@ -59,7 +63,7 @@ public static class UserMapping
         u.Role,
         u.Description,
         u.JobTitle,
-        u.Orders.Select(o => new OrderSummaryResponse(
+        u.CreatedOrders.Select(o => new OrderSummaryResponse(
                 o.Id,
                 o.Title,
                 o.Description,
@@ -98,7 +102,10 @@ public static class UserMapping
             u.Role,
             u.Description,
             u.JobTitle,
-            u.Competitions.Select(c => new CompetitionSummaryResponse(c.Id, c.ContentInHtml))
+            u.OrganizedCompetitions.Select(c => new CompetitionSummaryResponse(
+                    c.Id,
+                    c.ContentInHtml
+                ))
                 .ToArray(),
             u.CompetitionEntries.Select(e => new CompetitionEntryResponse(
                     e.Id,
