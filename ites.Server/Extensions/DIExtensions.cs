@@ -17,6 +17,7 @@ public static class DIExtensions
         services.AddScoped<ICompetitionsRepository, CompetitionsRepository>();
         services.AddScoped<IOrdersRepository, OrdersRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
+        services.AddScoped<IFileEntityRepository, FileEntityRepository>();
 
         return services;
     }
