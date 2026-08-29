@@ -11,6 +11,7 @@
         public string Description { get; set; } = string.Empty;
         public string JobTitle { get; set; } = string.Empty;
         public int Coins { get; set; } = 0;
+        public string? AvatarPath { get; set; } = null;
 
         public ICollection<FileEntity> Files { get; set; } = [];
         public ICollection<Competition> ParticipatedCompetitions { get; set; } = [];
