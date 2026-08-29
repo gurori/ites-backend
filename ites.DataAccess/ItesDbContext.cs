@@ -18,6 +18,7 @@ public class ItesDbContext(
     public DbSet<OrderBid> OrderBids { get; set; }
     public DbSet<Team> Teams { get; set; }
     public DbSet<TeamJoinRequest> TeamJoinRequests { get; set; }
+    public DbSet<FileEntity> Files { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

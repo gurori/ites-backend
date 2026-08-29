@@ -12,6 +12,7 @@
         public string JobTitle { get; set; } = string.Empty;
         public int Coins { get; set; } = 0;
 
+        public ICollection<FileEntity> Files { get; set; } = [];
         public ICollection<Competition> ParticipatedCompetitions { get; set; } = [];
         public ICollection<Competition> OrganizedCompetitions { get; set; } = [];
         public ICollection<Order> CreatedOrders { get; set; } = [];
