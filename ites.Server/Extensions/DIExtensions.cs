@@ -31,7 +31,7 @@ public static class DIExtensions
         services.AddScoped<IUserProfileService, UserProfileService>();
         services.AddScoped<IModerationService, ModerationService>();
 
-        services.AddScoped<IFileService, FileService>();
+        services.AddScoped<IFileStorage, LocalDiskFileStorage>();
 
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
