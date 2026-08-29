@@ -2,6 +2,7 @@ namespace ites.Core.Entities;
 
 public sealed class FileEntity : BaseEntity
 {
+    public long SizeInBytes { get; set; }
     public string Directory { get; set; } = string.Empty;
     public string FileName { get; set; } = string.Empty;
     public string ContentType { get; set; } = string.Empty;
