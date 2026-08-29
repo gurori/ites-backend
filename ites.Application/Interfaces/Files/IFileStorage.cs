@@ -1,4 +1,4 @@
-namespace ites.Infrastructure.Files;
+namespace ites.Application.Interfaces.Files;
 
 public interface IFileStorage
 {

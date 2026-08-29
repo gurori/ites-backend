@@ -1,3 +1,4 @@
+using ites.Application.Interfaces.Files;
 using ites.Core.Exceptions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;

@@ -1,4 +1,5 @@
 using ites.Application.Interfaces.Auth;
+using ites.Application.Interfaces.Files;
 using ites.Application.Interfaces.Services;
 using ites.Application.Services;
 using ites.Core.Interfaces.Repositories;
@@ -31,6 +32,7 @@ public static class DIExtensions
         services.AddScoped<ITeamService, TeamService>();
         services.AddScoped<IUserProfileService, UserProfileService>();
         services.AddScoped<IModerationService, ModerationService>();
+        services.AddScoped<IFileService, FileService>();
 
         services.AddScoped<IFileStorage, LocalDiskFileStorage>();
 
