@@ -103,6 +103,7 @@ public sealed class FileService(
 
         user.AvatarPath = storagePath;
         await userRepository.UpdateAsync(user, ct);
+        await userRepository.SaveChangesAsync(ct);
 
         return $"/api/files/{storagePath}";
     }
