@@ -10,6 +10,8 @@ public sealed class CompetitionConfiguration : IEntityTypeConfiguration<Competit
     {
         builder.HasKey(c => c.Id);
 
+        builder.Property(c => c.Title).HasMaxLength(250).IsRequired();
+
         builder
             .HasMany(c => c.Members)
             .WithMany(u => u.ParticipatedCompetitions)
