@@ -15,13 +15,13 @@ public sealed class ModerationService(
 {
     public async Task<ModerationResponse> GetAllAsync(CancellationToken ct = default)
     {
-        var ordersTask = orderRepository.GetByVisibilityAsync(
+        var orders = await orderRepository.GetByVisibilityAsync(
             o => new OrderResponse(o.Id, o.Title, o.Description, o.Price, o.DeadLine),
-            false,
+            isPublic: false,
             ct: ct
         );
 
-        var teamsTask = teamRepository.GetByVisibilityAsync(
+        var teams = await teamRepository.GetByVisibilityAsync(
             t => new TeamResponse(
                 t.Id,
                 t.Name,
@@ -37,13 +37,11 @@ public sealed class ModerationService(
                     .ToArray(),
                 t.AdminId
             ),
-            false,
+            isPublic: false,
             ct: ct
         );
 
-        await Task.WhenAll(ordersTask, teamsTask);
-
-        return new ModerationResponse(await teamsTask, await ordersTask);
+        return new ModerationResponse(teams, orders);
     }
 
     public async Task HandleAsync(string type, Guid id, bool accept, CancellationToken ct = default)
