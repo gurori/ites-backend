@@ -23,17 +23,14 @@ public sealed class FilesController(IFileService fileService) : BaseController
 
     [Authorize]
     [HttpPost("avatar")]
-    public async Task<IActionResult> UploadAvatar(
-        [FromForm(Name = "file")] IFormFile image,
-        CancellationToken ct = default
-    )
+    public async Task<IActionResult> UploadAvatar(IFormFile file, CancellationToken ct = default)
     {
-        CheckFile(image);
+        CheckFile(file);
 
-        await using var stream = image.OpenReadStream();
+        await using var stream = file.OpenReadStream();
         string url = await fileService.UploadUserAvatarAsync(
             GetUserId(),
-            image.FileName,
+            file.FileName,
             stream,
             ct
         );
@@ -45,17 +42,17 @@ public sealed class FilesController(IFileService fileService) : BaseController
     [HttpPost("competition/{id:guid}")]
     public async Task<IActionResult> UploadCompetitionImage(
         Guid id,
-        [FromForm(Name = "file")] IFormFile image,
+        IFormFile file,
         CancellationToken ct = default
     )
     {
-        CheckFile(image);
+        CheckFile(file);
 
-        await using var stream = image.OpenReadStream();
+        await using var stream = file.OpenReadStream();
         string url = await fileService.UploadCompetitionImageAsync(
             GetUserId(),
             id,
-            image.FileName,
+            file.FileName,
             stream,
             ct
         );
