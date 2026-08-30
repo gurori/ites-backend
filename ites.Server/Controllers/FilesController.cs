@@ -72,6 +72,14 @@ public sealed class FilesController(IFileService fileService) : BaseController
         return File(file, contentType);
     }
 
+    [AllowAnonymous]
+    [HttpGet("users/{id:guid}/avatar")]
+    public async Task<IActionResult> GetUserAvatar(Guid id, CancellationToken ct = default)
+    {
+        var (file, contentType) = await fileService.GetUserAvatarAsync(id, ct);
+        return File(file, contentType);
+    }
+
     private void CheckFile(IFormFile file)
     {
         if (file is null || file.Length <= 0)
