@@ -21,12 +21,12 @@ public static class UserMapping
         u.TeamId,
         u.ParticipatedCompetitions.Select(c => new CompetitionSummaryResponse(
                 c.Id,
-                c.ContentInHtml
+                c.Title
             ))
             .ToArray(),
         u.CompetitionEntries.Select(e => new CompetitionSummaryResponse(
                 e.CompetitionId,
-                e.Competition.ContentInHtml
+                e.Competition.Title
             ))
             .ToArray(),
         u.ExecutedOrders.Select(o => new OrderSummaryResponse(
@@ -104,7 +104,7 @@ public static class UserMapping
             u.JobTitle,
             u.OrganizedCompetitions.Select(c => new CompetitionSummaryResponse(
                     c.Id,
-                    c.ContentInHtml
+                    c.Title
                 ))
                 .ToArray(),
             u.CompetitionEntries.Select(e => new CompetitionEntryResponse(
@@ -117,7 +117,7 @@ public static class UserMapping
                         e.User.Description,
                         e.User.JobTitle
                     ),
-                    new CompetitionSummaryResponse(e.CompetitionId, e.Competition.ContentInHtml)
+                    new CompetitionSummaryResponse(e.CompetitionId, e.Competition.Title)
                 ))
                 .ToArray()
         );

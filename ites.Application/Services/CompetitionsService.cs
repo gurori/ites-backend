@@ -57,6 +57,7 @@ public sealed class CompetitionsService(
         {
             Id = Guid.CreateVersion7(),
             ContentInHtml = request.ContentInHtml,
+            Title = request.Title,
             Organizers = [organizer],
         };
 
@@ -77,7 +78,7 @@ public sealed class CompetitionsService(
         var competition =
             await competitionsRepository.GetByIdAsync(
                 id,
-                c => new CompetitionResponse(c.Id, c.ContentInHtml),
+                c => new CompetitionResponse(c.Id, c.ContentInHtml, c.Title),
                 ct
             ) ?? throw new NotFoundException("Конкурс не найден");
 
@@ -94,7 +95,7 @@ public sealed class CompetitionsService(
         pageSize = Math.Clamp(pageSize, 1, 100);
 
         var competitions = await competitionsRepository.GetAllAsync(
-            c => new CompetitionSummaryResponse(c.Id, c.ContentInHtml),
+            c => new CompetitionSummaryResponse(c.Id, c.Title),
             (page - 1) * pageSize,
             pageSize,
             ct
