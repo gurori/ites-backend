@@ -8,19 +8,19 @@ public sealed class CompetitionEntryConfiguration : IEntityTypeConfiguration<Com
 {
     public void Configure(EntityTypeBuilder<CompetitionEntry> builder)
     {
-        builder.HasKey(r => r.Id);
-        builder.Property(r => r.CoverLetter).HasMaxLength(2000);
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.CoverLetter).HasMaxLength(2000);
 
         builder
-            .HasOne(r => r.Competition)
-            .WithMany()
-            .HasForeignKey(r => r.CompetitionId)
+            .HasOne(e => e.Competition)
+            .WithMany(c => c.Entries)
+            .HasForeignKey(e => e.CompetitionId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
-            .HasOne(r => r.User)
+            .HasOne(e => e.User)
             .WithMany(u => u.CompetitionEntries)
-            .HasForeignKey(r => r.UserId)
+            .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
