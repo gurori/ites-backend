@@ -8,19 +8,19 @@ public sealed class TeamJoinRequestConfiguration : IEntityTypeConfiguration<Team
 {
     public void Configure(EntityTypeBuilder<TeamJoinRequest> builder)
     {
-        builder.HasKey(r => r.Id);
-        builder.Property(r => r.CoverLetter).HasMaxLength(2000);
+        builder.HasKey(j => j.Id);
+        builder.Property(j => j.CoverLetter).HasMaxLength(2000);
 
         builder
-            .HasOne(r => r.Team)
-            .WithMany()
-            .HasForeignKey(r => r.TeamId)
+            .HasOne(j => j.Team)
+            .WithMany(t => t.JoinRequests)
+            .HasForeignKey(j => j.TeamId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
-            .HasOne(r => r.User)
+            .HasOne(j => j.User)
             .WithMany(u => u.TeamJoinRequests)
-            .HasForeignKey(r => r.UserId)
+            .HasForeignKey(j => j.UserId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
