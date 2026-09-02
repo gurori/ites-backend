@@ -8,20 +8,20 @@ public sealed class OrderBidConfiguration : IEntityTypeConfiguration<OrderBid>
 {
     public void Configure(EntityTypeBuilder<OrderBid> builder)
     {
-        builder.HasKey(r => r.Id);
-        builder.Property(r => r.CoverLetter).HasMaxLength(2000);
-        builder.Property(r => r.ProposedPrice).HasColumnType("decimal(18,2)");
+        builder.HasKey(b => b.Id);
+        builder.Property(b => b.CoverLetter).HasMaxLength(2000);
+        builder.Property(b => b.ProposedPrice).HasColumnType("decimal(18,2)");
 
         builder
-            .HasOne(r => r.Order)
-            .WithMany()
-            .HasForeignKey(r => r.OrderId)
+            .HasOne(b => b.Order)
+            .WithMany(o => o.Bids)
+            .HasForeignKey(b => b.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
-            .HasOne(r => r.User)
+            .HasOne(b => b.User)
             .WithMany(u => u.OrderBids)
-            .HasForeignKey(r => r.UserId)
+            .HasForeignKey(b => b.UserId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
