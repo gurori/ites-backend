@@ -88,20 +88,16 @@ public static class UserMapping
             u.Role,
             u.Description,
             u.JobTitle,
-            u.OrganizedCompetitions.Select(c => new CompetitionSummaryResponse(c.Id, c.Title))
-                .ToArray(),
-            u.OrganizedCompetitions.SelectMany(c => c.Entries)
-                .Select(e => new CompetitionEntryResponse(
-                    e.Id,
-                    new MemberSummaryResponse(
-                        e.UserId,
-                        e.User.LastName,
-                        e.User.FirstName,
-                        e.User.MiddleName,
-                        e.User.Description,
-                        e.User.JobTitle
-                    ),
-                    new CompetitionSummaryResponse(e.CompetitionId, e.Competition.Title)
+            u.OrganizedCompetitions.Select(c => new CompetitionWithEntriesResponse(
+                    c.Id,
+                    c.Title,
+                    c.Entries.Select(e => new CompetitionEntryResponse(
+                            e.Id,
+                            e.UserId,
+                            e.User.FirstName,
+                            e.CoverLetter
+                        ))
+                        .ToArray()
                 ))
                 .ToArray()
         );

@@ -1,9 +1,8 @@
-﻿using ites.Application.Contracts.Users;
-
-namespace ites.Application.Contracts.Competitions;
+﻿namespace ites.Application.Contracts.Competitions;
 
 public sealed record CompetitionEntryResponse(
     Guid Id,
-    MemberSummaryResponse FromMember,
-    CompetitionSummaryResponse ForCompetition
+    Guid UserId,
+    string UserFirstName,
+    string? CoverLetter
 );
