@@ -19,10 +19,7 @@ public static class UserMapping
         u.Description,
         u.JobTitle,
         u.TeamId,
-        u.ParticipatedCompetitions.Select(c => new CompetitionSummaryResponse(
-                c.Id,
-                c.Title
-            ))
+        u.ParticipatedCompetitions.Select(c => new CompetitionSummaryResponse(c.Id, c.Title))
             .ToArray(),
         u.CompetitionEntries.Select(e => new CompetitionSummaryResponse(
                 e.CompetitionId,
@@ -63,31 +60,20 @@ public static class UserMapping
         u.Role,
         u.Description,
         u.JobTitle,
-        u.CreatedOrders.Select(o => new OrderSummaryResponse(
+        u.CreatedOrders.Select(o => new OrderWithBidsResponse(
                 o.Id,
                 o.Title,
                 o.Description,
                 o.Price,
-                o.DeadLine
-            ))
-            .ToArray(),
-        u.OrderBids.Select(b => new OrderBidResponse(
-                b.Id,
-                new MemberSummaryResponse(
-                    b.UserId,
-                    b.User.LastName,
-                    b.User.FirstName,
-                    b.User.MiddleName,
-                    b.User.Description,
-                    b.User.JobTitle
-                ),
-                new OrderSummaryResponse(
-                    b.OrderId,
-                    b.Order.Title,
-                    b.Order.Description,
-                    b.Order.Price,
-                    b.Order.DeadLine
-                )
+                o.DeadLine,
+                o.Bids.Select(b => new OrderBidResponse(
+                        b.Id,
+                        b.UserId,
+                        b.User.FirstName,
+                        b.ProposedPrice,
+                        b.CoverLetter
+                    ))
+                    .ToArray()
             ))
             .ToArray()
     );
@@ -102,12 +88,10 @@ public static class UserMapping
             u.Role,
             u.Description,
             u.JobTitle,
-            u.OrganizedCompetitions.Select(c => new CompetitionSummaryResponse(
-                    c.Id,
-                    c.Title
-                ))
+            u.OrganizedCompetitions.Select(c => new CompetitionSummaryResponse(c.Id, c.Title))
                 .ToArray(),
-            u.CompetitionEntries.Select(e => new CompetitionEntryResponse(
+            u.OrganizedCompetitions.SelectMany(c => c.Entries)
+                .Select(e => new CompetitionEntryResponse(
                     e.Id,
                     new MemberSummaryResponse(
                         e.UserId,

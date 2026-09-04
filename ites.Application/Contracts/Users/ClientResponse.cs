@@ -11,6 +11,5 @@ public sealed record ClientResponse(
     string Role,
     string Description,
     string JobTitle,
-    IReadOnlyCollection<OrderSummaryResponse> Orders,
-    IReadOnlyCollection<OrderBidResponse> Bids
+    IReadOnlyCollection<OrderWithBidsResponse> Orders
 );
