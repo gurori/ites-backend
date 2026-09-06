@@ -3,19 +3,22 @@ using ites.Core.Entities;
 using ites.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace ites.DataAccess.Repositories
+namespace ites.DataAccess.Repositories;
+
+public sealed class UserRepository(ItesDbContext context)
+    : CrudRepository<User>(context),
+        IUserRepository
 {
-    public class UserRepository(ItesDbContext context)
-        : CrudRepository<User>(context),
-            IUserRepository
+    public Task<TResult?> GetByEmailAsync<TResult>(
+        string email,
+        Expression<Func<User, TResult>> selector,
+        bool asSplitQuery = false,
+        CancellationToken ct = default
+    )
     {
-        public Task<T?> GetByEmailAsync<T>(
-            string email,
-            Expression<Func<User, T>> selector,
-            CancellationToken ct = default
-        )
-        {
-            return DbSet.Where(u => u.Email == email).Select(selector).FirstOrDefaultAsync(ct);
-        }
+        return BuildQuery<User>(null, asSplitQuery)
+            .Where(u => u.Email == email)
+            .Select(selector)
+            .FirstOrDefaultAsync(ct);
     }
 }

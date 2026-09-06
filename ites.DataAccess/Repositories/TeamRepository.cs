@@ -16,22 +16,6 @@ public sealed class TeamRepository(ItesDbContext context)
             .ExecuteUpdateAsync(t => t.SetProperty(t => t.IsPublic, isPublic), ct);
     }
 
-    public async Task<IReadOnlyCollection<T>> GetByVisibilityAsync<T>(
-        Expression<Func<Team, T>> selector,
-        bool isPublic = true,
-        int skip = 0,
-        int take = 100,
-        CancellationToken ct = default
-    )
-    {
-        return await DbSet
-            .Where(t => t.IsPublic == isPublic)
-            .Skip(skip)
-            .Take(take)
-            .Select(selector)
-            .ToListAsync(ct);
-    }
-
     public Task AddTeamJoinRequestAsync(
         TeamJoinRequest teamJoinRequest,
         CancellationToken ct = default
@@ -41,11 +25,16 @@ public sealed class TeamRepository(ItesDbContext context)
         return Task.CompletedTask;
     }
 
-    public async Task<Team?> GetWithMembersByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<Team?> GetWithMembersByIdAsync(
+        Guid id,
+        bool asSplitQuery = false,
+        CancellationToken ct = default
+    )
     {
-        return await DbContext
-            .Teams.Include(t => t.Members)
-            .FirstOrDefaultAsync(t => t.Id == id, ct);
+        return await BuildQuery<Team>(null, asSplitQuery)
+            .Include(t => t.Members)
+            .Where(t => t.Id == id)
+            .FirstOrDefaultAsync(ct);
     }
 
     public async Task AddMemberToTeamAsync(Guid teamId, Guid userId, CancellationToken ct = default)

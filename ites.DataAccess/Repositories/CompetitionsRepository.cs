@@ -1,5 +1,4 @@
 ﻿using ites.Core.Entities;
-using ites.Core.Enums;
 using ites.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 

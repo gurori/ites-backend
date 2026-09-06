@@ -5,12 +5,9 @@ namespace ites.Core.Interfaces.Repositories;
 
 public interface ITeamRepository : ICrudRepository<Team>
 {
-    Task<Team?> GetWithMembersByIdAsync(Guid id, CancellationToken ct = default);
-    Task<IReadOnlyCollection<T>> GetByVisibilityAsync<T>(
-        Expression<Func<Team, T>> selector,
-        bool isPublic = true,
-        int skip = 0,
-        int take = 100,
+    Task<Team?> GetWithMembersByIdAsync(
+        Guid id,
+        bool asSplitQuery = false,
         CancellationToken ct = default
     );
     Task AddMemberToTeamAsync(Guid teamId, Guid userId, CancellationToken ct = default);

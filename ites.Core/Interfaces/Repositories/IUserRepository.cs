@@ -5,9 +5,10 @@ namespace ites.Core.Interfaces.Repositories;
 
 public interface IUserRepository : ICrudRepository<User>
 {
-    public Task<T?> GetByEmailAsync<T>(
+    Task<TResult?> GetByEmailAsync<TResult>(
         string email,
-        Expression<Func<User, T>> selector,
+        Expression<Func<User, TResult>> selector,
+        bool asSplitQuery = false,
         CancellationToken ct = default
     );
 }
