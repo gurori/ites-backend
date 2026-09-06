@@ -22,7 +22,7 @@ public sealed class TeamService(ITeamRepository teamRepository, IUserRepository 
             await teamRepository.GetByIdAsync(
                 teamId,
                 t => new { t.IsPublic, MembersCount = t.Members.Count },
-                ct
+                ct: ct
             ) ?? throw new NotFoundException("Команда не найдена.");
 
         if (!team.IsPublic)
@@ -52,7 +52,7 @@ public sealed class TeamService(ITeamRepository teamRepository, IUserRepository 
     )
     {
         var admin =
-            await userRepository.GetByIdAsync(userId, ct)
+            await userRepository.GetByIdAsync(userId, ct: ct)
             ?? throw new NotFoundException("Пользователь не найден");
 
         Team team = new()
@@ -89,7 +89,9 @@ public sealed class TeamService(ITeamRepository teamRepository, IUserRepository 
                         .ToArray(),
                     t.AdminId
                 ),
-                ct
+                predicate: t => t.IsPublic,
+                asSplitQuery: true,
+                ct: ct
             ) ?? throw new NotFoundException("Команда не найдена");
 
         return team;
@@ -104,12 +106,12 @@ public sealed class TeamService(ITeamRepository teamRepository, IUserRepository 
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var teams = await teamRepository.GetByVisibilityAsync(
+        var teams = await teamRepository.GetAllAsync(
             t => new TeamSummaryResponse(t.Id, t.Name, t.Description, t.Members.Count),
-            isPublic: true,
+            predicate: t => t.IsPublic,
             skip: (page - 1) * pageSize,
             take: pageSize,
-            ct
+            ct: ct
         );
 
         var totalCount = await teamRepository.CountAsync(t => t.IsPublic, ct);
@@ -131,7 +133,7 @@ public sealed class TeamService(ITeamRepository teamRepository, IUserRepository 
         if (joinRequest.Status != RequsetStatus.Pending)
             throw new BadRequestException("Эта заявка уже обработана.");
 
-        var adminId = await teamRepository.GetByIdAsync(joinRequest.TeamId, t => t.AdminId, ct);
+        var adminId = await teamRepository.GetByIdAsync(joinRequest.TeamId, t => t.AdminId, ct: ct);
 
         if (adminId != userId)
             throw new ForbiddenException("У вас нет прав для обработки заявок этой команды.");
@@ -139,7 +141,7 @@ public sealed class TeamService(ITeamRepository teamRepository, IUserRepository 
         if (request.Accept)
         {
             var team =
-                await teamRepository.GetByIdAsync(joinRequest.TeamId, ct)
+                await teamRepository.GetByIdAsync(joinRequest.TeamId, ct: ct)
                 ?? throw new NotFoundException("Команда не найдена.");
 
             if (team.Members.Count >= 5)

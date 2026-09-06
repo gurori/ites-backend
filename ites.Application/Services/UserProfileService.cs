@@ -11,8 +11,12 @@ public sealed class UserProfileService(IUserRepository userRepository) : IUserPr
     public async Task<MemberResponse> GetMemberAsync(Guid id, CancellationToken ct = default)
     {
         var member =
-            await userRepository.GetByIdAsync(id, UserMapping.ToMemberResponse, ct)
-            ?? throw new NotFoundException("Пользователь не найден.");
+            await userRepository.GetByIdAsync(
+                id,
+                selector: UserMapping.ToMemberResponse,
+                asSplitQuery: true,
+                ct: ct
+            ) ?? throw new NotFoundException("Пользователь не найден.");
 
         return member;
     }
@@ -20,8 +24,12 @@ public sealed class UserProfileService(IUserRepository userRepository) : IUserPr
     public async Task<OrganizerResponse> GetOrganizerAsync(Guid id, CancellationToken ct = default)
     {
         var organizer =
-            await userRepository.GetByIdAsync(id, UserMapping.ToOrganizerResponse, ct)
-            ?? throw new NotFoundException("Пользователь не найден.");
+            await userRepository.GetByIdAsync(
+                id,
+                selector: UserMapping.ToOrganizerResponse,
+                asSplitQuery: true,
+                ct: ct
+            ) ?? throw new NotFoundException("Пользователь не найден.");
 
         return organizer;
     }
@@ -29,8 +37,12 @@ public sealed class UserProfileService(IUserRepository userRepository) : IUserPr
     public async Task<ClientResponse> GetClientAsync(Guid id, CancellationToken ct = default)
     {
         var client =
-            await userRepository.GetByIdAsync(id, UserMapping.ToClientResponse, ct)
-            ?? throw new NotFoundException("Пользователь не найден.");
+            await userRepository.GetByIdAsync(
+                id,
+                selector: UserMapping.ToClientResponse,
+                asSplitQuery: true,
+                ct: ct
+            ) ?? throw new NotFoundException("Пользователь не найден.");
 
         return client;
     }

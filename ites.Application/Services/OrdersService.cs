@@ -17,7 +17,7 @@ public sealed class OrdersService(IOrdersRepository ordersRepository) : IOrdersS
     )
     {
         var order =
-            await ordersRepository.GetByIdAsync(orderId, o => new { o.IsPublic }, ct)
+            await ordersRepository.GetByIdAsync(orderId, o => new { o.IsPublic }, ct: ct)
             ?? throw new NotFoundException("Заказ не найден.");
 
         if (!order.IsPublic)
@@ -76,10 +76,12 @@ public sealed class OrdersService(IOrdersRepository ordersRepository) : IOrdersS
 
         var orders = await ordersRepository.GetAllAsync(
             o => new OrderSummaryResponse(o.Id, o.Title, o.Description, o.Price, o.DeadLine),
-            (page - 1) * pageSize,
-            pageSize,
-            ct
+            predicate: o => o.IsPublic,
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+            ct: ct
         );
+
         return new OrderListResponse(orders, await ordersRepository.CountAsync(ct), page, pageSize);
     }
 
@@ -89,7 +91,8 @@ public sealed class OrdersService(IOrdersRepository ordersRepository) : IOrdersS
             await ordersRepository.GetByIdAsync(
                 id,
                 o => new OrderResponse(o.Id, o.Title, o.Description, o.Price, o.DeadLine),
-                ct
+                predicate: o => o.IsPublic,
+                ct: ct
             ) ?? throw new NotFoundException("Заказ не найден");
 
         return order;
@@ -103,14 +106,14 @@ public sealed class OrdersService(IOrdersRepository ordersRepository) : IOrdersS
     )
     {
         var bid =
-            await ordersRepository.GetBidByIdAsync(bidId, ct)
+            await ordersRepository.GetBidByIdAsync(bidId, ct: ct)
             ?? throw new NotFoundException("Отклик не найден.");
 
         if (bid.Status != RequsetStatus.Pending)
             throw new BadRequestException("Эта заявка уже обработана.");
 
         var order =
-            await ordersRepository.GetByIdAsync(bid.OrderId, ct)
+            await ordersRepository.GetByIdAsync(bid.OrderId, ct: ct)
             ?? throw new NotFoundException("Заказ не найден.");
 
         if (order.ClientId != userId)

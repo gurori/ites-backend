@@ -48,7 +48,7 @@ public sealed class UserService(
                 u.PasswordHash,
                 u.Role,
             },
-            ct
+            ct: ct
         );
 
         if (userEntity == null || !passwordHasher.Verify(request.Password, userEntity.PasswordHash))
@@ -68,14 +68,14 @@ public sealed class UserService(
     )
     {
         var user =
-            await userRepository.GetByIdAsync(id, ct)
+            await userRepository.GetByIdAsync(id, ct: ct)
             ?? throw new NotFoundException("Пользователь не найден");
 
         user.LastName = request.LastName;
         user.FirstName = request.FirstName;
         user.MiddleName = request.MiddleName;
         user.Description = request.Description;
-        user.JobTitle = request.JobTitle ?? "";
+        user.JobTitle = request.JobTitle ?? string.Empty;
 
         await userRepository.UpdateAsync(user, ct);
         await userRepository.SaveChangesAsync(ct);

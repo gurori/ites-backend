@@ -28,7 +28,7 @@ public sealed class FileService(
     )
     {
         var user =
-            await userRepository.GetByIdAsync(userId, u => new { u.AvatarPath }, ct)
+            await userRepository.GetByIdAsync(userId, u => new { u.AvatarPath }, ct: ct)
             ?? throw new NotFoundException("Пользователь не найден.");
 
         var path = user.AvatarPath ?? FileConstants.DefaultAvatarStoragePath;
@@ -48,7 +48,7 @@ public sealed class FileService(
             await competitionsRepository.GetByIdAsync(
                 competitionId,
                 c => new { OrganizerIds = c.Organizers.Select(o => o.Id) },
-                ct
+                ct: ct
             ) ?? throw new NotFoundException("Конкурс не найден.");
 
         if (!competition.OrganizerIds.Contains(userId))
@@ -93,7 +93,7 @@ public sealed class FileService(
     )
     {
         var user =
-            await userRepository.GetByIdAsync(userId, ct)
+            await userRepository.GetByIdAsync(userId, ct: ct)
             ?? throw new NotFoundException("Пользователь не найден.");
 
         var extension = Path.GetExtension(fileName).ToLower();

@@ -50,7 +50,7 @@ public sealed class CompetitionsService(
     )
     {
         User? organizer =
-            await userRepository.GetByIdAsync(userId, ct)
+            await userRepository.GetByIdAsync(userId, ct: ct)
             ?? throw new NotFoundException("Пользователь не найден");
 
         Competition competition = new()
@@ -79,7 +79,7 @@ public sealed class CompetitionsService(
             await competitionsRepository.GetByIdAsync(
                 id,
                 c => new CompetitionResponse(c.Id, c.ContentInHtml, c.Title),
-                ct
+                ct: ct
             ) ?? throw new NotFoundException("Конкурс не найден");
 
         return competition;
@@ -96,9 +96,9 @@ public sealed class CompetitionsService(
 
         var competitions = await competitionsRepository.GetAllAsync(
             c => new CompetitionSummaryResponse(c.Id, c.Title),
-            (page - 1) * pageSize,
-            pageSize,
-            ct
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+            ct: ct
         );
 
         var totalCount = await competitionsRepository.CountAsync(ct);
